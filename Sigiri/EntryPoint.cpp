@@ -1,34 +1,30 @@
 #include <cstdio>
 #include "include/string.h"
+#include "include/token.h"
+#include "include/lexer.h"
+#include "include/parser.h"
+#include "include/sigiri.h"
 
 int main() {
-    String str(3);
 
-    printf("value : %s\n", str.mPtr);
-    printf("length : %d \n", str.getLength());
-    printf("size : %d \n", str.mSize);
-    printf("address : %x \n\n", str.mPtr);
+    while (true)
+    {
+        printf(">>> ");
+        char line[200];
+        scanf("%s", line);
 
-    str.append('a');
+        String* code = new String(line);
+        Lexer lexer(code);
+        Parser parser(lexer.generateTokens());
+        Interpreter interpreter;
+        Value* value = interpreter.visit(parser.parse());
+        
+        value->print();
+      
+        delete value;
 
-    printf("value : %s\n", str.mPtr);
-    printf("length : %d \n", str.getLength());
-    printf("size : %d \n", str.mSize);
-    printf("address : %x \n\n", str.mPtr);
-
-    str.append('b');
-
-    printf("value : %s\n", str.mPtr);
-    printf("length : %d \n", str.getLength());
-    printf("size : %d \n", str.mSize);
-    printf("address : %x \n\n", str.mPtr);
-
-    str.append('c');
-
-    printf("value : %s\n", str.mPtr);
-    printf("length : %d \n", str.getLength());
-    printf("size : %d \n", str.mSize);
-    printf("address : %x \n\n", str.mPtr);
+        printf("\n");
+    }
 
     return 0;
 }

@@ -1,9 +1,67 @@
 #include "../include/string.h"
 
+
 uint strLen(const char* ptr) {
 	uint i = 0;
 	while (ptr[i++] != '\0');
 	return i-1;
+}
+
+int strCmp(const char* s1, const char* s2) {
+	int i = 0;
+	while (s1[i] != '\0' && s2[i] != '\0')
+		if (s1[i] != s2[i])
+			return 0;
+	return 1;
+}
+
+int strToInt(String* str) {
+	int value = 0;
+	uint len = str->getLength();
+	for (size_t i = 0; i < len; i++)
+	{
+		int digit = str->mPtr[i]-'0';
+		for (size_t j = 0; j < len - i - 1; j++)
+			digit *= 10;
+		value += digit;
+	}
+	return value;
+}
+
+double strToFloat(String* str) {
+	double value = 0;
+	uint len = str->getLength();
+	int dotIndex = str->indexOf('.');
+	dotIndex = dotIndex >= 0 ? dotIndex : len;
+
+	for (size_t i = 0; i < dotIndex; i++)
+	{
+		int digit = str->mPtr[i] - '0';
+		for (size_t j = 0; j < dotIndex - i - 1; j++)
+			digit *= 10;
+		value += digit;
+	}
+
+	double decimal = 0;
+	for (size_t i = dotIndex+1; i < len; i++)
+	{
+		int digit = str->mPtr[i] - '0';
+		uint divide = 1;
+		for (size_t j = 0; j < i-dotIndex; j++)
+			divide *= 10;
+		decimal += (digit/(double)divide);
+	}
+	return value+decimal;
+}
+
+int String::indexOf(char c) {
+	uint len = strLen(mPtr);
+	for (size_t i = 0; i < len; i++)
+	{
+		if (mPtr[i] == c)
+			return i;
+	}
+	return -1;
 }
 
 String::String(const char* ptr) {
@@ -25,6 +83,14 @@ String::~String() {
 
 uint String::getLength() {
 	return strLen(mPtr);
+}
+
+int String::compare(String* other) {
+	return strCmp(mPtr, other->mPtr);
+}
+
+int String::compare(char* other) {
+	return strCmp(mPtr, other);
 }
 
 void String::append(const char* ptr) {
