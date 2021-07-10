@@ -9,15 +9,21 @@ public:
 	enum class Type {
 		INT_NUMBER,
 		FLOAT_NUMBER,
+
 		IDENTIFIER,
 		KEYWORD_INT,
+
 		PLUS,
 		MINUS,
 		ASTERIX,
 		FW_SLASH,
+		POWER,
+
 		L_PAREN,
 		R_PAREN,
+
 		COMMA,
+
 		L_BRACE,
 		R_BRACE
 	} mType;

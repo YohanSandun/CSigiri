@@ -25,6 +25,26 @@ void FloatNode::toString() {
 	printf("%f", mValue);
 }
 
+
+UnaryNode::UnaryNode(Token::Type type, Node* node) : Node(Type::UNARY) {
+	mOpType = type;
+	mNode = node;
+}
+
+UnaryNode::~UnaryNode() {
+	delete mNode;
+}
+
+void UnaryNode::toString() {
+	if (mOpType == Token::Type::PLUS)
+		printf("(+");
+	else if (mOpType == Token::Type::MINUS)
+		printf("(-");
+	mNode->toString();
+	printf(")");
+}
+
+
 BinaryNode::BinaryNode(Node* left, Token::Type type, Node* right) : Node(Type::BINARY) {
 	mLeft = left;
 	mOpType = type;
@@ -43,7 +63,8 @@ void BinaryNode::toString() {
 		printf("*");
 	else if (mOpType == Token::Type::FW_SLASH)
 		printf("/");
-
+	else if (mOpType == Token::Type::POWER)
+		printf("**");
 
 	mRight->toString();
 	printf(")");

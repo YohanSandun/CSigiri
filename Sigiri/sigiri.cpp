@@ -1,15 +1,17 @@
 #include "include/sigiri.h"
 
-
 Value* Interpreter::visit(Node* node) {
 	if (node->mType == Node::Type::INTEGER)
 		return visitInteger((IntegerNode*)node);
 	else if (node->mType == Node::Type::BINARY)
 		return visitBinary((BinaryNode*)node);
+	else if (node->mType == Node::Type::UNARY)
+		return visitUnary((UnaryNode*)node);
 }
 
 Value* Interpreter::visitInteger(IntegerNode* node) {
-	return new IntegerValue(node->mValue);
+	Value* value = new IntegerValue(node->mValue);
+	return value;
 }
 
 Value* Interpreter::visitBinary(BinaryNode* node) {
@@ -26,9 +28,18 @@ Value* Interpreter::visitBinary(BinaryNode* node) {
 		return left->mul(right);
 	case Token::Type::FW_SLASH:
 		return left->div(right);
+	case Token::Type::POWER:
+		return left->s_pow(right);
 	default:
 		break;
 	}
-
 	return nullptr;
+}
+
+Value* Interpreter::visitUnary(UnaryNode* node) {
+	Value* value = visit(node->mNode);
+	if (node->mOpType == Token::Type::MINUS) {
+		return value->negate();
+	}
+	return value;
 }

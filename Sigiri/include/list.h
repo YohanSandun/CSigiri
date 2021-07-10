@@ -15,6 +15,6 @@ public:
 
 private:
     void ensureMemory();
-    const uint mDefaultSize = 2;
+    const uint mDefaultSize = 10;
     int mCurrentIndex = -1;
 };

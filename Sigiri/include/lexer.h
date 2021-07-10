@@ -14,6 +14,7 @@ private:
 	uint mCodeLen;
 	String* mCode;
 	void advance();
+	char peek(int amount = 1);
 	Token* makeNumber();
 	Token* makeIdentifier();
 

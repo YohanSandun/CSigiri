@@ -1,5 +1,8 @@
 #pragma once
 
+#include <cstdio>
+#include <math.h>
+
 class Value {
 public:
 	enum class Type {
@@ -8,12 +11,14 @@ public:
 	} mType;
 	Value(Type type);
 
-	virtual Value* add(Value* other);
-	virtual Value* sub(Value* other);
-	virtual Value* mul(Value* other);
-	virtual Value* div(Value* other);
+	virtual Value* add(Value* other) = 0;
+	virtual Value* sub(Value* other) = 0;
+	virtual Value* mul(Value* other) = 0;
+	virtual Value* div(Value* other) = 0;
+	virtual Value* s_pow(Value* other) = 0;
+	virtual Value* negate() = 0;
 
-	virtual void print();
+	virtual void print() = 0;
 };
 
 class IntegerValue : public Value {
@@ -25,6 +30,8 @@ public:
 	Value* sub(Value* other);
 	Value* mul(Value* other);
 	Value* div(Value* other);
+	Value* s_pow(Value* other);
+	Value* negate();
 
 	void print();
 };

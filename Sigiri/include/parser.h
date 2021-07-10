@@ -13,7 +13,9 @@ private:
 
 	Node* expr();
 	Node* term();
+	Node* power();
 	Node* factor();
+	Node* atom();
 
 public:
 	Parser(List<Token*>* tokens);

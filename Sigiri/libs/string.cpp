@@ -101,7 +101,7 @@ void String::append(const char* ptr) {
 			mPtr[myLen + i] = ptr[i];
 	else {
 		// re-alloc memory
-		mSize += len + 10;
+		mSize += len + 10; //todo increment amt
 		char* newPtr = new char[mSize];
 		for (size_t i = 0; i < myLen; i++)
 			newPtr[i] = mPtr[i];

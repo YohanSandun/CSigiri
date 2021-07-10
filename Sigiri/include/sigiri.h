@@ -10,4 +10,5 @@ public:
 private:
 	Value* visitInteger(IntegerNode* node);
 	Value* visitBinary(BinaryNode* node);
+	Value* visitUnary(UnaryNode* node);
 };

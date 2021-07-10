@@ -8,6 +8,7 @@ public:
 	{
 		INTEGER,
 		FLOAT,
+		UNARY,
 		BINARY
 	} mType;
 	Node(Type type);
@@ -26,6 +27,15 @@ public:
 	FloatNode(double value);
 	void toString();
 	double mValue;
+};
+
+class UnaryNode : public Node {
+public:
+	~UnaryNode();
+	UnaryNode(Token::Type type, Node* node);
+	Node* mNode;
+	Token::Type mOpType;
+	void toString();
 };
 
 class BinaryNode : public Node {

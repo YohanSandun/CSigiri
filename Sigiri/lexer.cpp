@@ -18,6 +18,12 @@ void Lexer::advance() {
 		mCurrentChar = '\0';
 }
 
+char Lexer::peek(int amount) {
+	if (mIndex + amount < mCodeLen)
+		return mCode->mPtr[mIndex + amount];
+	return '\0';
+}
+
 List<Token*>* Lexer::generateTokens() {
 	List<Token*>* tokens = new List<Token*>();
 	while (mCurrentChar != '\0') {
@@ -38,11 +44,26 @@ List<Token*>* Lexer::generateTokens() {
 			advance();
 		}
 		else if (mCurrentChar == '*') {
-			tokens->add(new Token(Token::Type::ASTERIX));
-			advance();
+			if (peek(1) == '*') {
+				tokens->add(new Token(Token::Type::POWER));
+				advance();
+				advance();
+			}
+			else {
+				tokens->add(new Token(Token::Type::ASTERIX));
+				advance();
+			}
 		}
 		else if (mCurrentChar == '/') {
 			tokens->add(new Token(Token::Type::FW_SLASH));
+			advance();
+		}
+		else if (mCurrentChar == '(') {
+			tokens->add(new Token(Token::Type::L_PAREN));
+			advance();
+		}
+		else if (mCurrentChar == ')') {
+			tokens->add(new Token(Token::Type::R_PAREN));
 			advance();
 		}
 		else if (mCurrentChar >= '0' && mCurrentChar <= '9') {
