@@ -49,6 +49,9 @@ public:
 		BITWISE_XOR,
 		BITWISE_COMPLEMENT,
 
+		LEFT_SHIFT,
+		RIGHT_SHIFT,
+
 		EOF_TOKEN
 	} mType;
 

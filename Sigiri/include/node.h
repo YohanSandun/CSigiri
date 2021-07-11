@@ -16,12 +16,14 @@ public:
 		BLOCK
 	} mType;
 	Node(Type type);
+	virtual ~Node();
 	virtual void toString();
 };
 
 class IntegerNode : public Node {
 public:
 	IntegerNode(int value);
+	~IntegerNode();
 	void toString();
 	int mValue;
 };
@@ -29,6 +31,7 @@ public:
 class FloatNode : public Node {
 public:
 	FloatNode(double value);
+	~FloatNode();
 	void toString();
 	double mValue;
 };

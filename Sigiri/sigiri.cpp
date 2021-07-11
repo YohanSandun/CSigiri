@@ -52,6 +52,21 @@ Value* Interpreter::visitBinary(BinaryNode* node) {
 		return left->comp_less_eq(right);
 	case Token::Type::GREATER_EQ:
 		return left->comp_greater_eq(right);
+	case Token::Type::BITWISE_AND:
+		return left->bitwise_and(right);
+	case Token::Type::BITWISE_OR:
+		return left->bitwise_or(right);
+	case Token::Type::BITWISE_XOR:
+		return left->bitwise_xor(right);
+	case Token::Type::LEFT_SHIFT:
+		return left->shift_left(right);
+	case Token::Type::RIGHT_SHIFT:
+		return left->shift_right(right);
+	case Token::Type::BOOLEAN_AND:
+		return left->boolean_and(right);
+	case Token::Type::BOOLEAN_OR:
+		return left->boolean_or(right);
+
 	default:
 		break;
 	}
@@ -65,6 +80,9 @@ Value* Interpreter::visitUnary(UnaryNode* node) {
 	}
 	else if (node->mOpType == Token::Type::BOOLEAN_NOT) {
 		return value->boolean_not();
+	}
+	else if (node->mOpType == Token::Type::BITWISE_COMPLEMENT) {
+		return value->bitwise_complement();
 	}
 	return value;
 }

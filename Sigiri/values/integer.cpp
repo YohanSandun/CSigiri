@@ -90,7 +90,6 @@ Value* IntegerValue::comp_greater_eq(Value* other) {
 	}
 }
 
-
 Value* IntegerValue::comp_less_eq(Value* other) {
 	if (other->mType == Type::INTEGER) {
 		mValue = mValue <= ((IntegerValue*)other)->mValue;
@@ -98,6 +97,67 @@ Value* IntegerValue::comp_less_eq(Value* other) {
 		delete other;
 		return this;
 	}
+}
+
+Value* IntegerValue::bitwise_and(Value* other) {
+	if (other->mType == Type::INTEGER) {
+		mValue &= ((IntegerValue*)other)->mValue;
+		delete other;
+		return this;
+	}
+}
+
+Value* IntegerValue::bitwise_or(Value* other) {
+	if (other->mType == Type::INTEGER) {
+		mValue |= ((IntegerValue*)other)->mValue;
+		delete other;
+		return this;
+	}
+}
+
+Value* IntegerValue::bitwise_xor(Value* other) {
+	if (other->mType == Type::INTEGER) {
+		mValue ^= ((IntegerValue*)other)->mValue;
+		delete other;
+		return this;
+	}
+}
+
+Value* IntegerValue::shift_left(Value* other) {
+	if (other->mType == Type::INTEGER) {
+		mValue <<= ((IntegerValue*)other)->mValue;
+		delete other;
+		return this;
+	}
+}
+
+Value* IntegerValue::shift_right(Value* other) {
+	if (other->mType == Type::INTEGER) {
+		mValue >>= ((IntegerValue*)other)->mValue;
+		delete other;
+		return this;
+	}
+}
+
+Value* IntegerValue::boolean_and(Value* other) {
+	if (other->mType == Type::INTEGER) {
+		mValue = mValue && ((IntegerValue*)other)->mValue;
+		delete other;
+		return this;
+	}
+}
+
+Value* IntegerValue::boolean_or(Value* other) {
+	if (other->mType == Type::INTEGER) {
+		mValue = mValue || ((IntegerValue*)other)->mValue;
+		delete other;
+		return this;
+	}
+}
+
+Value* IntegerValue::bitwise_complement() {
+	mValue = ~mValue;
+	return this;
 }
 
 Value* IntegerValue::negate() {

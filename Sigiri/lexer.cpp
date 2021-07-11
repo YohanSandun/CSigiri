@@ -99,6 +99,11 @@ List<Token*>* Lexer::generateTokens() {
 				advance();
 				advance();
 			}
+			else if (peek(1) == '<') {
+				tokens->add(new Token(Token::Type::LEFT_SHIFT));
+				advance();
+				advance();
+			}
 			else {
 				tokens->add(new Token(Token::Type::LESS_THAN));
 				advance();
@@ -107,6 +112,11 @@ List<Token*>* Lexer::generateTokens() {
 		else if (mCurrentChar == '>') {
 			if (peek(1) == '=') {
 				tokens->add(new Token(Token::Type::GREATER_EQ));
+				advance();
+				advance();
+			}
+			else if (peek(1) == '>') {
+				tokens->add(new Token(Token::Type::RIGHT_SHIFT));
 				advance();
 				advance();
 			}

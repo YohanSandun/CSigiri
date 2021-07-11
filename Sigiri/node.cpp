@@ -5,6 +5,10 @@ Node::Node(Type type) {
 	mType = type;
 }
 
+Node::~Node() {
+
+}
+
 void Node::toString() {
 
 }
@@ -15,12 +19,20 @@ IntegerNode::IntegerNode(int value) : Node(Type::INTEGER) {
 	mValue = value;
 }
 
+IntegerNode::~IntegerNode() {
+	
+}
+
 void IntegerNode::toString() {
 	printf("%d", mValue);
 }
 
 FloatNode::FloatNode(double value) : Node(Type::FLOAT) {
 	mValue = value;
+}
+
+FloatNode::~FloatNode() {
+	
 }
 
 void FloatNode::toString() {
@@ -102,7 +114,6 @@ VarAccess::VarAccess(int id) : Node(Type::VAR_ACCESS) {
 }
 
 VarAccess::~VarAccess() {
-
 }
 
 void VarAccess::toString() {

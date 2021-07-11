@@ -15,8 +15,8 @@ void Parser::setTokens(List<Token*>* tokens) {
 }
 
 Parser::~Parser() {
-	//delete mTokens;
-	//delete mSymbols;
+	delete mTokens;
+	delete mSymbols;
 }
 
 int Parser::getSymbolIndex(String* name) {
@@ -58,7 +58,7 @@ Node* Parser::block(Token::Type end) {
 
 Node* Parser::expr() {
 	Node* left = compare();
-	while (currentToken->mType == Token::Type::PLUS || currentToken->mType == Token::Type::MINUS)
+	while (currentToken->mType == Token::Type::BOOLEAN_AND || currentToken->mType == Token::Type::BOOLEAN_OR)
 	{
 		Token::Type type = currentToken->mType;
 		advance();
@@ -108,12 +108,36 @@ Node* Parser::bitwise_xor() {
 }
 
 Node* Parser::bitwise_and() {
-	Node* left = term(); //todo shift
+	Node* left = shift();
 	while (currentToken->mType == Token::Type::BITWISE_AND)
 	{
 		advance();
-		Node* right = term(); //todo shift
+		Node* right = shift();
 		left = new BinaryNode(left, Token::Type::BITWISE_AND, right);
+	}
+	return left;
+}
+
+Node* Parser::shift() {
+	Node* left = arithmetic();
+	while (currentToken->mType == Token::Type::LEFT_SHIFT || currentToken->mType == Token::Type::RIGHT_SHIFT)
+	{
+		Token::Type type = currentToken->mType;
+		advance();
+		Node* right = arithmetic(); 
+		left = new BinaryNode(left, type, right);
+	}
+	return left;
+}
+
+Node* Parser::arithmetic() {
+	Node* left = term();
+	while (currentToken->mType == Token::Type::PLUS || currentToken->mType == Token::Type::MINUS)
+	{
+		Token::Type type = currentToken->mType;
+		advance();
+		Node* right = term();
+		left = new BinaryNode(left, type, right);
 	}
 	return left;
 }
@@ -141,7 +165,7 @@ Node* Parser::factor() {
 }
 
 Node* Parser::power() {
-	Node* left = atom();
+	Node* left = complement();
 	while (currentToken->mType == Token::Type::POWER)
 	{
 		advance();
@@ -149,6 +173,15 @@ Node* Parser::power() {
 		left = new BinaryNode(left, Token::Type::POWER, right);
 	}
 	return left;
+}
+
+Node* Parser::complement() {
+	if (currentToken->mType == Token::Type::BITWISE_COMPLEMENT) {
+		advance();
+		Node* node = factor();
+		return new UnaryNode(Token::Type::BITWISE_COMPLEMENT, node);
+	}
+	return atom();
 }
 
 Node* Parser::atom() {

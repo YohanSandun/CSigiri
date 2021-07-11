@@ -20,9 +20,12 @@ private:
 	Node* bitwise_or();
 	Node* bitwise_xor();
 	Node* bitwise_and();
+	Node* shift();
+	Node* arithmetic();
 	Node* term();
 	Node* power();
 	Node* factor();
+	Node* complement();
 	Node* atom();
 	
 	void skipNewLines();

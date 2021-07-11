@@ -15,19 +15,16 @@ int main() {
         char line[200];
         scanf("%s", line);
 
-        String* code = new String(line);
-        Lexer lexer(code);
+        Lexer lexer(new String(line));
 
         parser.setTokens(lexer.generateTokens());
        
         Node* ast = parser.parse();
-        //ast->toString();
-        Value* value = interpreter.visit(ast);
         
-        if (value != NULL && value != nullptr)
+        Value* value = interpreter.visit(ast);
+        if (value != NULL) 
             value->print();
-      
-        //delete value;
+        
         delete ast;
 
         printf("\n");
