@@ -74,3 +74,30 @@ BinaryNode::~BinaryNode() {
 	delete mLeft;
 	delete mRight;
 }
+
+
+VarAssign::VarAssign(int id, Node* node) : Node(Type::VAR_ASSIGN) {
+	mId = id;
+	mNode = node;
+}
+
+VarAssign::~VarAssign() {
+	delete mNode;
+}
+
+void VarAssign::toString() {
+	printf("%d=", mId);
+	mNode->toString();
+}
+
+VarAccess::VarAccess(int id) : Node(Type::VAR_ACCESS) {
+	mId = id;
+}
+
+VarAccess::~VarAccess() {
+
+}
+
+void VarAccess::toString() {
+	printf("%d", mId);
+}

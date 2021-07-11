@@ -18,6 +18,8 @@ public:
 	virtual Value* s_pow(Value* other) = 0;
 	virtual Value* negate() = 0;
 
+	virtual Value* clone() = 0;
+
 	virtual void print() = 0;
 };
 
@@ -32,6 +34,7 @@ public:
 	Value* div(Value* other);
 	Value* s_pow(Value* other);
 	Value* negate();
+	Value* clone();
 
 	void print();
 };

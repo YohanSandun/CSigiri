@@ -2,13 +2,32 @@
 #include "include/string.h"
 #include <cstdio>
 
-Parser::Parser(List<Token*>* tokens) {
+Parser::Parser() {
+	mSymbols = new List<String*>();
+}
+
+void Parser::setTokens(List<Token*>* tokens) {
+	mIndex = -1;
+	if (mTokens != nullptr)
+		delete mTokens;
 	mTokens = tokens;
 	advance();
 }
 
 Parser::~Parser() {
-	delete mTokens;
+	//delete mTokens;
+	//delete mSymbols;
+}
+
+int Parser::getSymbolIndex(String* name) {
+	int count = mSymbols->getCount();
+	for (size_t i = 0; i < count; i++)
+	{
+		if (mSymbols->get(i)->compare(name) == 1)
+			return i;
+	}
+	mSymbols->add(name->clone());
+	return count;
 }
 
 void Parser::advance() {
@@ -75,6 +94,15 @@ Node* Parser::atom() {
 	else if (token->mType == Token::Type::FLOAT_NUMBER) {
 		advance();
 		return new FloatNode(strToFloat(token->mValue));
+	}
+	else if (token->mType == Token::Type::IDENTIFIER) {
+		advance();
+		if (currentToken->mType == Token::Type::EQUALS) {
+			advance();
+			Node* expression = expr();
+			return new VarAssign(getSymbolIndex(token->mValue), expression);
+		}
+		return new VarAccess(getSymbolIndex(token->mValue));
 	}
 	else if (token->mType == Token::Type::L_PAREN) {
 		advance();

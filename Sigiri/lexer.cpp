@@ -66,6 +66,18 @@ List<Token*>* Lexer::generateTokens() {
 			tokens->add(new Token(Token::Type::R_PAREN));
 			advance();
 		}
+		else if (mCurrentChar == ':') {
+			tokens->add(new Token(Token::Type::COLON));
+			advance();
+		}
+		else if (mCurrentChar == ';') {
+			tokens->add(new Token(Token::Type::SEMI_COLON));
+			advance();
+		}
+		else if (mCurrentChar == '=') {
+			tokens->add(new Token(Token::Type::EQUALS));
+			advance();
+		}
 		else if (mCurrentChar >= '0' && mCurrentChar <= '9') {
 			tokens->add(makeNumber());
 		}

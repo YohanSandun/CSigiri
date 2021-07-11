@@ -19,6 +19,7 @@ public:
 	int compare(String* other);
 	int compare(char* other);
 	int indexOf(char c);
+	String* clone();
 };
 
 int strToInt(String* str);

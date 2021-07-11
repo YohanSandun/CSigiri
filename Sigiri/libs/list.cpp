@@ -10,7 +10,8 @@ List<T>::List() {
 template <class T>
 List<T>::~List() {
 	for (int i = 0; i <= mCurrentIndex; i++)
-		delete mPtr[i];
+		if (mPtr[i] != nullptr)
+			delete mPtr[i];
 	delete[] mPtr;
 }
 

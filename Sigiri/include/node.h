@@ -9,7 +9,9 @@ public:
 		INTEGER,
 		FLOAT,
 		UNARY,
-		BINARY
+		BINARY,
+		VAR_ASSIGN,
+		VAR_ACCESS
 	} mType;
 	Node(Type type);
 	virtual void toString();
@@ -44,5 +46,22 @@ public:
 	BinaryNode(Node* left, Token::Type type, Node* right);
 	Node* mLeft, * mRight;
 	Token::Type mOpType;
+	void toString();
+};
+
+class VarAssign : public Node {
+public:
+	~VarAssign();
+	VarAssign(int id, Node* node);
+	Node* mNode;
+	int mId;
+	void toString();
+};
+
+class VarAccess : public Node {
+public:
+	~VarAccess();
+	VarAccess(int id);
+	int mId;
 	void toString();
 };

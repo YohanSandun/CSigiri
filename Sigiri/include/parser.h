@@ -6,10 +6,13 @@
 
 class Parser {
 private:
-	List<Token*>* mTokens;
+	List<Token*>* mTokens = nullptr;
+	List<String*>* mSymbols;
 	void advance();
 	int mIndex = -1;
 	Token* currentToken;
+
+	int getSymbolIndex(String* name);
 
 	Node* expr();
 	Node* term();
@@ -18,7 +21,8 @@ private:
 	Node* atom();
 
 public:
-	Parser(List<Token*>* tokens);
+	Parser();
+	void setTokens(List<Token*>* tokens);
 	~Parser();
 	Node* parse();
 };

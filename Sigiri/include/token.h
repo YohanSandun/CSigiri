@@ -25,7 +25,18 @@ public:
 		COMMA,
 
 		L_BRACE,
-		R_BRACE
+		R_BRACE,
+
+		COLON,
+		SEMI_COLON,
+
+		EQUALS,
+		EQUALS_EQUALS,
+		NOT_EQUALS,
+		GREATER_THAN,
+		LESS_THAN,
+		GREATER_EQ,
+		LESS_EQ,
 	} mType;
 
 	uint mLine;

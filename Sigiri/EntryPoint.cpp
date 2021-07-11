@@ -6,6 +6,9 @@
 #include "include/sigiri.h"
 
 int main() {
+    Interpreter interpreter;
+    Parser parser;
+
     while (true)
     {
         printf(">>> ");
@@ -14,15 +17,16 @@ int main() {
 
         String* code = new String(line);
         Lexer lexer(code);
-        Parser parser(lexer.generateTokens());
-        Interpreter interpreter;
+
+        parser.setTokens(lexer.generateTokens());
+       
         Node* ast = parser.parse();
         //ast->toString();
         Value* value = interpreter.visit(ast);
         
         value->print();
       
-        delete value;
+        //delete value;
         delete ast;
 
         printf("\n");
