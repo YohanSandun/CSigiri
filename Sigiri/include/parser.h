@@ -16,6 +16,10 @@ private:
 
 	Node* block(Token::Type end = Token::Type::R_BRACE);
 	Node* expr();
+	Node* compare();
+	Node* bitwise_or();
+	Node* bitwise_xor();
+	Node* bitwise_and();
 	Node* term();
 	Node* power();
 	Node* factor();

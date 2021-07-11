@@ -45,8 +45,69 @@ Value* IntegerValue::s_pow(Value* other) {
 	}
 }
 
+Value* IntegerValue::comp_eq_eq(Value* other) {
+	if (other->mType == Type::INTEGER) {
+		mValue = mValue == ((IntegerValue*)other)->mValue;
+		isBool = true;
+		delete other;
+		return this;
+	}
+}
+
+Value* IntegerValue::comp_not_eq(Value* other) {
+	if (other->mType == Type::INTEGER) {
+		mValue = mValue != ((IntegerValue*)other)->mValue;
+		isBool = true;
+		delete other;
+		return this;
+	}
+}
+
+Value* IntegerValue::comp_greater(Value* other) {
+	if (other->mType == Type::INTEGER) {
+		mValue = mValue > ((IntegerValue*)other)->mValue;
+		isBool = true;
+		delete other;
+		return this;
+	}
+}
+
+Value* IntegerValue::comp_less(Value* other) {
+	if (other->mType == Type::INTEGER) {
+		mValue = mValue < ((IntegerValue*)other)->mValue;
+		isBool = true;
+		delete other;
+		return this;
+	}
+}
+
+Value* IntegerValue::comp_greater_eq(Value* other) {
+	if (other->mType == Type::INTEGER) {
+		mValue = mValue >= ((IntegerValue*)other)->mValue;
+		isBool = true;
+		delete other;
+		return this;
+	}
+}
+
+
+Value* IntegerValue::comp_less_eq(Value* other) {
+	if (other->mType == Type::INTEGER) {
+		mValue = mValue <= ((IntegerValue*)other)->mValue;
+		isBool = true;
+		delete other;
+		return this;
+	}
+}
+
 Value* IntegerValue::negate() {
 	mValue *= -1;
+	return this;
+}
+
+Value* IntegerValue::boolean_not() {
+	isBool = true;
+	mValue = !mValue;
 	return this;
 }
 
@@ -55,5 +116,8 @@ Value* IntegerValue::clone() {
 }
 
 void IntegerValue::print() {
-	printf("%d", mValue);
+	if (isBool)
+		printf("%s", mValue == 0 ? "false" : "true");
+	else
+		printf("%d", mValue);
 }

@@ -16,7 +16,15 @@ public:
 	virtual Value* mul(Value* other) = 0;
 	virtual Value* div(Value* other) = 0;
 	virtual Value* s_pow(Value* other) = 0;
+	virtual Value* comp_eq_eq(Value* other) = 0;
+	virtual Value* comp_not_eq(Value* other) = 0;
+	virtual Value* comp_less(Value* other) = 0;
+	virtual Value* comp_greater(Value* other) = 0;
+	virtual Value* comp_less_eq(Value* other) = 0;
+	virtual Value* comp_greater_eq(Value* other) = 0;
+
 	virtual Value* negate() = 0;
+	virtual Value* boolean_not() = 0;
 
 	virtual Value* clone() = 0;
 
@@ -26,6 +34,7 @@ public:
 class IntegerValue : public Value {
 public:
 	int mValue;
+	bool isBool = false;
 	IntegerValue(int value);
 
 	Value* add(Value* other);
@@ -33,7 +42,14 @@ public:
 	Value* mul(Value* other);
 	Value* div(Value* other);
 	Value* s_pow(Value* other);
+	Value* comp_eq_eq(Value* other);
+	Value* comp_not_eq(Value* other);
+	Value* comp_less(Value* other);
+	Value* comp_greater(Value* other);
+	Value* comp_less_eq(Value* other);
+	Value* comp_greater_eq(Value* other);
 	Value* negate();
+	Value* boolean_not();
 	Value* clone();
 
 	void print();

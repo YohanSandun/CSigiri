@@ -40,6 +40,18 @@ Value* Interpreter::visitBinary(BinaryNode* node) {
 		return left->div(right);
 	case Token::Type::POWER:
 		return left->s_pow(right);
+	case Token::Type::EQUALS_EQUALS:
+		return left->comp_eq_eq(right);
+	case Token::Type::NOT_EQUALS:
+		return left->comp_not_eq(right);
+	case Token::Type::LESS_THAN:
+		return left->comp_less(right);
+	case Token::Type::GREATER_THAN:
+		return left->comp_greater(right);
+	case Token::Type::LESS_EQ:
+		return left->comp_less_eq(right);
+	case Token::Type::GREATER_EQ:
+		return left->comp_greater_eq(right);
 	default:
 		break;
 	}
@@ -50,6 +62,9 @@ Value* Interpreter::visitUnary(UnaryNode* node) {
 	Value* value = visit(node->mNode);
 	if (node->mOpType == Token::Type::MINUS) {
 		return value->negate();
+	}
+	else if (node->mOpType == Token::Type::BOOLEAN_NOT) {
+		return value->boolean_not();
 	}
 	return value;
 }

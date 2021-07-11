@@ -57,13 +57,63 @@ Node* Parser::block(Token::Type end) {
 }
 
 Node* Parser::expr() {
-	Node* left = term();
+	Node* left = compare();
 	while (currentToken->mType == Token::Type::PLUS || currentToken->mType == Token::Type::MINUS)
 	{
 		Token::Type type = currentToken->mType;
 		advance();
-		Node* right = term();
+		Node* right = compare();
 		left = new BinaryNode(left, type, right);
+	}
+	return left;
+}
+
+Node* Parser::compare() {
+	if (currentToken->mType == Token::Type::BOOLEAN_NOT) {
+		advance();
+		return new UnaryNode(Token::Type::BOOLEAN_NOT, compare());
+	}
+	Node* left = bitwise_or();
+	while (currentToken->mType == Token::Type::EQUALS_EQUALS || currentToken->mType == Token::Type::NOT_EQUALS ||
+		currentToken->mType == Token::Type::GREATER_THAN || currentToken->mType == Token::Type::LESS_THAN ||
+		currentToken->mType == Token::Type::GREATER_EQ || currentToken->mType == Token::Type::LESS_EQ) {
+		Token::Type type = currentToken->mType;
+		advance();
+		Node* right = bitwise_or();
+		left = new BinaryNode(left, type, right);
+	}
+	return left;
+}
+
+Node* Parser::bitwise_or() {
+	Node* left = bitwise_xor();
+	while (currentToken->mType == Token::Type::BITWISE_OR)
+	{
+		advance();
+		Node* right = bitwise_xor();
+		left = new BinaryNode(left, Token::Type::BITWISE_OR, right);
+	}
+	return left;
+}
+
+Node* Parser::bitwise_xor() {
+	Node* left = bitwise_and();
+	while (currentToken->mType == Token::Type::BITWISE_XOR)
+	{
+		advance();
+		Node* right = bitwise_and();
+		left = new BinaryNode(left, Token::Type::BITWISE_XOR, right);
+	}
+	return left;
+}
+
+Node* Parser::bitwise_and() {
+	Node* left = term(); //todo shift
+	while (currentToken->mType == Token::Type::BITWISE_AND)
+	{
+		advance();
+		Node* right = term(); //todo shift
+		left = new BinaryNode(left, Token::Type::BITWISE_AND, right);
 	}
 	return left;
 }

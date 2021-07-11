@@ -75,9 +75,78 @@ List<Token*>* Lexer::generateTokens() {
 			tokens->add(new Token(Token::Type::NEWLINE));
 			advance();
 		}
-		else if (mCurrentChar == '=') {
-			tokens->add(new Token(Token::Type::EQUALS));
+		else if (mCurrentChar == '^') {
+			tokens->add(new Token(Token::Type::BITWISE_XOR));
 			advance();
+		}
+		else if (mCurrentChar == '~') {
+			tokens->add(new Token(Token::Type::BITWISE_COMPLEMENT));
+			advance();
+		}
+		else if (mCurrentChar == '=') {
+			if (peek(1) == '=') {
+				tokens->add(new Token(Token::Type::EQUALS_EQUALS));
+				advance();
+				advance();
+			} else {
+				tokens->add(new Token(Token::Type::EQUALS));
+				advance();
+			}
+		}
+		else if (mCurrentChar == '<') {
+			if (peek(1) == '=') {
+				tokens->add(new Token(Token::Type::LESS_EQ));
+				advance();
+				advance();
+			}
+			else {
+				tokens->add(new Token(Token::Type::LESS_THAN));
+				advance();
+			}
+		}
+		else if (mCurrentChar == '>') {
+			if (peek(1) == '=') {
+				tokens->add(new Token(Token::Type::GREATER_EQ));
+				advance();
+				advance();
+			}
+			else {
+				tokens->add(new Token(Token::Type::GREATER_THAN));
+				advance();
+			}
+		}
+		else if (mCurrentChar == '!') {
+			if (peek(1) == '=') {
+				tokens->add(new Token(Token::Type::NOT_EQUALS));
+				advance();
+				advance();
+			}
+			else {
+				tokens->add(new Token(Token::Type::BOOLEAN_NOT));
+				advance();
+			}
+		}
+		else if (mCurrentChar == '&') {
+			if (peek(1) == '&') {
+				tokens->add(new Token(Token::Type::BOOLEAN_AND));
+				advance();
+				advance();
+			}
+			else {
+				tokens->add(new Token(Token::Type::BITWISE_AND));
+				advance();
+			}
+		}
+		else if (mCurrentChar == '|') {
+			if (peek(1) == '|') {
+				tokens->add(new Token(Token::Type::BOOLEAN_OR));
+				advance();
+				advance();
+			}
+			else {
+				tokens->add(new Token(Token::Type::BITWISE_OR));
+				advance();
+			}
 		}
 		else if (mCurrentChar >= '0' && mCurrentChar <= '9') {
 			tokens->add(makeNumber());
