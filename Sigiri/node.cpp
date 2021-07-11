@@ -9,6 +9,8 @@ void Node::toString() {
 
 }
 
+//-------------------------------------------------------------------------------------------------------------
+
 IntegerNode::IntegerNode(int value) : Node(Type::INTEGER) {
 	mValue = value;
 }
@@ -25,6 +27,7 @@ void FloatNode::toString() {
 	printf("%f", mValue);
 }
 
+//-------------------------------------------------------------------------------------------------------------
 
 UnaryNode::UnaryNode(Token::Type type, Node* node) : Node(Type::UNARY) {
 	mOpType = type;
@@ -44,6 +47,7 @@ void UnaryNode::toString() {
 	printf(")");
 }
 
+//-------------------------------------------------------------------------------------------------------------
 
 BinaryNode::BinaryNode(Node* left, Token::Type type, Node* right) : Node(Type::BINARY) {
 	mLeft = left;
@@ -75,6 +79,7 @@ BinaryNode::~BinaryNode() {
 	delete mRight;
 }
 
+//-------------------------------------------------------------------------------------------------------------
 
 VarAssign::VarAssign(int id, Node* node) : Node(Type::VAR_ASSIGN) {
 	mId = id;
@@ -90,6 +95,8 @@ void VarAssign::toString() {
 	mNode->toString();
 }
 
+//-------------------------------------------------------------------------------------------------------------
+
 VarAccess::VarAccess(int id) : Node(Type::VAR_ACCESS) {
 	mId = id;
 }
@@ -100,4 +107,25 @@ VarAccess::~VarAccess() {
 
 void VarAccess::toString() {
 	printf("%d", mId);
+}
+
+//-------------------------------------------------------------------------------------------------------------
+
+Block::Block(List<Node*>* statements) : Node(Type::BLOCK) {
+	this->mStatements = statements;
+}
+
+Block::~Block() {
+	delete mStatements;
+}
+
+void Block::toString() {
+	int count = mStatements->getCount();
+	printf("{\n");
+	for (size_t i = 0; i < count; i++)
+	{
+		printf("\t");
+		mStatements->get(i)->toString();
+	}
+	printf("}\n");
 }

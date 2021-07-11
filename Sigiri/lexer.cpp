@@ -30,9 +30,10 @@ List<Token*>* Lexer::generateTokens() {
 		mColumn++;
 		if (mCurrentChar == ' ' || mCurrentChar == '\t')
 			advance();
-		else if (mCurrentChar == '\n' || mCurrentChar == '\r') {
+		else if (mCurrentChar == '\n' || mCurrentChar == '\r') { // todo
 			mLine++;
 			mColumn = 0;
+			tokens->add(new Token(Token::Type::NEWLINE));
 			advance();
 		}
 		else if (mCurrentChar == '+') {
@@ -71,7 +72,7 @@ List<Token*>* Lexer::generateTokens() {
 			advance();
 		}
 		else if (mCurrentChar == ';') {
-			tokens->add(new Token(Token::Type::SEMI_COLON));
+			tokens->add(new Token(Token::Type::NEWLINE));
 			advance();
 		}
 		else if (mCurrentChar == '=') {
@@ -86,6 +87,7 @@ List<Token*>* Lexer::generateTokens() {
 			tokens->add(makeIdentifier());
 		}
 	}
+	tokens->add(new Token(Token::Type::EOF_TOKEN));
 	return tokens;
 }
 

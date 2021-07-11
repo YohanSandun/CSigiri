@@ -36,8 +36,24 @@ void Parser::advance() {
 		currentToken = mTokens->get(mIndex);
 }
 
+void Parser::skipNewLines() {
+	while (currentToken->mType == Token::Type::NEWLINE)
+		advance();
+}
+
 Node* Parser::parse() {
-	return expr();
+	return block(Token::Type::EOF_TOKEN);
+}
+
+Node* Parser::block(Token::Type end) {
+	List<Node*>* statements = new List<Node*>();
+	while (true) {
+		skipNewLines();
+		if (currentToken->mType == end)
+			break;
+		statements->add(expr());
+	}
+	return new Block(statements);
 }
 
 Node* Parser::expr() {

@@ -14,11 +14,14 @@ private:
 
 	int getSymbolIndex(String* name);
 
+	Node* block(Token::Type end = Token::Type::R_BRACE);
 	Node* expr();
 	Node* term();
 	Node* power();
 	Node* factor();
 	Node* atom();
+	
+	void skipNewLines();
 
 public:
 	Parser();

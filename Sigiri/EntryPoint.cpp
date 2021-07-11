@@ -24,7 +24,8 @@ int main() {
         //ast->toString();
         Value* value = interpreter.visit(ast);
         
-        value->print();
+        if (value != NULL && value != nullptr)
+            value->print();
       
         //delete value;
         delete ast;

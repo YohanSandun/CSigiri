@@ -15,7 +15,8 @@ Value* Interpreter::visit(Node* node) {
 		return visitVarAccess((VarAccess*)node);
 	else if (node->mType == Node::Type::VAR_ASSIGN)
 		return visitVarAssign((VarAssign*)node);
-
+	else if (node->mType == Node::Type::BLOCK)
+		return visitBlock((Block*)node);
 }
 
 Value* Interpreter::visitInteger(IntegerNode* node) {
@@ -68,4 +69,15 @@ Value* Interpreter::visitVarAssign(VarAssign* node) {
 	else 
 		mSymbols->add(value);
 	return value;
+}
+
+Value* Interpreter::visitBlock(Block* node) {
+	int count = node->mStatements->getCount();
+	for (size_t i = 0; i < count; i++)
+	{
+		if (i == count-1)
+			return visit(node->mStatements->get(i));
+		visit(node->mStatements->get(i));
+	}
+	return nullptr;
 }

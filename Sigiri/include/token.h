@@ -7,6 +7,8 @@ struct Token {
 public:
 	String* mValue = nullptr;
 	enum class Type {
+		NEWLINE,
+
 		INT_NUMBER,
 		FLOAT_NUMBER,
 
@@ -37,6 +39,8 @@ public:
 		LESS_THAN,
 		GREATER_EQ,
 		LESS_EQ,
+
+		EOF_TOKEN
 	} mType;
 
 	uint mLine;

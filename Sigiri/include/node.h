@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../libs/list.cpp"
 #include "token.h"
 
 class Node {
@@ -11,7 +12,8 @@ public:
 		UNARY,
 		BINARY,
 		VAR_ASSIGN,
-		VAR_ACCESS
+		VAR_ACCESS,
+		BLOCK
 	} mType;
 	Node(Type type);
 	virtual void toString();
@@ -63,5 +65,13 @@ public:
 	~VarAccess();
 	VarAccess(int id);
 	int mId;
+	void toString();
+};
+
+class Block : public Node {
+public:
+	~Block();
+	Block(List<Node*>* statements);
+	List<Node*>* mStatements;
 	void toString();
 };

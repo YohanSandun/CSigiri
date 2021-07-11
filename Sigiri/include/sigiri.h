@@ -18,4 +18,5 @@ private:
 	Value* visitUnary(UnaryNode* node);
 	Value* visitVarAccess(VarAccess* node);
 	Value* visitVarAssign(VarAssign* node);
+	Value* visitBlock(Block* node);
 };
