@@ -59,12 +59,24 @@ List<Token*>* Lexer::generateTokens() {
 			tokens->add(new Token(Token::Type::FW_SLASH));
 			advance();
 		}
+		else if (mCurrentChar == '%') {
+			tokens->add(new Token(Token::Type::MODULUS)); // todo
+			advance();
+		}
 		else if (mCurrentChar == '(') {
 			tokens->add(new Token(Token::Type::L_PAREN));
 			advance();
 		}
 		else if (mCurrentChar == ')') {
 			tokens->add(new Token(Token::Type::R_PAREN));
+			advance();
+		}
+		else if (mCurrentChar == '{') {
+			tokens->add(new Token(Token::Type::L_BRACE));
+			advance();
+		}
+		else if (mCurrentChar == '}') {
+			tokens->add(new Token(Token::Type::R_BRACE));
 			advance();
 		}
 		else if (mCurrentChar == ':') {
@@ -81,6 +93,10 @@ List<Token*>* Lexer::generateTokens() {
 		}
 		else if (mCurrentChar == '~') {
 			tokens->add(new Token(Token::Type::BITWISE_COMPLEMENT));
+			advance();
+		}
+		else if (mCurrentChar == ',') {
+			tokens->add(new Token(Token::Type::COMMA));
 			advance();
 		}
 		else if (mCurrentChar == '=') {
@@ -194,9 +210,30 @@ Token* Lexer::makeIdentifier() {
 		id->append(mCurrentChar);
 		advance();
 	}
-	if (id->compare("int")) {
-		return new Token(Token::Type::KEYWORD_INT);
+
+	if (id->compare("var")) {
 		delete id;
+		return new Token(Token::Type::KEYWORD_VAR);
+	}
+	else if (id->compare("int")) {
+		delete id;
+		return new Token(Token::Type::KEYWORD_INT);
+	}
+	else if (id->compare("for")) {
+		delete id;
+		return new Token(Token::Type::KEYWORD_FOR);
+	}
+	else if (id->compare("to")) {
+		delete id;
+		return new Token(Token::Type::KEYWORD_TO);
+	}
+	else if (id->compare("step")) {
+		delete id;
+		return new Token(Token::Type::KEYWORD_STEP);
+	}
+	else if (id->compare("method")) {
+		delete id;
+		return new Token(Token::Type::KEYWORD_METHOD);
 	}
 	return new Token(id, Token::Type::IDENTIFIER);
 }

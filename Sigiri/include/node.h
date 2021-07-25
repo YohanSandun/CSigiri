@@ -13,7 +13,10 @@ public:
 		BINARY,
 		VAR_ASSIGN,
 		VAR_ACCESS,
-		BLOCK
+		BLOCK,
+		FOR_LOOP,
+		METHOD,
+		CALL
 	} mType;
 	Node(Type type);
 	virtual ~Node();
@@ -57,17 +60,17 @@ public:
 class VarAssign : public Node {
 public:
 	~VarAssign();
-	VarAssign(int id, Node* node);
+	VarAssign(String* id, Node* node);
 	Node* mNode;
-	int mId;
+	String* mId;
 	void toString();
 };
 
 class VarAccess : public Node {
 public:
 	~VarAccess();
-	VarAccess(int id);
-	int mId;
+	VarAccess(String* id);
+	String* mId;
 	void toString();
 };
 
@@ -78,3 +81,29 @@ public:
 	List<Node*>* mStatements;
 	void toString();
 };
+
+class ForLoop : public Node {
+public:
+	~ForLoop();
+	ForLoop(String* id, Node* start, Node* to, Node* step, Node* body);
+	Node* mStart, * mTo, * mStep, * mBody; 
+	String* mId;
+};
+
+class Method : public Node {
+public:
+	~Method();
+	Method(String* id, Node* body, List<String*>* params);
+	List<String*>* mParams;
+	String* mId;
+	Node* mBody;
+};
+
+class Call : public Node {
+public:
+	Call(Node* base, List<Node*>* args);
+	~Call();
+	Node* mBase;
+	List<Node*>* mArgs;
+};
+

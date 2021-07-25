@@ -93,7 +93,7 @@ BinaryNode::~BinaryNode() {
 
 //-------------------------------------------------------------------------------------------------------------
 
-VarAssign::VarAssign(int id, Node* node) : Node(Type::VAR_ASSIGN) {
+VarAssign::VarAssign(String* id, Node* node) : Node(Type::VAR_ASSIGN) {
 	mId = id;
 	mNode = node;
 }
@@ -109,7 +109,7 @@ void VarAssign::toString() {
 
 //-------------------------------------------------------------------------------------------------------------
 
-VarAccess::VarAccess(int id) : Node(Type::VAR_ACCESS) {
+VarAccess::VarAccess(String* id) : Node(Type::VAR_ACCESS) {
 	mId = id;
 }
 
@@ -139,4 +139,48 @@ void Block::toString() {
 		mStatements->get(i)->toString();
 	}
 	printf("}\n");
+}
+
+//-------------------------------------------------------------------------------------------------------------
+
+ForLoop::ForLoop(String* id, Node* start, Node* to, Node* step, Node* body) : Node(Type::FOR_LOOP) {
+	mId = id;
+	mStart = start;
+	mTo = to;
+	mStep = step;
+	mBody = body;
+}
+
+ForLoop::~ForLoop() {
+	delete mStart;
+	delete mTo;
+	if (mStep != nullptr)
+		delete mStep;
+	delete mBody;
+}
+
+//-------------------------------------------------------------------------------------------------------------
+
+Method::Method(String* id, Node* body, List<String*>* params) : Node(Type::METHOD) {
+	mId = id;
+	mParams = params;
+	mBody = body;
+}
+
+Method::~Method() {
+	delete mParams;
+	delete mBody;
+}
+
+//-------------------------------------------------------------------------------------------------------------
+
+
+Call::Call(Node* base, List<Node*>* args) : Node(Type::CALL) {
+	mBase = base;
+	mArgs = args;
+}
+
+Call::~Call() {
+	delete mBase;
+	delete mArgs;
 }

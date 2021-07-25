@@ -1,38 +1,41 @@
 #pragma once
 
-#include "../libs/list.cpp"
 #include "token.h"
 #include "node.h"
+#include "symbol_table.h"
 
 class Parser {
 private:
 	List<Token*>* mTokens = nullptr;
-	List<String*>* mSymbols;
 	void advance();
 	int mIndex = -1;
 	Token* currentToken;
 
-	int getSymbolIndex(String* name);
+	Node* block(SymbolsParser* symbols, Token::Type end = Token::Type::R_BRACE);
+	Node* expr(SymbolsParser* symbols);
+	Node* compare(SymbolsParser* symbols);
+	Node* bitwise_or(SymbolsParser* symbols);
+	Node* bitwise_xor(SymbolsParser* symbols);
+	Node* bitwise_and(SymbolsParser* symbols);
+	Node* shift(SymbolsParser* symbols);
+	Node* arithmetic(SymbolsParser* symbols);
+	Node* term(SymbolsParser* symbols);
+	Node* power(SymbolsParser* symbols);
+	Node* factor(SymbolsParser* symbols);
+	Node* complement(SymbolsParser* symbols);
+	Node* call(SymbolsParser* symbols);
+	Node* atom(SymbolsParser* symbols);
 
-	Node* block(Token::Type end = Token::Type::R_BRACE);
-	Node* expr();
-	Node* compare();
-	Node* bitwise_or();
-	Node* bitwise_xor();
-	Node* bitwise_and();
-	Node* shift();
-	Node* arithmetic();
-	Node* term();
-	Node* power();
-	Node* factor();
-	Node* complement();
-	Node* atom();
-	
+	Node* for_expr(SymbolsParser* symbols);
+	Node* method_expr(SymbolsParser* symbols);
+
 	void skipNewLines();
 
 public:
+	//List<String*>* mSymbols;
+	String* mError = nullptr;
 	Parser();
-	void setTokens(List<Token*>* tokens);
 	~Parser();
-	Node* parse();
+	void setTokens(List<Token*>* tokens);
+	Node* parse(SymbolsParser* symbols);
 };

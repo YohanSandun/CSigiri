@@ -3,7 +3,7 @@
 #include "declarations.h"
 
 uint strLen(const char* ptr);
-int strCmp(const char* s1, const char* s2);
+bool strCmp(const char* s1, const char* s2);
 
 struct String
 {

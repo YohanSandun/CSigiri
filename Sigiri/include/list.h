@@ -6,8 +6,10 @@ template <class T>
 struct List {
 public:
     List();
+    List(int count);
     ~List();
     void add(T item);
+    void add(int index, T item);
     uint getCount();
     T get(uint at);
     uint mSize;

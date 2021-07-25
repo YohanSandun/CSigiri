@@ -8,6 +8,12 @@ List<T>::List() {
 }
 
 template <class T>
+List<T>::List(int count) {
+	mPtr = new T[count];
+	mSize = count;
+}
+
+template <class T>
 List<T>::~List() {
 	for (int i = 0; i <= mCurrentIndex; i++)
 		if (mPtr[i] != nullptr)
@@ -19,6 +25,12 @@ template <class T>
 void List<T>::add(T item) {
 	ensureMemory();
 	mPtr[mCurrentIndex] = item;
+}
+
+template <class T>
+void List<T>::add(int index, T item) {
+	//ensureMemory();
+	mPtr[index] = item;
 }
 
 template <class T>

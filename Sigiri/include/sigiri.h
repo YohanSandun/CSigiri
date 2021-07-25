@@ -2,21 +2,26 @@
 
 #include "value.h"
 #include "node.h"
+#include "symbol_table.h"
 #include "../libs/list.cpp"
+#include "context.h"
 
 class Interpreter {
 public:
-	Value* visit(Node* node);
+	Value* visit(Node* node, SymbolsRuntime* symbols);
 	~Interpreter();
 
 private:
 
 	List<Value*>* mSymbols = new List<Value*>();
 
-	Value* visitInteger(IntegerNode* node);
-	Value* visitBinary(BinaryNode* node);
-	Value* visitUnary(UnaryNode* node);
-	Value* visitVarAccess(VarAccess* node);
-	Value* visitVarAssign(VarAssign* node);
-	Value* visitBlock(Block* node);
+	Value* visitInteger(IntegerNode* node, SymbolsRuntime* symbols);
+	Value* visitBinary(BinaryNode* node, SymbolsRuntime* symbols);
+	Value* visitUnary(UnaryNode* node, SymbolsRuntime* symbols);
+	Value* visitVarAccess(VarAccess* node, SymbolsRuntime* symbols);
+	Value* visitVarAssign(VarAssign* node, SymbolsRuntime* symbols);
+	Value* visitBlock(Block* node, SymbolsRuntime* symbols);
+	Value* visitFor(ForLoop* node, SymbolsRuntime* symbols);
+	Value* visitMethod(Method* node, SymbolsRuntime* symbols);
+	Value* visitCall(Call* node, SymbolsRuntime* symbols);
 };

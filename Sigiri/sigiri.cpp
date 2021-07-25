@@ -4,29 +4,35 @@ Interpreter::~Interpreter() {
 	//delete mSymbols;
 }
 
-Value* Interpreter::visit(Node* node) {
+Value* Interpreter::visit(Node* node, SymbolsRuntime* symbols) {
 	if (node->mType == Node::Type::INTEGER)
-		return visitInteger((IntegerNode*)node);
+		return visitInteger((IntegerNode*)node, symbols);
 	else if (node->mType == Node::Type::BINARY)
-		return visitBinary((BinaryNode*)node);
+		return visitBinary((BinaryNode*)node, symbols);
 	else if (node->mType == Node::Type::UNARY)
-		return visitUnary((UnaryNode*)node);
+		return visitUnary((UnaryNode*)node, symbols);
 	else if (node->mType == Node::Type::VAR_ACCESS)
-		return visitVarAccess((VarAccess*)node);
+		return visitVarAccess((VarAccess*)node, symbols);
 	else if (node->mType == Node::Type::VAR_ASSIGN)
-		return visitVarAssign((VarAssign*)node);
+		return visitVarAssign((VarAssign*)node, symbols);
 	else if (node->mType == Node::Type::BLOCK)
-		return visitBlock((Block*)node);
+		return visitBlock((Block*)node, symbols);
+	else if (node->mType == Node::Type::FOR_LOOP)
+		return visitFor((ForLoop*)node, symbols);
+	else if (node->mType == Node::Type::METHOD)
+		return visitMethod((Method*)node, symbols);
+	else if (node->mType == Node::Type::CALL)
+		return visitCall((Call*)node, symbols);
 }
 
-Value* Interpreter::visitInteger(IntegerNode* node) {
+Value* Interpreter::visitInteger(IntegerNode* node, SymbolsRuntime* symbols) {
 	Value* value = new IntegerValue(node->mValue);
 	return value;
 }
 
-Value* Interpreter::visitBinary(BinaryNode* node) {
-	Value* left = visit(node->mLeft);
-	Value* right = visit(node->mRight);
+Value* Interpreter::visitBinary(BinaryNode* node, SymbolsRuntime* symbols) {
+	Value* left = visit(node->mLeft, symbols);
+	Value* right = visit(node->mRight, symbols);
 
 	switch (node->mOpType)
 	{
@@ -73,8 +79,8 @@ Value* Interpreter::visitBinary(BinaryNode* node) {
 	return nullptr;
 }
 
-Value* Interpreter::visitUnary(UnaryNode* node) {
-	Value* value = visit(node->mNode);
+Value* Interpreter::visitUnary(UnaryNode* node, SymbolsRuntime* symbols) {
+	Value* value = visit(node->mNode, symbols);
 	if (node->mOpType == Token::Type::MINUS) {
 		return value->negate();
 	}
@@ -87,30 +93,77 @@ Value* Interpreter::visitUnary(UnaryNode* node) {
 	return value;
 }
 
-Value* Interpreter::visitVarAccess(VarAccess* node) {
-	if (mSymbols->getCount() > node->mId) 
-		return mSymbols->get(node->mId)->clone();
+Value* Interpreter::visitVarAccess(VarAccess* node, SymbolsRuntime* symbols) {
+	return symbols->getSymbol(node->mId)->clone();
 }
 
-Value* Interpreter::visitVarAssign(VarAssign* node) {
-	Value* value = visit(node->mNode);
-	if (mSymbols->getCount() > node->mId)
-	{
-		delete mSymbols->get(node->mId);
-		mSymbols->mPtr[node->mId] = value;
-	}
-	else 
-		mSymbols->add(value);
+Value* Interpreter::visitVarAssign(VarAssign* node, SymbolsRuntime* symbols) {
+	Value* value = visit(node->mNode, symbols);
+	symbols->setSymbol(node->mId, value);
 	return value;
 }
 
-Value* Interpreter::visitBlock(Block* node) {
+Value* Interpreter::visitBlock(Block* node, SymbolsRuntime* symbols) {
 	int count = node->mStatements->getCount();
 	for (size_t i = 0; i < count; i++)
 	{
 		if (i == count-1)
-			return visit(node->mStatements->get(i));
-		visit(node->mStatements->get(i));
+			return visit(node->mStatements->get(i), symbols);
+		visit(node->mStatements->get(i), symbols);
 	}
+	return nullptr;
+}
+
+Value* Interpreter::visitFor(ForLoop* node, SymbolsRuntime* symbols) {
+	int start = 0, to = 0;
+	Value* v_start = visit(node->mStart, symbols);
+	if (v_start->mType == Value::Type::INTEGER)
+		start = ((IntegerValue*)v_start)->mValue;
+	//else error
+	Value* v_to = visit(node->mTo, symbols);
+	if (v_to->mType == Value::Type::INTEGER)
+		to = ((IntegerValue*)v_to)->mValue;
+	Value* v_step = nullptr;
+
+	int step = 1;
+	if (node->mStep != nullptr) {
+		Value* v_step = visit(node->mStep, symbols);
+		if (v_step->mType == Value::Type::INTEGER)
+			step = ((IntegerValue*)v_step)->mValue;
+		delete v_step;
+	}
+		
+	symbols->setSymbol(node->mId, v_start);
+
+	IntegerValue* v_start_int = (IntegerValue*)v_start;
+
+	if (start < to) {
+		while (start < to)
+		{
+			visit(node->mBody, symbols);
+			start += step;
+			v_start_int->mValue = start;
+		}
+	}
+	else {
+		while (start > to)
+		{
+			visit(node->mBody, symbols);
+			start += step;
+			v_start_int->mValue = start;
+		}
+	}
+
+	delete v_to;
+
+	return nullptr;
+}
+
+Value* Interpreter::visitMethod(Method* node, SymbolsRuntime* symbols) {
+	MethodValue* value = new MethodValue(node->mId, node->mBody);
+	return value;
+}
+
+Value* Interpreter::visitCall(Call* node, SymbolsRuntime* symbols) {
 	return nullptr;
 }
