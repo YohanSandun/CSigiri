@@ -15,9 +15,11 @@ List<T>::List(int count) {
 
 template <class T>
 List<T>::~List() {
-	for (int i = 0; i <= mCurrentIndex; i++)
-		if (mPtr[i] != nullptr)
-			delete mPtr[i];
+	if (!keepItemsAlive) {
+		for (int i = 0; i <= mCurrentIndex; i++)
+			if (mPtr[i] != nullptr)
+				delete mPtr[i];
+	}
 	delete[] mPtr;
 }
 

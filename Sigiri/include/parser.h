@@ -28,6 +28,7 @@ private:
 
 	Node* for_expr(SymbolsParser* symbols);
 	Node* method_expr(SymbolsParser* symbols);
+	Node* return_expr(SymbolsParser* symbols);
 
 	void skipNewLines();
 

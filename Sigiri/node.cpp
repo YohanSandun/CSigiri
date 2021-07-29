@@ -184,3 +184,15 @@ Call::~Call() {
 	delete mBase;
 	delete mArgs;
 }
+
+//-------------------------------------------------------------------------------------------------------------
+
+
+Return::Return(Node* node) : Node(Type::RETURN) {
+	mNode = node;
+}
+
+Return::~Return() {
+	delete mNode;
+}
+

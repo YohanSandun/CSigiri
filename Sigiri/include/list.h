@@ -14,6 +14,7 @@ public:
     T get(uint at);
     uint mSize;
     T* mPtr;
+    bool keepItemsAlive = false;
 
 private:
     void ensureMemory();

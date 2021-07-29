@@ -4,6 +4,10 @@ IntegerValue::IntegerValue(int value) : Value(Type::INTEGER) {
 	mValue = value;
 }
 
+IntegerValue::~IntegerValue() {
+	//printf("int %d Destroyed!\n", mValue);
+}
+
 Value* IntegerValue::add(Value* other) {
 	if (other->mType == Type::INTEGER) {
 		mValue += ((IntegerValue*)other)->mValue;

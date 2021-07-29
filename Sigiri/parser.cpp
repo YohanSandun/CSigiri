@@ -379,6 +379,8 @@ Node* Parser::atom(SymbolsParser* symbols) {
 		return for_expr(symbols);
 	else if (token->mType == Token::Type::KEYWORD_METHOD)
 		return method_expr(symbols);
+	else if (token->mType == Token::Type::KEYWORD_RETURN)
+		return return_expr(symbols);
 	mError = new String("Expected something!");
 	return nullptr;
 }
@@ -534,4 +536,12 @@ Node* Parser::for_expr(SymbolsParser* symbols) {
 	}
 
 	return nullptr;
+}
+
+Node* Parser::return_expr(SymbolsParser* symbols) {
+	advance();
+	Node* body = expr(symbols);
+	if (mError != nullptr)
+		return nullptr;
+	return new Return(body);
 }

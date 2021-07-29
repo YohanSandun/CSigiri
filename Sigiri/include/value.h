@@ -14,7 +14,7 @@ public:
 	} mType;
 	Value(Type type);
 	Value();
-
+	virtual ~Value();
 	virtual Value* add(Value* other);
 	virtual Value* sub(Value* other);
 	virtual Value* mul(Value* other);
@@ -44,6 +44,10 @@ public:
 	virtual Value* clone();
 
 	virtual void print();
+
+	int mRefCount = 1;
+	void incRefCount();
+	void decRefCount();
 };
 
 class IntegerValue : public Value {
@@ -51,6 +55,7 @@ public:
 	int mValue;
 	bool isBool = false;
 	IntegerValue(int value);
+	~IntegerValue();
 
 	Value* add(Value* other);
 	Value* sub(Value* other);
@@ -86,7 +91,8 @@ class MethodValue : public Value {
 public:
 	String* mName;
 	Node* mBody;
-	MethodValue(String* name, Node* body);
+	List<String*>* mParams;
+	MethodValue(String* name, Node* body, List<String*>* params);
 	~MethodValue();
 
 	Value* add(Value* other);

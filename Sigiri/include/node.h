@@ -16,7 +16,8 @@ public:
 		BLOCK,
 		FOR_LOOP,
 		METHOD,
-		CALL
+		CALL,
+		RETURN
 	} mType;
 	Node(Type type);
 	virtual ~Node();
@@ -105,5 +106,12 @@ public:
 	~Call();
 	Node* mBase;
 	List<Node*>* mArgs;
+};
+
+class Return : public Node {
+public:
+	Return(Node* node);
+	~Return();
+	Node* mNode;
 };
 

@@ -1,11 +1,14 @@
 #include "../include/value.h"
 
-MethodValue::MethodValue(String* name, Node* body) : Value(Type::METHOD) {
+MethodValue::MethodValue(String* name, Node* body, List<String*>* params) : Value(Type::METHOD) {
 	mBody = body;
 	mName = name;
+	mParams = params;
 }
 
 MethodValue::~MethodValue() {
+	printf("method '%s' Destroyed!\n", mName->mPtr);
+	delete mName;
 	delete mBody;
 }
 
@@ -98,5 +101,5 @@ Value* MethodValue::clone() {
 }
 
 void MethodValue::print() {
-	printf("VALUE");
+	printf("Method '%s'", mName->mPtr);
 }

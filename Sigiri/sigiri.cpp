@@ -23,6 +23,8 @@ Value* Interpreter::visit(Node* node, SymbolsRuntime* symbols) {
 		return visitMethod((Method*)node, symbols);
 	else if (node->mType == Node::Type::CALL)
 		return visitCall((Call*)node, symbols);
+	else if (node->mType == Node::Type::RETURN)
+		return vistiReturn((Return*)node, symbols);
 }
 
 Value* Interpreter::visitInteger(IntegerNode* node, SymbolsRuntime* symbols) {
@@ -94,10 +96,22 @@ Value* Interpreter::visitUnary(UnaryNode* node, SymbolsRuntime* symbols) {
 }
 
 Value* Interpreter::visitVarAccess(VarAccess* node, SymbolsRuntime* symbols) {
+	//printf("reading %s\n", node->mId->mPtr);
+
+	/*printf("----------------------------\n");
+
+	for (size_t i = 0; i < symbols->mSymbolCount; i++)
+	{
+		printf("%s\n", symbols->mSymbolNames->get(i)->mPtr);
+	}
+
+	printf("----------------------------\n");*/
+
 	return symbols->getSymbol(node->mId)->clone();
 }
 
 Value* Interpreter::visitVarAssign(VarAssign* node, SymbolsRuntime* symbols) {
+	//printf("setting %s\n", node->mId->mPtr);
 	Value* value = visit(node->mNode, symbols);
 	symbols->setSymbol(node->mId, value);
 	return value;
@@ -107,9 +121,16 @@ Value* Interpreter::visitBlock(Block* node, SymbolsRuntime* symbols) {
 	int count = node->mStatements->getCount();
 	for (size_t i = 0; i < count; i++)
 	{
-		if (i == count-1)
-			return visit(node->mStatements->get(i), symbols);
-		visit(node->mStatements->get(i), symbols);
+		if (node->mStatements->get(i)->mType != Node::Type::INTEGER 
+			&& node->mStatements->get(i)->mType != Node::Type::FLOAT
+			&& node->mStatements->get(i)->mType != Node::Type::BINARY
+			&& node->mStatements->get(i)->mType != Node::Type::UNARY /*todo strings*/
+			){
+			Value* value = visit(node->mStatements->get(i), symbols);
+			if (value != NULL)
+				if (node->mStatements->get(i)->mType != Node::Type::VAR_ASSIGN && node->mStatements->get(i)->mType != Node::Type::METHOD)
+					delete value;
+		}
 	}
 	return nullptr;
 }
@@ -160,10 +181,52 @@ Value* Interpreter::visitFor(ForLoop* node, SymbolsRuntime* symbols) {
 }
 
 Value* Interpreter::visitMethod(Method* node, SymbolsRuntime* symbols) {
-	MethodValue* value = new MethodValue(node->mId, node->mBody);
+	MethodValue* value = new MethodValue(node->mId, node->mBody, node->mParams);
+	symbols->setSymbol(node->mId, value);
 	return value;
 }
 
 Value* Interpreter::visitCall(Call* node, SymbolsRuntime* symbols) {
+
+	if (node->mBase->mType == Node::Type::VAR_ACCESS) {
+		VarAccess* var = (VarAccess*)node->mBase;
+		if (var->mId->compare("print")) {
+			Value* value = visit(node->mArgs->get(0), symbols);
+			if (value != nullptr) {
+				value->print();
+				delete value;
+			}
+			printf("\n");
+			return nullptr;
+		}
+	}
+
+	Value* methodValue = visit(node->mBase, symbols);
+	if (methodValue->mType == Value::Type::METHOD) {
+		MethodValue* method = (MethodValue*)methodValue;
+		int paramCount = method->mParams->getCount();
+		if (paramCount == node->mArgs->getCount()) {
+			SymbolsRuntime* newSymbols = new SymbolsRuntime(symbols);
+			for (size_t i = 0; i < paramCount; i++)
+				newSymbols->setSymbol(method->mParams->get(i), visit(node->mArgs->get(i), symbols));
+			visit(method->mBody, newSymbols);
+			Value* retVal = newSymbols->returnValue->clone();
+			delete newSymbols;
+			return retVal;
+		}
+		else {
+			// argument count mismatch error
+		}
+	}
+	else {
+		// method not found error
+	}
+	return nullptr;
+}
+
+Value* Interpreter::vistiReturn(Return* node, SymbolsRuntime* symbols) {
+	Value* value = visit(node->mNode, symbols);
+	symbols->mReturn = true;
+	symbols->returnValue = value;
 	return nullptr;
 }

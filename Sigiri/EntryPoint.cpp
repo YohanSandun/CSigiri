@@ -74,11 +74,12 @@ int main() {
             while (true) {
                 printf(">>> ");
                 char input[2];
-                //scanf("%s", input);
+                scanf("%s", input);
 
                 Value* value = interpreter.visit(ast, symbolsRt);
-                if (value != NULL)
-                    value->print();
+                if (value != NULL) {
+                    delete value;
+                }
 
                 printf("\n");
             }

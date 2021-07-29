@@ -24,4 +24,5 @@ private:
 	Value* visitFor(ForLoop* node, SymbolsRuntime* symbols);
 	Value* visitMethod(Method* node, SymbolsRuntime* symbols);
 	Value* visitCall(Call* node, SymbolsRuntime* symbols);
+	Value* vistiReturn(Return* node, SymbolsRuntime* symbols);
 };

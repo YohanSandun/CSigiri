@@ -80,7 +80,12 @@ String::String(uint size) {
 	*mPtr = '\0';
 }
 
+//#include <cstdio>
+
 String::~String() {
+	if (mPtr == nullptr)
+		return;
+	//printf("deleted %s\n", mPtr);
 	delete[] mPtr;
 }
 

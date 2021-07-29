@@ -235,5 +235,9 @@ Token* Lexer::makeIdentifier() {
 		delete id;
 		return new Token(Token::Type::KEYWORD_METHOD);
 	}
+	else if (id->compare("return")) {
+		delete id;
+		return new Token(Token::Type::KEYWORD_RETURN);
+	}
 	return new Token(id, Token::Type::IDENTIFIER);
 }

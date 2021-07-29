@@ -1,5 +1,19 @@
 #include "../include/value.h"
 
+void Value::incRefCount() {
+	mRefCount++;
+}
+
+void Value::decRefCount() {
+	mRefCount--;
+	if (mRefCount <= 0)
+		delete this;
+}
+
+Value::~Value() {
+	//printf("%d Destroyed!\n", mType);
+}
+
 Value::Value(Type type) {
 	mType = type;
 }
