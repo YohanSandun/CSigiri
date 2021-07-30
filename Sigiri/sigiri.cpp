@@ -116,7 +116,7 @@ Value* Interpreter::visitVarAssign(VarAssign* node, SymbolsRuntime* symbols) {
 	//printf("setting %s\n", node->mId->mPtr);
 	Value* value = visit(node->mNode, symbols);
 	symbols->setSymbol(node->mId, value);
-	return value;
+	return value->clone();
 }
 
 Value* Interpreter::visitBlock(Block* node, SymbolsRuntime* symbols) {
@@ -130,7 +130,7 @@ Value* Interpreter::visitBlock(Block* node, SymbolsRuntime* symbols) {
 			){
 			Value* value = visit(node->mStatements->get(i), symbols);
 			if (value != NULL)
-				if (node->mStatements->get(i)->mType != Node::Type::VAR_ASSIGN && node->mStatements->get(i)->mType != Node::Type::METHOD)
+				if (node->mStatements->get(i)->mType != Node::Type::METHOD)
 					delete value;
 		}
 		if (symbols->mReturn)
@@ -186,7 +186,8 @@ Value* Interpreter::visitFor(ForLoop* node, SymbolsRuntime* symbols) {
 
 Value* Interpreter::visitMethod(Method* node, SymbolsRuntime* symbols) {
 	MethodValue* value = new MethodValue(node->mId, node->mBody, node->mParams);
-	symbols->setSymbol(node->mId, value);
+	if (node->mId != nullptr)
+		symbols->setSymbol(node->mId, value);
 	return value;
 }
 
@@ -214,7 +215,9 @@ Value* Interpreter::visitCall(Call* node, SymbolsRuntime* symbols) {
 			for (size_t i = 0; i < paramCount; i++)
 				newSymbols->setSymbol(method->mParams->get(i), visit(node->mArgs->get(i), symbols));
 			visit(method->mBody, newSymbols);
-			Value* retVal = newSymbols->returnValue->clone();
+			Value* retVal = nullptr;
+			if (newSymbols->returnValue != nullptr)
+				retVal = newSymbols->returnValue->clone();
 			delete newSymbols;
 			return retVal;
 		}

@@ -7,7 +7,7 @@ MethodValue::MethodValue(String* name, Node* body, List<String*>* params) : Valu
 }
 
 MethodValue::~MethodValue() {
-	printf("method '%s' Destroyed!\n", mName->mPtr);
+	//printf("method '%s' Destroyed!\n", mName->mPtr);
 	delete mName;
 	delete mBody;
 }
@@ -101,7 +101,10 @@ Value* MethodValue::clone() {
 }
 
 void MethodValue::print() {
-	printf("Method '%s'", mName->mPtr);
+	if (mName == nullptr)
+		printf("Method '<anonymous>\n'");
+	else
+		printf("Method '%s'\n", mName->mPtr);
 }
 
 bool MethodValue::asBoolean() {

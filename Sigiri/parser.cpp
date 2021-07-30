@@ -371,10 +371,9 @@ Node* Parser::method_expr(SymbolsParser* symbols) {
 	advance(); // method keyword
 	Token* identifier = currentToken;
 	if (currentToken->mType != Token::Type::IDENTIFIER) {
-		mError = new String("Expected an identifier (method)");
-		return nullptr;
-	}
-	advance();
+		identifier = nullptr;
+	} else
+		advance();
 	if (currentToken->mType != Token::Type::L_PAREN) {
 		mError = new String("Expected '('");
 		return nullptr;
@@ -409,7 +408,7 @@ Node* Parser::method_expr(SymbolsParser* symbols) {
 		Node* body = expr(newSymbols);
 		if (mError != nullptr)
 			return nullptr;
-		return new Method(new String(identifier->mValue->mPtr), body, ids);
+		return new Method(identifier == nullptr ? nullptr : new String(identifier->mValue->mPtr), body, ids);
 	}
 	else {
 		skipNewLines();
@@ -421,7 +420,7 @@ Node* Parser::method_expr(SymbolsParser* symbols) {
 			advance(); //closing brace
 			if (mError != nullptr)
 				return nullptr;
-			return new Method(new String(identifier->mValue->mPtr), node, ids);
+			return new Method(identifier == nullptr ? nullptr : new String(identifier->mValue->mPtr), node, ids);
 		}
 		mError = new String("Expected ':' or '{'");
 		return nullptr;
