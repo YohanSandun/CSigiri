@@ -4,6 +4,11 @@ IntegerValue::IntegerValue(int value) : Value(Type::INTEGER) {
 	mValue = value;
 }
 
+IntegerValue::IntegerValue(int value, bool isBool) : Value(Type::INTEGER) {
+	mValue = value;
+	this->isBool = isBool;
+}
+
 IntegerValue::~IntegerValue() {
 	//printf("int %d Destroyed!\n", mValue);
 }
@@ -14,6 +19,11 @@ Value* IntegerValue::add(Value* other) {
 		delete other;
 		return this;
 	}
+	else if (other->mType == Type::FLOAT) {
+		((FloatValue*)other)->mValue += mValue;
+		delete this;
+		return other;
+	}
 }
 
 Value* IntegerValue::sub(Value* other) {
@@ -21,6 +31,13 @@ Value* IntegerValue::sub(Value* other) {
 		mValue -= ((IntegerValue*)other)->mValue;
 		delete other;
 		return this;
+	}
+	else if (other->mType == Type::FLOAT) {
+		FloatValue* floatValue = (FloatValue*)other;
+		double result = mValue - floatValue->mValue;
+		floatValue->mValue = result;
+		delete this;
+		return other;
 	}
 }
 
@@ -30,6 +47,11 @@ Value* IntegerValue::mul(Value* other) {
 		delete other;
 		return this;
 	}
+	else if (other->mType == Type::FLOAT) {
+		((FloatValue*)other)->mValue *= mValue;
+		delete this;
+		return other;
+	}
 }
 
 Value* IntegerValue::div(Value* other) {
@@ -37,6 +59,13 @@ Value* IntegerValue::div(Value* other) {
 		mValue /= ((IntegerValue*)other)->mValue;
 		delete other;
 		return this;
+	}
+	else if (other->mType == Type::FLOAT) {
+		FloatValue* floatValue = (FloatValue*)other;
+		double result = mValue / floatValue->mValue;
+		floatValue->mValue = result;
+		delete this;
+		return other;
 	}
 }
 
@@ -47,6 +76,13 @@ Value* IntegerValue::s_pow(Value* other) {
 		delete other;
 		return this;
 	}
+	else if (other->mType == Type::FLOAT) {
+		FloatValue* floatValue = (FloatValue*)other;
+		double exp = floatValue->mValue;
+		floatValue->mValue = pow(mValue, exp);
+		delete this;
+		return other;
+	}
 }
 
 Value* IntegerValue::comp_eq_eq(Value* other) {
@@ -54,6 +90,12 @@ Value* IntegerValue::comp_eq_eq(Value* other) {
 		mValue = mValue == ((IntegerValue*)other)->mValue;
 		isBool = true;
 		delete other;
+		return this;
+	}
+	else if (other->mType == Type::FLOAT) {
+		mValue = mValue == ((FloatValue*)other)->mValue;
+		delete other;
+		isBool = true;
 		return this;
 	}
 }
@@ -65,6 +107,12 @@ Value* IntegerValue::comp_not_eq(Value* other) {
 		delete other;
 		return this;
 	}
+	else if (other->mType == Type::FLOAT) {
+		mValue = mValue != ((FloatValue*)other)->mValue;
+		delete other;
+		isBool = true;
+		return this;
+	}
 }
 
 Value* IntegerValue::comp_greater(Value* other) {
@@ -72,6 +120,12 @@ Value* IntegerValue::comp_greater(Value* other) {
 		mValue = mValue > ((IntegerValue*)other)->mValue;
 		isBool = true;
 		delete other;
+		return this;
+	}
+	else if (other->mType == Type::FLOAT) {
+		mValue = mValue > ((FloatValue*)other)->mValue;
+		delete other;
+		isBool = true;
 		return this;
 	}
 }
@@ -83,6 +137,12 @@ Value* IntegerValue::comp_less(Value* other) {
 		delete other;
 		return this;
 	}
+	else if (other->mType == Type::FLOAT) {
+		mValue = mValue < ((FloatValue*)other)->mValue;
+		delete other;
+		isBool = true;
+		return this;
+	}
 }
 
 Value* IntegerValue::comp_greater_eq(Value* other) {
@@ -92,6 +152,12 @@ Value* IntegerValue::comp_greater_eq(Value* other) {
 		delete other;
 		return this;
 	}
+	else if (other->mType == Type::FLOAT) {
+		mValue = mValue >= ((FloatValue*)other)->mValue;
+		delete other;
+		isBool = true;
+		return this;
+	}
 }
 
 Value* IntegerValue::comp_less_eq(Value* other) {
@@ -99,6 +165,12 @@ Value* IntegerValue::comp_less_eq(Value* other) {
 		mValue = mValue <= ((IntegerValue*)other)->mValue;
 		isBool = true;
 		delete other;
+		return this;
+	}
+	else if (other->mType == Type::FLOAT) {
+		mValue = mValue <= ((FloatValue*)other)->mValue;
+		delete other;
+		isBool = true;
 		return this;
 	}
 }
@@ -149,11 +221,21 @@ Value* IntegerValue::boolean_and(Value* other) {
 		delete other;
 		return this;
 	}
+	else if (other->mType == Type::FLOAT) {
+		mValue = mValue && ((FloatValue*)other)->mValue;
+		delete other;
+		return this;
+	}
 }
 
 Value* IntegerValue::boolean_or(Value* other) {
 	if (other->mType == Type::INTEGER) {
 		mValue = mValue || ((IntegerValue*)other)->mValue;
+		delete other;
+		return this;
+	}
+	else if (other->mType == Type::FLOAT) {
+		mValue = mValue || ((FloatValue*)other)->mValue;
 		delete other;
 		return this;
 	}

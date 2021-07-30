@@ -16,6 +16,7 @@ private:
 	List<Value*>* mSymbols = new List<Value*>();
 
 	Value* visitInteger(IntegerNode* node, SymbolsRuntime* symbols);
+	Value* visitFloat(FloatNode* node, SymbolsRuntime* symbols);
 	Value* visitBinary(BinaryNode* node, SymbolsRuntime* symbols);
 	Value* visitUnary(UnaryNode* node, SymbolsRuntime* symbols);
 	Value* visitVarAccess(VarAccess* node, SymbolsRuntime* symbols);

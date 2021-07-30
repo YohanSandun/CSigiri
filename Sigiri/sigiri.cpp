@@ -7,6 +7,8 @@ Interpreter::~Interpreter() {
 Value* Interpreter::visit(Node* node, SymbolsRuntime* symbols) {
 	if (node->mType == Node::Type::INTEGER)
 		return visitInteger((IntegerNode*)node, symbols);
+	else if (node->mType == Node::Type::FLOAT)
+		return visitFloat((FloatNode*)node, symbols);
 	else if (node->mType == Node::Type::BINARY)
 		return visitBinary((BinaryNode*)node, symbols);
 	else if (node->mType == Node::Type::UNARY)
@@ -39,6 +41,11 @@ Value* Interpreter::visit(Node* node, SymbolsRuntime* symbols) {
 
 Value* Interpreter::visitInteger(IntegerNode* node, SymbolsRuntime* symbols) {
 	Value* value = new IntegerValue(node->mValue);
+	return value;
+}
+
+Value* Interpreter::visitFloat(FloatNode* node, SymbolsRuntime* symbols) {
+	Value* value = new FloatValue(node->mValue);
 	return value;
 }
 

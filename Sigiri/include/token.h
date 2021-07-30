@@ -28,6 +28,8 @@ public:
 		KEYWORD_ELIF,
 		KEYWORD_ELSE,
 
+		KEYWORD_CLASS,
+
 		PLUS,
 		MINUS,
 		ASTERIX,
