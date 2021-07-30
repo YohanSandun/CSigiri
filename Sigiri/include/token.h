@@ -47,6 +47,9 @@ public:
 		L_BRACE,
 		R_BRACE,
 
+		L_SQ,
+		R_SQ,
+
 		COLON,
 		SEMI_COLON,
 

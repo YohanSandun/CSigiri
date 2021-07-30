@@ -14,6 +14,14 @@ SymbolsRuntime::SymbolsRuntime(SymbolsRuntime* parent) {
 	mSymbolCount = 0;
 }
 
+void SymbolsRuntime::unlinkValue(String* id) {
+	for (size_t i = 0; i < mSymbolCount; i++)
+	{
+		if (mSymbolNames->get(i)->compare(id->mPtr))
+			mSymbols->unlinkItem(i);
+	}
+}
+
 Value* SymbolsRuntime::getSymbol(String* id) {
 	for (size_t i = 0; i < mSymbolCount; i++)
 	{
@@ -57,6 +65,6 @@ SymbolsRuntime::~SymbolsRuntime() {
 	mSymbolNames->keepItemsAlive = true;
 	delete mSymbolNames;
 	delete mSymbols;
-	if (returnValue != nullptr)
+	if (returnValue != nullptr && !keepReturnValue)
 		delete returnValue;
 }

@@ -355,6 +355,8 @@ Node* Parser::atom(SymbolsParser* symbols) {
 	}
 	else if (token->mType == Token::Type::KEYWORD_IF)
 		return if_expr(symbols);
+	else if (token->mType == Token::Type::L_SQ)
+		return list_expr(symbols);
 	mError = new String("Expected something!");
 	return nullptr;
 }
@@ -615,4 +617,36 @@ Node* Parser::if_expr(SymbolsParser* symbols) {
 		}
 	}
 	return new If(cases, nullptr);
+}
+
+Node* Parser::list_expr(SymbolsParser* symbols) {
+	advance();
+	if (currentToken->mType == Token::Type::R_SQ) {
+		advance();
+		return new ListNode(nullptr);
+	}
+	Node* expression = expr(symbols);
+	if (mError != nullptr)
+		return nullptr;
+	List<Node*>* items = new List<Node*>();
+	items->add(expression);
+
+	while (currentToken->mType == Token::Type::COMMA) {
+		advance();
+		Node* expression = expr(symbols);
+		if (mError != nullptr) {
+			delete items;
+			return nullptr;
+		}
+		items->add(expression);
+	}
+
+	if (currentToken->mType == Token::Type::R_SQ) {
+		advance();
+		return new ListNode(items);
+	}
+
+	mError = new String("Expected ']'");
+	delete items;
+	return nullptr;
 }

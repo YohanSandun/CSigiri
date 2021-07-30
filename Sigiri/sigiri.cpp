@@ -31,6 +31,8 @@ Value* Interpreter::visit(Node* node, SymbolsRuntime* symbols) {
 		return vistiReturn((Return*)node, symbols);
 	else if (node->mType == Node::Type::IF)
 		return visitIf((If*)node, symbols);
+	else if (node->mType == Node::Type::LIST)
+		return visitList((ListNode*)node, symbols);
 	else if (node->mType == Node::Type::BREAK) {
 		symbols->mBreak = true;
 		return nullptr;
@@ -150,11 +152,13 @@ Value* Interpreter::visitBlock(Block* node, SymbolsRuntime* symbols) {
 			&& node->mStatements->get(i)->mType != Node::Type::STRING
 			&& node->mStatements->get(i)->mType != Node::Type::BINARY
 			&& node->mStatements->get(i)->mType != Node::Type::UNARY
+			&& node->mStatements->get(i)->mType != Node::Type::LIST
 			){
 			Value* value = visit(node->mStatements->get(i), symbols);
 			if (value != NULL)
 				if (node->mStatements->get(i)->mType != Node::Type::METHOD)
-					delete value;
+					if (value->mType != Value::Type::LIST)
+						delete value;
 		}
 		if (symbols->mReturn || symbols->mBreak || symbols->mContinue)
 			return nullptr;
@@ -249,8 +253,11 @@ Value* Interpreter::visitCall(Call* node, SymbolsRuntime* symbols) {
 				newSymbols->setSymbol(method->mParams->get(i), visit(node->mArgs->get(i), symbols));
 			visit(method->mBody, newSymbols);
 			Value* retVal = nullptr;
-			if (newSymbols->returnValue != nullptr)
+			if (newSymbols->returnValue != nullptr) {
 				retVal = newSymbols->returnValue->clone();
+				if (retVal->mType == Value::Type::LIST)
+					newSymbols->keepReturnValue = true;
+			}
 			delete newSymbols;
 			return retVal;
 		}
@@ -294,3 +301,12 @@ Value* Interpreter::visitIf(If* node, SymbolsRuntime* symbols) {
 	return nullptr;
 }
 
+Value* Interpreter::visitList(ListNode* node, SymbolsRuntime* symbols) {
+	if (node->mItems == nullptr) 
+		return new ListValue(new List<Value*>());
+	int count = node->mItems->getCount();
+	List<Value*>* values = new List<Value*>(count + 5); // +5 spaces
+	for (size_t i = 0; i < count; i++)
+		values->add(visit(node->mItems->get(i), symbols));
+	return new ListValue(values);
+}

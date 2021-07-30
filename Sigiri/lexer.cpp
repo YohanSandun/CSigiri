@@ -79,6 +79,14 @@ List<Token*>* Lexer::generateTokens() {
 			tokens->add(new Token(Token::Type::R_BRACE));
 			advance();
 		}
+		else if (mCurrentChar == '[') {
+			tokens->add(new Token(Token::Type::L_SQ));
+			advance();
+		}
+		else if (mCurrentChar == ']') {
+			tokens->add(new Token(Token::Type::R_SQ));
+			advance();
+		}
 		else if (mCurrentChar == ':') {
 			tokens->add(new Token(Token::Type::COLON));
 			advance();

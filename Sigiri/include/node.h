@@ -21,7 +21,8 @@ public:
 		RETURN,
 		BREAK,
 		CONTINUE,
-		IF
+		IF,
+		LIST,
 	} mType;
 	Node(Type type);
 	virtual ~Node();
@@ -140,4 +141,11 @@ public:
 	~If();
 	List<IfCase*>* mCases;
 	Node* mElseCase;
+};
+
+class ListNode : public Node {
+public:
+	ListNode(List<Node*>* items);
+	~ListNode();
+	List<Node*>* mItems;
 };

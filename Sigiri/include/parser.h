@@ -30,6 +30,7 @@ private:
 	Node* method_expr(SymbolsParser* symbols);
 	Node* return_expr(SymbolsParser* symbols);
 	Node* if_expr(SymbolsParser* symbols);
+	Node* list_expr(SymbolsParser* symbols);
 
 	void skipNewLines();
 

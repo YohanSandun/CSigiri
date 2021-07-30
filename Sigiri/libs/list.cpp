@@ -41,6 +41,11 @@ uint List<T>::getCount() {
 }
 
 template <class T>
+void List<T>::unlinkItem(uint index) {
+	mPtr[index] = nullptr;
+}
+
+template <class T>
 T List<T>::get(uint at) {
 	return mPtr[at];
 }

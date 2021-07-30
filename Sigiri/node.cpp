@@ -233,3 +233,13 @@ If::~If() {
 	delete mCases;
 	delete mElseCase;
 }
+
+//-------------------------------------------------------------------------------------------------------------
+
+ListNode::ListNode(List<Node*>* items) : Node(Type::LIST) {
+	mItems = items;
+}
+
+ListNode::~ListNode() {
+	delete mItems;
+}

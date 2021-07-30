@@ -9,6 +9,7 @@ public:
 	bool mReturn = false;
 	bool mBreak = false;
 	bool mContinue = false;
+	bool keepReturnValue = false;
 	SymbolsRuntime();
 	SymbolsRuntime(SymbolsRuntime* parent);
 	~SymbolsRuntime();
@@ -17,6 +18,7 @@ public:
 	Value* getDirectSymbol(String* id);
 	Value* returnValue = nullptr;
 	void setSymbol(String* id, Value* value);
+	void unlinkValue(String* id);
 	List<Value*>* mSymbols;
 	List<String*>* mSymbolNames;
 };

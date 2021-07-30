@@ -15,6 +15,7 @@ public:
     uint mSize;
     T* mPtr;
     bool keepItemsAlive = false;
+    void unlinkItem(uint index);
 
 private:
     void ensureMemory();
