@@ -24,3 +24,4 @@ public:
 
 int strToInt(String* str);
 double strToFloat(String* str);
+String* intToStr(int i);

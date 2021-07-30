@@ -177,6 +177,9 @@ List<Token*>* Lexer::generateTokens() {
 		else if (mCurrentChar >= '0' && mCurrentChar <= '9') {
 			tokens->add(makeNumber());
 		}
+		else if (mCurrentChar == '"') {
+			tokens->add(makeString());
+		}
 		else if ((mCurrentChar >= 'a' && mCurrentChar <= 'z') ||
 			(mCurrentChar >= 'A' && mCurrentChar <= 'Z') || mCurrentChar == '_') {
 			tokens->add(makeIdentifier());
@@ -186,8 +189,35 @@ List<Token*>* Lexer::generateTokens() {
 	return tokens;
 }
 
+Token* Lexer::makeString() {
+	advance();
+	String* str = new String(10);
+	while (mCurrentChar != '\0') {
+		if (mCurrentChar == '\\') {
+			advance();
+			if (mCurrentChar == 'n')
+				str->append('\n');
+			else if (mCurrentChar == 't')
+				str->append('\t');
+			else if (mCurrentChar == 'b')
+				str->append('\b');
+			else
+				str->append(mCurrentChar);
+			advance();
+			continue;
+		}
+		if (mCurrentChar == '\"') {
+			advance();
+			break;
+		}
+		str->append(mCurrentChar);
+		advance();
+	}
+	return new Token(str, Token::Type::STRING);
+}
+
 Token* Lexer::makeNumber() {
-	String* number = new String(2);
+	String* number = new String(5);
 	int dotCount = 0;
 	while (mCurrentChar != '\0' && ((mCurrentChar >= '0' && mCurrentChar <= '9') || mCurrentChar == '.')) {
 		if (mCurrentChar == '.')

@@ -9,6 +9,8 @@ Value* Interpreter::visit(Node* node, SymbolsRuntime* symbols) {
 		return visitInteger((IntegerNode*)node, symbols);
 	else if (node->mType == Node::Type::FLOAT)
 		return visitFloat((FloatNode*)node, symbols);
+	else if (node->mType == Node::Type::STRING)
+		return visitString((StringNode*)node, symbols);
 	else if (node->mType == Node::Type::BINARY)
 		return visitBinary((BinaryNode*)node, symbols);
 	else if (node->mType == Node::Type::UNARY)
@@ -46,6 +48,11 @@ Value* Interpreter::visitInteger(IntegerNode* node, SymbolsRuntime* symbols) {
 
 Value* Interpreter::visitFloat(FloatNode* node, SymbolsRuntime* symbols) {
 	Value* value = new FloatValue(node->mValue);
+	return value;
+}
+
+Value* Interpreter::visitString(StringNode* node, SymbolsRuntime* symbols) {
+	Value* value = new StringValue(new String(node->mValue->mPtr));
 	return value;
 }
 
@@ -140,8 +147,9 @@ Value* Interpreter::visitBlock(Block* node, SymbolsRuntime* symbols) {
 	{
 		if (node->mStatements->get(i)->mType != Node::Type::INTEGER 
 			&& node->mStatements->get(i)->mType != Node::Type::FLOAT
+			&& node->mStatements->get(i)->mType != Node::Type::STRING
 			&& node->mStatements->get(i)->mType != Node::Type::BINARY
-			&& node->mStatements->get(i)->mType != Node::Type::UNARY /*todo strings*/
+			&& node->mStatements->get(i)->mType != Node::Type::UNARY
 			){
 			Value* value = visit(node->mStatements->get(i), symbols);
 			if (value != NULL)
@@ -222,7 +230,7 @@ Value* Interpreter::visitCall(Call* node, SymbolsRuntime* symbols) {
 		VarAccess* var = (VarAccess*)node->mBase;
 		if (var->mId->compare("print")) {
 			Value* value = visit(node->mArgs->get(0), symbols);
-			if (value != nullptr) {
+			if (value != NULL) {
 				value->print();
 				delete value;
 			}

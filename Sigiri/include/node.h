@@ -9,6 +9,7 @@ public:
 	{
 		INTEGER,
 		FLOAT,
+		STRING,
 		UNARY,
 		BINARY,
 		VAR_ASSIGN,
@@ -41,6 +42,14 @@ public:
 	~FloatNode();
 	void toString();
 	double mValue;
+};
+
+class StringNode : public Node {
+public:
+	StringNode(String* value);
+	~StringNode();
+	void toString();
+	String* mValue;
 };
 
 class UnaryNode : public Node {

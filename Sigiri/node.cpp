@@ -27,6 +27,8 @@ void IntegerNode::toString() {
 	printf("%d", mValue);
 }
 
+//-------------------------------------------------------------------------------------------------------------
+
 FloatNode::FloatNode(double value) : Node(Type::FLOAT) {
 	mValue = value;
 }
@@ -37,6 +39,21 @@ FloatNode::~FloatNode() {
 
 void FloatNode::toString() {
 	printf("%f", mValue);
+}
+
+//-------------------------------------------------------------------------------------------------------------
+
+
+StringNode::StringNode(String* value) : Node(Type::STRING) {
+	mValue = value;
+}
+
+StringNode::~StringNode() {
+	delete mValue;
+}
+
+void StringNode::toString() {
+	printf("%s", mValue->mPtr);
 }
 
 //-------------------------------------------------------------------------------------------------------------

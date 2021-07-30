@@ -12,6 +12,8 @@ public:
 		INT_NUMBER,
 		FLOAT_NUMBER,
 
+		STRING,
+
 		IDENTIFIER,
 
 		KEYWORD_VAR,

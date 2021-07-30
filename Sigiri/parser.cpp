@@ -288,6 +288,10 @@ Node* Parser::atom(SymbolsParser* symbols) {
 		advance();
 		return new FloatNode(strToFloat(token->mValue));
 	}
+	else if (token->mType == Token::Type::STRING) {
+		advance();
+		return new StringNode(new String(token->mValue->mPtr));
+	}
 	else if (token->mType == Token::Type::IDENTIFIER) {
 		advance();
 		if (currentToken->mType == Token::Type::EQUALS) {

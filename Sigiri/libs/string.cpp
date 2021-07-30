@@ -30,6 +30,22 @@ bool strCmp(const char* s1, const char* s2) {
 //	}
 //	return value;
 //}
+String* intToStr(int i) {
+	if (i == 0)
+		return new String('0');
+	String* str = new String(5);
+	if (i < 0)
+	{
+		i *= -1;
+		str->append('-');
+	}
+	while (i > 0) {
+		int digit = i % 10;
+		str->append(digit + '0');
+		i /= 10;
+	}
+	return str;
+}
 
 int strToInt(String* str) {
 	int value = 0;

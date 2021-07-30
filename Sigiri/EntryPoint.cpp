@@ -66,7 +66,17 @@ int main() {
         delete[] fdata;
 
         parser.setTokens(lexer.generateTokens());
-       
+
+       /*
+        List<Token*>* tokens = lexer.generateTokens();
+        int len = tokens->getCount();
+        for (size_t i = 0; i < len; i++)
+        {
+            printf("%d, ", tokens->get(i)->mType);
+        }
+
+        return 0;*/
+
         Node* ast = parser.parse(symbols);
         if (ast != nullptr) {
             printf(">>> program parsed. Please enter 'y' to start executing... \n");

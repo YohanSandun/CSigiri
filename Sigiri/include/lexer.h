@@ -17,6 +17,7 @@ private:
 	char peek(int amount = 1);
 	Token* makeNumber();
 	Token* makeIdentifier();
+	Token* makeString();
 
 public:
 	Lexer(String* code);
