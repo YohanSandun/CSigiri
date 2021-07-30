@@ -295,35 +295,16 @@ Node* Parser::atom(SymbolsParser* symbols) {
 			Node* expression = expr(symbols);
 			if (mError != nullptr)
 				return nullptr;
-			
-			/*int index = symbols->getSymbolIndex(token->mValue);
-			if (index >= 0)
-				return new VarAssign(index, expression);
-			else
-			{
-				mError = new String("Undefined variable");
-				delete expression;
-				return nullptr;
-			}*/
 			return new VarAssign(new String(token->mValue->mPtr), expression);
 		}
-		
-		/*int index = symbols->getSymbolIndex(token->mValue);
-		if (index >= 0)
-			return new VarAccess(index);
-		else
-		{
-			mError = new String("Undefined variable");
-			return nullptr;
-		}*/
 		return new VarAccess(new String(token->mValue->mPtr));
 	}
 	else if (token->mType == Token::Type::L_PAREN) {
 		advance();
 		Node* expression = expr(symbols);
-		if (mError != nullptr) 
+		if (mError != nullptr)
 			return nullptr;
-		
+
 		if (currentToken->mType != Token::Type::R_PAREN) {
 			mError = new String("Expected ')'");
 			delete expression;
@@ -333,7 +314,7 @@ Node* Parser::atom(SymbolsParser* symbols) {
 		return expression;
 	}
 	else if (token->mType == Token::Type::KEYWORD_VAR) {
-		
+
 		advance();
 		token = currentToken;
 		if (token->mType == Token::Type::IDENTIFIER) {
@@ -344,9 +325,9 @@ Node* Parser::atom(SymbolsParser* symbols) {
 			}
 			advance();
 			Node* expression = expr(symbols);
-			if (mError != nullptr) 
+			if (mError != nullptr)
 				return nullptr;
-			
+
 			return new VarAssign(new String(token->mValue->mPtr), expression);
 		}
 		else {
@@ -360,6 +341,14 @@ Node* Parser::atom(SymbolsParser* symbols) {
 		return method_expr(symbols);
 	else if (token->mType == Token::Type::KEYWORD_RETURN)
 		return return_expr(symbols);
+	else if (token->mType == Token::Type::KEYWORD_BREAK) {
+		advance();
+		return new Node(Node::Type::BREAK);
+	}
+	else if (token->mType == Token::Type::KEYWORD_CONTINUE) {
+		advance();
+		return new Node(Node::Type::CONTINUE);
+	}
 	else if (token->mType == Token::Type::KEYWORD_IF)
 		return if_expr(symbols);
 	mError = new String("Expected something!");

@@ -7,6 +7,8 @@ class SymbolsRuntime {
 public:
 	int mSymbolCount = 0;
 	bool mReturn = false;
+	bool mBreak = false;
+	bool mContinue = false;
 	SymbolsRuntime();
 	SymbolsRuntime(SymbolsRuntime* parent);
 	~SymbolsRuntime();

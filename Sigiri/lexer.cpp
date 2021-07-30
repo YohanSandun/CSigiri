@@ -239,6 +239,14 @@ Token* Lexer::makeIdentifier() {
 		delete id;
 		return new Token(Token::Type::KEYWORD_RETURN);
 	}
+	else if (id->compare("break")) {
+		delete id;
+		return new Token(Token::Type::KEYWORD_BREAK);
+	}
+	else if (id->compare("continue")) {
+		delete id;
+		return new Token(Token::Type::KEYWORD_CONTINUE);
+	}
 	else if (id->compare("if")) {
 		delete id;
 		return new Token(Token::Type::KEYWORD_IF);

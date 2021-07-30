@@ -18,6 +18,8 @@ public:
 		METHOD,
 		CALL,
 		RETURN,
+		BREAK,
+		CONTINUE,
 		IF
 	} mType;
 	Node(Type type);

@@ -27,6 +27,14 @@ Value* Interpreter::visit(Node* node, SymbolsRuntime* symbols) {
 		return vistiReturn((Return*)node, symbols);
 	else if (node->mType == Node::Type::IF)
 		return visitIf((If*)node, symbols);
+	else if (node->mType == Node::Type::BREAK) {
+		symbols->mBreak = true;
+		return nullptr;
+	}
+	else if (node->mType == Node::Type::CONTINUE) {
+		symbols->mContinue = true;
+		return nullptr;
+	}	
 }
 
 Value* Interpreter::visitInteger(IntegerNode* node, SymbolsRuntime* symbols) {
@@ -133,7 +141,7 @@ Value* Interpreter::visitBlock(Block* node, SymbolsRuntime* symbols) {
 				if (node->mStatements->get(i)->mType != Node::Type::METHOD)
 					delete value;
 		}
-		if (symbols->mReturn)
+		if (symbols->mReturn || symbols->mBreak || symbols->mContinue)
 			return nullptr;
 	}
 	return nullptr;
@@ -166,6 +174,11 @@ Value* Interpreter::visitFor(ForLoop* node, SymbolsRuntime* symbols) {
 		while (start < to)
 		{
 			visit(node->mBody, symbols);
+			symbols->mContinue = false;
+			if (symbols->mReturn || symbols->mBreak) {
+				symbols->mBreak = false;
+				break;
+			}
 			start += step;
 			v_start_int->mValue = start;
 		}
@@ -174,6 +187,11 @@ Value* Interpreter::visitFor(ForLoop* node, SymbolsRuntime* symbols) {
 		while (start > to)
 		{
 			visit(node->mBody, symbols);
+			symbols->mContinue = false;
+			if (symbols->mReturn || symbols->mBreak) {
+				symbols->mBreak = false;
+				break;
+			}
 			start += step;
 			v_start_int->mValue = start;
 		}
@@ -210,7 +228,7 @@ Value* Interpreter::visitCall(Call* node, SymbolsRuntime* symbols) {
 	if (methodValue->mType == Value::Type::METHOD) {
 		MethodValue* method = (MethodValue*)methodValue;
 		int paramCount = method->mParams->getCount();
-		if (paramCount == node->mArgs->getCount()) {
+		if ((paramCount == 0 && node->mArgs == nullptr) || paramCount == node->mArgs->getCount()) {
 			SymbolsRuntime* newSymbols = new SymbolsRuntime(symbols);
 			for (size_t i = 0; i < paramCount; i++)
 				newSymbols->setSymbol(method->mParams->get(i), visit(node->mArgs->get(i), symbols));
