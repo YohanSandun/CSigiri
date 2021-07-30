@@ -24,6 +24,10 @@ Value* ListValue::div(Value* other) {
 	return nullptr;
 }
 
+Value* ListValue::mod(Value* other) {
+	return nullptr;
+}
+
 Value* ListValue::s_pow(Value* other) {
 	return nullptr;
 }

@@ -28,6 +28,10 @@ Value* MethodValue::div(Value* other) {
 	return this;
 }
 
+Value* MethodValue::mod(Value* other) {
+	return this;
+}
+
 Value* MethodValue::s_pow(Value* other) {
 	return this;
 }

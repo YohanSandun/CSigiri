@@ -72,6 +72,8 @@ Value* Interpreter::visitBinary(BinaryNode* node, SymbolsRuntime* symbols) {
 		return left->mul(right);
 	case Token::Type::FW_SLASH:
 		return left->div(right);
+	case Token::Type::MODULUS:
+		return left->mod(right);
 	case Token::Type::POWER:
 		return left->s_pow(right);
 	case Token::Type::EQUALS_EQUALS:

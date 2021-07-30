@@ -22,6 +22,7 @@ public:
 	virtual Value* sub(Value* other);
 	virtual Value* mul(Value* other);
 	virtual Value* div(Value* other) ;
+	virtual Value* mod(Value* other);
 	virtual Value* s_pow(Value* other) ;
 	virtual Value* comp_eq_eq(Value* other) ;
 	virtual Value* comp_not_eq(Value* other) ;
@@ -67,6 +68,7 @@ public:
 	Value* sub(Value* other);
 	Value* mul(Value* other);
 	Value* div(Value* other);
+	Value* mod(Value* other);
 	Value* s_pow(Value* other);
 	Value* comp_eq_eq(Value* other);
 	Value* comp_not_eq(Value* other);
@@ -105,6 +107,7 @@ public:
 	Value* sub(Value* other);
 	Value* mul(Value* other);
 	Value* div(Value* other);
+	Value* mod(Value* other);
 	Value* s_pow(Value* other);
 	Value* comp_eq_eq(Value* other);
 	Value* comp_not_eq(Value* other);
@@ -143,6 +146,7 @@ public:
 	Value* sub(Value* other);
 	Value* mul(Value* other);
 	Value* div(Value* other);
+	Value* mod(Value* other);
 	Value* s_pow(Value* other);
 	Value* comp_eq_eq(Value* other);
 	Value* comp_not_eq(Value* other);
@@ -181,6 +185,7 @@ public:
 	Value* sub(Value* other);
 	Value* mul(Value* other);
 	Value* div(Value* other);
+	Value* mod(Value* other);
 	Value* s_pow(Value* other);
 	Value* comp_eq_eq(Value* other);
 	Value* comp_not_eq(Value* other);
@@ -221,6 +226,7 @@ public:
 	Value* sub(Value* other);
 	Value* mul(Value* other);
 	Value* div(Value* other);
+	Value* mod(Value* other);
 	Value* s_pow(Value* other);
 	Value* comp_eq_eq(Value* other);
 	Value* comp_not_eq(Value* other);

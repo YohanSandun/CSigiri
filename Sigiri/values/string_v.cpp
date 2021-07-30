@@ -24,6 +24,10 @@ Value* StringValue::div(Value* other) {
 	return nullptr;
 }
 
+Value* StringValue::mod(Value* other) {
+	return nullptr;
+}
+
 Value* StringValue::s_pow(Value* other) {
 	return nullptr;
 }

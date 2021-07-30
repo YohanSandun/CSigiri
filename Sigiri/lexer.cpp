@@ -60,7 +60,7 @@ List<Token*>* Lexer::generateTokens() {
 			advance();
 		}
 		else if (mCurrentChar == '%') {
-			tokens->add(new Token(Token::Type::MODULUS)); // todo
+			tokens->add(new Token(Token::Type::MODULUS));
 			advance();
 		}
 		else if (mCurrentChar == '(') {

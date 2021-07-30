@@ -38,6 +38,10 @@ Value* Value::div(Value* other) {
 	return this;
 }
 
+Value* Value::mod(Value* other) {
+	return this;
+}
+
 Value* Value::s_pow(Value* other) {
 	return this;
 }

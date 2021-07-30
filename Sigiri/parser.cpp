@@ -182,7 +182,7 @@ Node* Parser::term(SymbolsParser* symbols) {
 	Node* left = factor(symbols);
 	if (mError != nullptr) 
 		return nullptr;
-	while (currentToken->mType == Token::Type::ASTERIX || currentToken->mType == Token::Type::FW_SLASH)
+	while (currentToken->mType == Token::Type::ASTERIX || currentToken->mType == Token::Type::FW_SLASH || currentToken->mType == Token::Type::MODULUS)
 	{
 		Token::Type type = currentToken->mType;
 		advance();

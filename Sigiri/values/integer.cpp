@@ -54,6 +54,14 @@ Value* IntegerValue::mul(Value* other) {
 	}
 }
 
+Value* IntegerValue::mod(Value* other) {
+	if (other->mType == Type::INTEGER) {
+		mValue %= ((IntegerValue*)other)->mValue;
+		delete other;
+		return this;
+	}
+}
+
 Value* IntegerValue::div(Value* other) {
 	if (other->mType == Type::INTEGER) {
 		mValue /= ((IntegerValue*)other)->mValue;

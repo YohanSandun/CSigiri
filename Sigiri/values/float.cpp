@@ -60,6 +60,10 @@ Value* FloatValue::div(Value* other) {
 	}
 }
 
+Value* FloatValue::mod(Value* other) {
+	return nullptr;
+}
+
 Value* FloatValue::s_pow(Value* other) {
 	if (other->mType == Type::INTEGER) {
 		int exp = ((IntegerValue*)other)->mValue;
