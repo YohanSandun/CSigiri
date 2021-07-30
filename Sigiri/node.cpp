@@ -187,7 +187,6 @@ Call::~Call() {
 
 //-------------------------------------------------------------------------------------------------------------
 
-
 Return::Return(Node* node) : Node(Type::RETURN) {
 	mNode = node;
 }
@@ -196,3 +195,24 @@ Return::~Return() {
 	delete mNode;
 }
 
+//-------------------------------------------------------------------------------------------------------------
+
+IfCase::IfCase(Node* condition, Node* body) {
+	mCondition = condition;
+	mBody = body;
+}
+
+IfCase::~IfCase() {
+	delete mCondition;
+	delete mBody;
+}
+
+If::If(List<IfCase*>* cases, Node* elseCase) : Node(Type::IF) {
+	mCases = cases;
+	mElseCase = elseCase;
+}
+
+If::~If() {
+	delete mCases;
+	delete mElseCase;
+}

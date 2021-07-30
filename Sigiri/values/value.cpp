@@ -113,3 +113,7 @@ Value* Value::clone() {
 void Value::print() {
 	printf("VALUE");
 }
+
+bool Value::asBoolean() {
+	return false;
+}

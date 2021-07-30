@@ -25,6 +25,8 @@ Value* Interpreter::visit(Node* node, SymbolsRuntime* symbols) {
 		return visitCall((Call*)node, symbols);
 	else if (node->mType == Node::Type::RETURN)
 		return vistiReturn((Return*)node, symbols);
+	else if (node->mType == Node::Type::IF)
+		return visitIf((If*)node, symbols);
 }
 
 Value* Interpreter::visitInteger(IntegerNode* node, SymbolsRuntime* symbols) {
@@ -131,6 +133,8 @@ Value* Interpreter::visitBlock(Block* node, SymbolsRuntime* symbols) {
 				if (node->mStatements->get(i)->mType != Node::Type::VAR_ASSIGN && node->mStatements->get(i)->mType != Node::Type::METHOD)
 					delete value;
 		}
+		if (symbols->mReturn)
+			return nullptr;
 	}
 	return nullptr;
 }
@@ -230,3 +234,27 @@ Value* Interpreter::vistiReturn(Return* node, SymbolsRuntime* symbols) {
 	symbols->returnValue = value;
 	return nullptr;
 }
+
+Value* Interpreter::visitIf(If* node, SymbolsRuntime* symbols) {
+	int caseCount = node->mCases->getCount();
+	for (size_t i = 0; i < caseCount; i++)
+	{
+		Value* condition = visit(node->mCases->get(i)->mCondition, symbols);
+		if (condition->asBoolean()) {
+			delete condition;
+			Value* result = visit(node->mCases->get(i)->mBody, symbols);
+			if (result != nullptr)
+				delete result;
+			return nullptr;
+		}
+		delete condition;
+	}
+
+	if (node->mElseCase != nullptr) {
+		Value* result = visit(node->mElseCase, symbols);
+		if (result != nullptr)
+			delete result;
+	}
+	return nullptr;
+}
+

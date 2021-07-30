@@ -25,4 +25,5 @@ private:
 	Value* visitMethod(Method* node, SymbolsRuntime* symbols);
 	Value* visitCall(Call* node, SymbolsRuntime* symbols);
 	Value* vistiReturn(Return* node, SymbolsRuntime* symbols);
+	Value* visitIf(If* node, SymbolsRuntime* symbols);
 };

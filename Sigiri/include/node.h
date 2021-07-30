@@ -17,7 +17,8 @@ public:
 		FOR_LOOP,
 		METHOD,
 		CALL,
-		RETURN
+		RETURN,
+		IF
 	} mType;
 	Node(Type type);
 	virtual ~Node();
@@ -115,3 +116,17 @@ public:
 	Node* mNode;
 };
 
+class IfCase {
+public:
+	IfCase(Node* condition, Node* body);
+	~IfCase();
+	Node* mCondition, * mBody;
+};
+
+class If : public Node {
+public:
+	If(List<IfCase*>* cases, Node* elseCase);
+	~If();
+	List<IfCase*>* mCases;
+	Node* mElseCase;
+};

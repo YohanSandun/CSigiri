@@ -103,3 +103,7 @@ Value* MethodValue::clone() {
 void MethodValue::print() {
 	printf("Method '%s'", mName->mPtr);
 }
+
+bool MethodValue::asBoolean() {
+	return false;
+}

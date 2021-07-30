@@ -19,27 +19,6 @@ Parser::~Parser() {
 	//delete mSymbols;
 }
 
-//int Parser::getOrSetSymbolIndex(String* name) {
-//	int count = mSymbols->getCount();
-//	for (size_t i = 0; i < count; i++)
-//	{
-//		if (mSymbols->get(i)->compare(name) == 1)
-//			return i;
-//	}
-//	mSymbols->add(name->clone());
-//	return count;
-//}
-
-//int Parser::getSymbolIndex(String* name) {
-//	int count = mSymbols->getCount();
-//	for (size_t i = 0; i < count; i++)
-//	{
-//		if (mSymbols->get(i)->compare(name) == 1)
-//			return i;
-//	}
-//	return -1;
-//}
-
 void Parser::advance() {
 	mIndex++;
 	if (mIndex < mTokens->getCount())
@@ -381,6 +360,8 @@ Node* Parser::atom(SymbolsParser* symbols) {
 		return method_expr(symbols);
 	else if (token->mType == Token::Type::KEYWORD_RETURN)
 		return return_expr(symbols);
+	else if (token->mType == Token::Type::KEYWORD_IF)
+		return if_expr(symbols);
 	mError = new String("Expected something!");
 	return nullptr;
 }
@@ -544,4 +525,102 @@ Node* Parser::return_expr(SymbolsParser* symbols) {
 	if (mError != nullptr)
 		return nullptr;
 	return new Return(body);
+}
+
+Node* Parser::if_expr(SymbolsParser* symbols) {
+	advance();
+	List<IfCase*>* cases = new List<IfCase*>();
+	Node* condition = expr(symbols);
+	if (mError != nullptr)
+		return nullptr;
+
+	skipNewLines();
+	if (currentToken->mType == Token::Type::COLON) {
+		advance();
+		skipNewLines();
+		Node* body = expr(symbols);
+		if (mError != nullptr) {
+			delete condition;
+			return nullptr;
+		}
+		cases->add(new IfCase(condition, body));
+		skipNewLines();
+	}
+	else if (currentToken->mType == Token::Type::L_BRACE) {
+		advance();
+		skipNewLines();
+		Node* body = block(symbols, Token::Type::R_BRACE);
+		advance(); //closing brace
+		if (mError != nullptr) {
+			delete condition;
+			return nullptr;
+		}
+		cases->add(new IfCase(condition, body));
+		skipNewLines();
+	}
+
+	while (currentToken->mType == Token::Type::KEYWORD_ELIF) {
+		advance();
+		Node* elifCondition = expr(symbols);
+		if (mError != nullptr) {
+			delete cases;
+			return nullptr;
+		}
+
+		skipNewLines();
+		if (currentToken->mType == Token::Type::COLON) {
+			advance();
+			skipNewLines();
+			Node* elifBody = expr(symbols);
+			if (mError != nullptr) {
+				delete elifCondition;
+				delete cases;
+				return nullptr;
+			}
+			cases->add(new IfCase(elifCondition, elifBody));
+			skipNewLines();
+		}
+		else if (currentToken->mType == Token::Type::L_BRACE) {
+			advance();
+			skipNewLines();
+			Node* elifBody = block(symbols, Token::Type::R_BRACE);
+			advance(); //closing brace
+			if (mError != nullptr) {
+				delete elifCondition;
+				delete cases;
+				return nullptr;
+			}
+			cases->add(new IfCase(elifCondition, elifBody));
+			skipNewLines();
+		}
+	}
+
+	if (currentToken->mType == Token::Type::KEYWORD_ELSE) {
+		advance();
+		skipNewLines();
+		if (currentToken->mType == Token::Type::COLON) {
+			advance();
+			skipNewLines();
+			Node* elseBody = expr(symbols);
+			if (mError != nullptr) {
+				delete cases;
+				return nullptr;
+			}
+			skipNewLines();
+			return new If(cases, elseBody);
+		}
+		else if (currentToken->mType == Token::Type::L_BRACE) {
+			advance();
+			skipNewLines();
+			Node* elseBody = block(symbols, Token::Type::R_BRACE);
+			advance(); //closing brace
+			if (mError != nullptr) {
+				delete cases;
+				return nullptr;
+			}
+			skipNewLines();
+			return new If(cases, elseBody);
+		}
+	}
+	return new If(cases, nullptr);
 }

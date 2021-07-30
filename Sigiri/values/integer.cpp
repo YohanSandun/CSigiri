@@ -185,3 +185,7 @@ void IntegerValue::print() {
 	else
 		printf("%d", mValue);
 }
+
+bool IntegerValue::asBoolean() {
+	return mValue == 0 ? false : true;
+}

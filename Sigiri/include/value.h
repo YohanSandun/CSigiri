@@ -48,6 +48,8 @@ public:
 	int mRefCount = 1;
 	void incRefCount();
 	void decRefCount();
+
+	virtual bool asBoolean();
 };
 
 class IntegerValue : public Value {
@@ -83,6 +85,8 @@ public:
 	Value* negate();
 	Value* boolean_not();
 	Value* clone();
+
+	bool asBoolean();
 
 	void print();
 };
@@ -121,6 +125,8 @@ public:
 	Value* negate();
 	Value* boolean_not();
 	Value* clone();
+
+	bool asBoolean();
 
 	void print();
 };
