@@ -251,3 +251,11 @@ void FloatValue::print() {
 bool FloatValue::asBoolean() {
 	return mValue == 0 ? false : true;
 }
+
+Value* FloatValue::subscriptAccess(Value* at) {
+	return this;
+}
+
+Value* FloatValue::subscriptAssign(Value* at, Value* value) {
+	return this;
+}

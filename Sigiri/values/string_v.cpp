@@ -107,3 +107,11 @@ void StringValue::print() {
 bool StringValue::asBoolean() {
 	return mValue->getLength() == 0 ? false : true;
 }
+
+Value* StringValue::subscriptAccess(Value* at) {
+	return this;
+}
+
+Value* StringValue::subscriptAssign(Value* at, Value* value) {
+	return this;
+}

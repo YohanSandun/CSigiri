@@ -290,6 +290,8 @@ Node* Parser::atom(SymbolsParser* symbols) {
 	}
 	else if (token->mType == Token::Type::STRING) {
 		advance();
+		if (currentToken->mType == Token::Type::L_SQ)
+			return subscript(new StringNode(new String(token->mValue->mPtr)), symbols);
 		return new StringNode(new String(token->mValue->mPtr));
 	}
 	else if (token->mType == Token::Type::IDENTIFIER) {
@@ -301,6 +303,8 @@ Node* Parser::atom(SymbolsParser* symbols) {
 				return nullptr;
 			return new VarAssign(new String(token->mValue->mPtr), expression);
 		}
+		if (currentToken->mType == Token::Type::L_SQ)
+			return subscript(new VarAccess(new String(token->mValue->mPtr)), symbols);
 		return new VarAccess(new String(token->mValue->mPtr));
 	}
 	else if (token->mType == Token::Type::L_PAREN) {
@@ -645,8 +649,39 @@ Node* Parser::list_expr(SymbolsParser* symbols) {
 		advance();
 		return new ListNode(items);
 	}
-
+	if (currentToken->mType == Token::Type::L_SQ)
+		return subscript(new ListNode(items), symbols);
 	mError = new String("Expected ']'");
 	delete items;
 	return nullptr;
+}
+
+Node* Parser::subscript(Node* base, SymbolsParser* symbols) {
+	advance();
+	Node* expression = expr(symbols);
+	if (mError != nullptr)
+		return nullptr;
+
+	if (currentToken->mType != Token::Type::R_SQ) {
+		advance();
+		mError = new String("Expected ']'");
+		delete expression;
+		return nullptr;
+	}
+	advance();
+
+	if (currentToken->mType == Token::Type::L_SQ) {
+		return subscript(new SubscriptAccessNode(base, expression), symbols);
+	}
+		
+	if (currentToken->mType == Token::Type::EQUALS) {
+		advance();
+		Node* node = expr(symbols);
+		if (mError != nullptr) {
+			delete expression;
+			return nullptr;
+		}
+		return new SubscriptAssignNode(new SubscriptAccessNode(base, expression), node);
+	}
+	return new SubscriptAccessNode(base, expression);
 }

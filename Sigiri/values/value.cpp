@@ -121,3 +121,11 @@ void Value::print() {
 bool Value::asBoolean() {
 	return false;
 }
+
+Value* Value::subscriptAccess(Value* at) {
+	return this;
+}
+
+Value* Value::subscriptAssign(Value* at, Value* value) {
+	return this;
+}

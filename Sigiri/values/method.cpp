@@ -114,3 +114,11 @@ void MethodValue::print() {
 bool MethodValue::asBoolean() {
 	return false;
 }
+
+Value* MethodValue::subscriptAccess(Value* at) {
+	return this;
+}
+
+Value* MethodValue::subscriptAssign(Value* at, Value* value) {
+	return this;
+}

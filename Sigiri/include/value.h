@@ -54,6 +54,10 @@ public:
 	void decRefCount();
 
 	virtual bool asBoolean();
+
+	virtual Value* subscriptAccess(Value* at);
+	virtual Value* subscriptAssign(Value* at, Value* value);
+
 };
 
 class IntegerValue : public Value {
@@ -94,6 +98,9 @@ public:
 
 	bool asBoolean();
 
+	Value* subscriptAccess(Value* at);
+	Value* subscriptAssign(Value* at, Value* value);
+
 	void print();
 };
 
@@ -132,6 +139,9 @@ public:
 	Value* clone();
 
 	bool asBoolean();
+
+	Value* subscriptAccess(Value* at);
+	Value* subscriptAssign(Value* at, Value* value);
 
 	void print();
 };
@@ -172,6 +182,9 @@ public:
 
 	bool asBoolean();
 
+	Value* subscriptAccess(Value* at);
+	Value* subscriptAssign(Value* at, Value* value);
+
 	void print();
 };
 
@@ -210,6 +223,9 @@ public:
 	Value* clone();
 
 	bool asBoolean();
+
+	Value* subscriptAccess(Value* at);
+	Value* subscriptAssign(Value* at, Value* value);
 
 	void print();
 };
@@ -251,6 +267,9 @@ public:
 	Value* clone();
 
 	bool asBoolean();
+
+	Value* subscriptAccess(Value* at);
+	Value* subscriptAssign(Value* at, Value* value);
 
 	void print();
 };

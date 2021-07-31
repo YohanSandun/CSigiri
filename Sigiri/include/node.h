@@ -23,6 +23,8 @@ public:
 		CONTINUE,
 		IF,
 		LIST,
+		SUBSCRIPT_ACCESS,
+		SUBSCRIPT_ASSIGN
 	} mType;
 	Node(Type type);
 	virtual ~Node();
@@ -148,4 +150,18 @@ public:
 	ListNode(List<Node*>* items);
 	~ListNode();
 	List<Node*>* mItems;
+};
+
+class SubscriptAccessNode : public Node {
+public:
+	SubscriptAccessNode(Node* base, Node* node);
+	~SubscriptAccessNode();
+	Node* mBase, * mNode;
+};
+
+class SubscriptAssignNode : public Node {
+public:
+	SubscriptAssignNode(Node* base, Node* node);
+	~SubscriptAssignNode();
+	Node* mBase, * mNode;
 };

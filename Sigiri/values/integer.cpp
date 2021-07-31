@@ -279,3 +279,11 @@ void IntegerValue::print() {
 bool IntegerValue::asBoolean() {
 	return mValue == 0 ? false : true;
 }
+
+Value* IntegerValue::subscriptAccess(Value* at) {
+	return this;
+}
+
+Value* IntegerValue::subscriptAssign(Value* at, Value* value) {
+	return this;
+}

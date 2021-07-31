@@ -33,6 +33,10 @@ Value* Interpreter::visit(Node* node, SymbolsRuntime* symbols) {
 		return visitIf((If*)node, symbols);
 	else if (node->mType == Node::Type::LIST)
 		return visitList((ListNode*)node, symbols);
+	else if (node->mType == Node::Type::SUBSCRIPT_ACCESS)
+		return visitSubscriptAccess((SubscriptAccessNode*)node, symbols);
+	else if (node->mType == Node::Type::SUBSCRIPT_ASSIGN)
+		return visitSubscriptAssign((SubscriptAssignNode*)node, symbols);
 	else if (node->mType == Node::Type::BREAK) {
 		symbols->mBreak = true;
 		return nullptr;
@@ -311,4 +315,13 @@ Value* Interpreter::visitList(ListNode* node, SymbolsRuntime* symbols) {
 	for (size_t i = 0; i < count; i++)
 		values->add(visit(node->mItems->get(i), symbols));
 	return new ListValue(values);
+}
+
+Value* Interpreter::visitSubscriptAccess(SubscriptAccessNode* node, SymbolsRuntime* symbols) {
+	Value* base = visit(node->mBase, symbols);
+	return base->subscriptAccess(visit(node->mNode, symbols));
+}
+
+Value* Interpreter::visitSubscriptAssign(SubscriptAssignNode* node, SymbolsRuntime* symbols) {
+	return nullptr;
 }

@@ -29,5 +29,6 @@ private:
 	Value* vistiReturn(Return* node, SymbolsRuntime* symbols);
 	Value* visitIf(If* node, SymbolsRuntime* symbols);
 	Value* visitList(ListNode* node, SymbolsRuntime* symbols);
-
+	Value* visitSubscriptAccess(SubscriptAccessNode* node, SymbolsRuntime* symbols);
+	Value* visitSubscriptAssign(SubscriptAssignNode* node, SymbolsRuntime* symbols);
 };

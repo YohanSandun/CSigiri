@@ -32,6 +32,8 @@ private:
 	Node* if_expr(SymbolsParser* symbols);
 	Node* list_expr(SymbolsParser* symbols);
 
+	Node* subscript(Node* base, SymbolsParser* symbols);
+
 	void skipNewLines();
 
 public:

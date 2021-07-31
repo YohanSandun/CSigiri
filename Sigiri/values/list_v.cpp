@@ -118,3 +118,15 @@ void ListValue::print() {
 bool ListValue::asBoolean() {
 	return mValues->getCount() == 0 ? false : true;
 }
+
+Value* ListValue::subscriptAccess(Value* at) {
+	if (at->mType == Value::Type::INTEGER) {
+		int index = ((IntegerValue*)at)->mValue;
+		return mValues->get(index)->clone(); // todo check whether correct or not
+	}
+	return this;
+}
+
+Value* ListValue::subscriptAssign(Value* at, Value* value) {
+	return this;
+}

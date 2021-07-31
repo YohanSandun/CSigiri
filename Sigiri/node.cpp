@@ -243,3 +243,27 @@ ListNode::ListNode(List<Node*>* items) : Node(Type::LIST) {
 ListNode::~ListNode() {
 	delete mItems;
 }
+
+//-------------------------------------------------------------------------------------------------------------
+
+SubscriptAccessNode::SubscriptAccessNode(Node* base, Node* node) : Node(Type::SUBSCRIPT_ACCESS) {
+	mBase = base;
+	mNode = node;
+}
+
+SubscriptAccessNode::~SubscriptAccessNode() {
+	delete mBase;
+	delete mNode;
+}
+
+//-------------------------------------------------------------------------------------------------------------
+
+SubscriptAssignNode::SubscriptAssignNode(Node* base, Node* node) : Node(Type::SUBSCRIPT_ASSIGN) {
+	mNode = node;
+	mBase = base;
+}
+
+SubscriptAssignNode::~SubscriptAssignNode() {
+	delete mNode;
+	delete mBase;
+}
