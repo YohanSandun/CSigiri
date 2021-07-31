@@ -163,7 +163,7 @@ Value* Interpreter::visitBlock(Block* node, SymbolsRuntime* symbols) {
 			Value* value = visit(node->mStatements->get(i), symbols);
 			if (value != NULL)
 				if (node->mStatements->get(i)->mType != Node::Type::METHOD)
-					if (value->mType != Value::Type::LIST)
+					if (value->mType != Value::Type::LIST && value->mType != Value::Type::METHOD)
 						delete value;
 		}
 		if (symbols->mReturn || symbols->mBreak || symbols->mContinue)
@@ -242,7 +242,7 @@ Value* Interpreter::visitCall(Call* node, SymbolsRuntime* symbols) {
 			Value* value = visit(node->mArgs->get(0), symbols);
 			if (value != NULL) {
 				value->print();
-				delete value;
+				//delete value; // dont delete objects
 			}
 			printf("\n");
 			return nullptr;
@@ -323,5 +323,7 @@ Value* Interpreter::visitSubscriptAccess(SubscriptAccessNode* node, SymbolsRunti
 }
 
 Value* Interpreter::visitSubscriptAssign(SubscriptAssignNode* node, SymbolsRuntime* symbols) {
-	return nullptr;
+	SubscriptAccessNode* accessNode = (SubscriptAccessNode*)node->mBase;
+	Value* base = visit(accessNode->mBase, symbols);
+	return base->subscriptAssign(visit(accessNode->mNode, symbols), visit(node->mNode, symbols));
 }

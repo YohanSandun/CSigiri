@@ -128,5 +128,10 @@ Value* ListValue::subscriptAccess(Value* at) {
 }
 
 Value* ListValue::subscriptAssign(Value* at, Value* value) {
+	if (at->mType == Value::Type::INTEGER) {
+		int index = ((IntegerValue*)at)->mValue;
+		delete mValues->get(index); // todo dont delete objects
+		mValues->add(index, value);
+	}
 	return this;
 }

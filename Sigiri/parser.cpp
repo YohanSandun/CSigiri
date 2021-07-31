@@ -273,6 +273,8 @@ Node* Parser::call(SymbolsParser* symbols) {
 			}
 			advance();
 		}
+		if (currentToken->mType == Token::Type::L_SQ)
+			return subscript(new Call(node, arguments), symbols);
 		return new Call(node, arguments);
 	}
 	return node;
@@ -670,9 +672,8 @@ Node* Parser::subscript(Node* base, SymbolsParser* symbols) {
 	}
 	advance();
 
-	if (currentToken->mType == Token::Type::L_SQ) {
+	if (currentToken->mType == Token::Type::L_SQ) 
 		return subscript(new SubscriptAccessNode(base, expression), symbols);
-	}
 		
 	if (currentToken->mType == Token::Type::EQUALS) {
 		advance();
