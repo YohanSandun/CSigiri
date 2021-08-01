@@ -26,7 +26,8 @@ public:
 		SUBSCRIPT_ACCESS,
 		SUBSCRIPT_ASSIGN,
 		CLASS,
-		ATTRIBUTE
+		ATTRIBUTE,
+		TUPLE,
 	} mType;
 	Node(Type type);
 	virtual ~Node();
@@ -181,4 +182,11 @@ public:
 	AttributeNode(Node* base, Node* node);
 	~AttributeNode();
 	Node* mBase, * mNode;
+};
+
+class TupleNode : public Node {
+public:
+	TupleNode(List<Node*>* items);
+	~TupleNode();
+	List<Node*>* mItems;
 };

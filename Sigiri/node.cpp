@@ -294,3 +294,13 @@ AttributeNode::~AttributeNode() {
 	delete mBase;
 	delete mNode;
 }
+
+//-------------------------------------------------------------------------------------------------------------
+
+TupleNode::TupleNode(List<Node*>* items) : Node(Type::TUPLE) {
+	mItems = items;
+}
+
+TupleNode::~TupleNode() {
+	delete mItems;
+}

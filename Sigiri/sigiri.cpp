@@ -41,6 +41,8 @@ Value* Interpreter::visit(Node* node, SymbolsRuntime* symbols) {
 		return visitClass((ClassNode*)node, symbols);
 	else if (node->mType == Node::Type::ATTRIBUTE)
 		return visitAttribute((AttributeNode*)node, symbols);
+	else if (node->mType == Node::Type::TUPLE)
+		return visitTuple((TupleNode*)node, symbols);
 	else if (node->mType == Node::Type::BREAK) {
 		symbols->mBreak = true;
 		return nullptr;
@@ -163,11 +165,13 @@ Value* Interpreter::visitBlock(Block* node, SymbolsRuntime* symbols) {
 			&& node->mStatements->get(i)->mType != Node::Type::BINARY
 			&& node->mStatements->get(i)->mType != Node::Type::UNARY
 			&& node->mStatements->get(i)->mType != Node::Type::LIST
+			&& node->mStatements->get(i)->mType != Node::Type::TUPLE
 			){
 			Value* value = visit(node->mStatements->get(i), symbols);
 			if (value != NULL)
 				if (node->mStatements->get(i)->mType != Node::Type::METHOD && node->mStatements->get(i)->mType != Node::Type::CLASS)
-					if (value->mType != Value::Type::LIST && value->mType != Value::Type::METHOD && value->mType != Value::Type::OBJECT)
+					if (value->mType != Value::Type::LIST && value->mType != Value::Type::METHOD && value->mType != Value::Type::OBJECT
+						&& value->mType != Value::Type::TUPLE)
 						delete value;
 		}
 		if (symbols->mReturn || symbols->mBreak || symbols->mContinue)
@@ -265,7 +269,7 @@ Value* Interpreter::visitCall(Call* node, SymbolsRuntime* symbols, SymbolsRuntim
 			Value* retVal = nullptr;
 			if (newSymbols->returnValue != nullptr) {
 				retVal = newSymbols->returnValue->clone();
-				if (retVal->mType == Value::Type::LIST || retVal->mType == Value::Type::OBJECT)
+				if (retVal->mType == Value::Type::LIST || retVal->mType == Value::Type::OBJECT || retVal->mType == Value::Type::TUPLE)
 					newSymbols->keepReturnValue = true;
 			}
 			delete newSymbols;
@@ -355,4 +359,14 @@ Value* Interpreter::visitAttribute(AttributeNode* node, SymbolsRuntime* symbols)
 		return visit(node->mNode, ((ObjectValue*)base)->mSymbols);
 	}
 	return nullptr;
+}
+
+Value* Interpreter::visitTuple(TupleNode* node, SymbolsRuntime* symbols) {
+	if (node->mItems == nullptr)
+		return new TupleValue(new List<Value*>(1)); //todo only one space
+	int count = node->mItems->getCount();
+	List<Value*>* values = new List<Value*>(count + 5); // +5 spaces
+	for (size_t i = 0; i < count; i++)
+		values->add(visit(node->mItems->get(i), symbols));
+	return new TupleValue(values);
 }

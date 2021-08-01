@@ -34,5 +34,5 @@ private:
 	Value* visitSubscriptAssign(SubscriptAssignNode* node, SymbolsRuntime* symbols);
 	Value* visitClass(ClassNode* node, SymbolsRuntime* symbols);
 	Value* visitAttribute(AttributeNode* node, SymbolsRuntime* symbols);
-
+	Value* visitTuple(TupleNode* node, SymbolsRuntime* symbols);
 };

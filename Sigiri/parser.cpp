@@ -303,14 +303,19 @@ Node* Parser::call(SymbolsParser* symbols, bool byPassDot= false) {
 		}
 		else {
 			arguments = new List<Node*>();
+			skipNewLines();
 			Node* expression = expr(symbols);
 			if (mError != nullptr) {
 				delete node;
 				return nullptr;
 			}
 			arguments->add(expression);
+			skipNewLines();
 			while (currentToken->mType == Token::Type::COMMA) {
 				advance();
+				skipNewLines();
+				if (currentToken->mType == Token::Type::R_PAREN)
+					break;
 				Node* expression = expr(symbols);
 				if (mError != nullptr) {
 					delete node;
@@ -318,6 +323,7 @@ Node* Parser::call(SymbolsParser* symbols, bool byPassDot= false) {
 					return nullptr;
 				}
 				arguments->add(expression);
+				skipNewLines();
 			}
 			if (currentToken->mType != Token::Type::R_PAREN) {
 				delete node;
@@ -329,6 +335,8 @@ Node* Parser::call(SymbolsParser* symbols, bool byPassDot= false) {
 		}
 		if (currentToken->mType == Token::Type::L_SQ)
 			return subscript(new Call(node, arguments), symbols);
+		else if (currentToken->mType == Token::Type::DOT)
+			return attribute(new Call(node, arguments), symbols);
 		return new Call(node, arguments);
 	}
 	return node;
@@ -368,17 +376,43 @@ Node* Parser::atom(SymbolsParser* symbols, bool byPassDot = false) {
 	}
 	else if (token->mType == Token::Type::L_PAREN) {
 		advance();
+		if (currentToken->mType == Token::Type::R_PAREN) {
+			advance();
+			return new TupleNode(nullptr);
+		}
 		Node* expression = expr(symbols);
 		if (mError != nullptr)
 			return nullptr;
 
-		if (currentToken->mType != Token::Type::R_PAREN) {
-			mError = new String("Expected ')'");
-			delete expression;
-			return nullptr;
+		if (currentToken->mType == Token::Type::R_PAREN) {
+			advance();
+			return expression;
 		}
-		advance();
-		return expression;
+		else if (currentToken->mType == Token::Type::COMMA) {
+			List<Node*>* items = new List<Node*>();
+			items->add(expression);
+			while (currentToken->mType == Token::Type::COMMA) {
+				advance();
+				if (currentToken->mType == Token::Type::R_PAREN)
+					break;
+				Node* item = expr(symbols);
+				if (mError != nullptr) {
+					delete items;
+					return nullptr;
+				}
+				items->add(item);
+			}
+			if (currentToken->mType != Token::Type::R_PAREN) {
+				mError = new String("Expected ',' or ')'");
+				delete items;
+				return nullptr;
+			}
+			advance();
+			return new TupleNode(items);
+		}
+		mError = new String("Expected ')'");
+		delete expression;
+		return nullptr;
 	}
 	else if (token->mType == Token::Type::KEYWORD_VAR) {
 
@@ -699,6 +733,8 @@ Node* Parser::list_expr(SymbolsParser* symbols) {
 
 	while (currentToken->mType == Token::Type::COMMA) {
 		advance();
+		if (currentToken->mType == Token::Type::R_SQ)
+			break;
 		Node* expression = expr(symbols);
 		if (mError != nullptr) {
 			delete items;
