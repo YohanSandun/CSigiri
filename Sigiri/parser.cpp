@@ -2,6 +2,60 @@
 #include "include/string.h"
 #include <cstdio>
 
+char* tokenNames[] = {
+		"NEWLINE",
+		"INT_NUMBER",
+		"FLOAT_NUMBER",
+		"STRING",
+		"IDENTIFIER",
+		"KEYWORD_VAR",
+		"KEYWORD_INT",
+		"KEYWORD_FOR",
+		"KEYWORD_TO",
+		"KEYWORD_STEP",
+		"KEYWORD_METHOD",
+		"KEYWORD_RETURN",
+		"KEYWORD_BREAK",
+		"KEYWORD_CONTINUE",
+		"KEYWORD_IF",
+		"KEYWORD_ELIF",
+		"KEYWORD_ELSE",
+		"KEYWORD_CLASS",
+		"PLUS",
+		"MINUS",
+		"ASTERIX",
+		"FW_SLASH",
+		"MODULUS",
+		"POWER",
+		"L_PAREN",
+		"R_PAREN",
+		"COMMA",
+		"DOT",
+		"L_BRACE",
+		"R_BRACE",
+		"L_SQ",
+		"R_SQ",
+		"COLON",
+		"SEMI_COLON",
+		"EQUALS",
+		"EQUALS_EQUALS",
+		"NOT_EQUALS",
+		"GREATER_THAN",
+		"LESS_THAN",
+		"GREATER_EQ",
+		"LESS_EQ",
+		"BOOLEAN_NOT",
+		"BOOLEAN_AND",
+		"BOOLEAN_OR",
+		"BITWISE_OR",
+		"BITWISE_AND",
+		"BITWISE_XOR",
+		"BITWISE_COMPLEMENT",
+		"LEFT_SHIFT",
+		"RIGHT_SHIFT",
+		"EOF_TOKEN"
+};
+
 Parser::Parser() {
 	//mSymbols = new List<String*>();
 }
@@ -143,14 +197,14 @@ Node* Parser::bitwise_and(SymbolsParser* symbols) {
 }
 
 Node* Parser::shift(SymbolsParser* symbols) {
-	Node* left = arithmetic(symbols);
+	Node* left = arithmetic(symbols, false);
 	if (mError != nullptr)
 		return nullptr;
 	while (currentToken->mType == Token::Type::LEFT_SHIFT || currentToken->mType == Token::Type::RIGHT_SHIFT)
 	{
 		Token::Type type = currentToken->mType;
 		advance();
-		Node* right = arithmetic(symbols);
+		Node* right = arithmetic(symbols, false);
 		if (mError != nullptr) {
 			delete left;
 			return nullptr;
@@ -160,15 +214,15 @@ Node* Parser::shift(SymbolsParser* symbols) {
 	return left;
 }
 
-Node* Parser::arithmetic(SymbolsParser* symbols) {
-	Node* left = term(symbols);
+Node* Parser::arithmetic(SymbolsParser* symbols, bool byPassDot=false) {
+	Node* left = term(symbols, byPassDot);
 	if (mError != nullptr)
 		return nullptr;
 	while (currentToken->mType == Token::Type::PLUS || currentToken->mType == Token::Type::MINUS)
 	{
 		Token::Type type = currentToken->mType;
 		advance();
-		Node* right = term(symbols);
+		Node* right = term(symbols, byPassDot);
 		if (mError != nullptr) {
 			delete left;
 			return nullptr;
@@ -178,15 +232,15 @@ Node* Parser::arithmetic(SymbolsParser* symbols) {
 	return left;
 }
 
-Node* Parser::term(SymbolsParser* symbols) {
-	Node* left = factor(symbols);
+Node* Parser::term(SymbolsParser* symbols, bool byPassDot=false) {
+	Node* left = factor(symbols, byPassDot);
 	if (mError != nullptr) 
 		return nullptr;
 	while (currentToken->mType == Token::Type::ASTERIX || currentToken->mType == Token::Type::FW_SLASH || currentToken->mType == Token::Type::MODULUS)
 	{
 		Token::Type type = currentToken->mType;
 		advance();
-		Node* right = factor(symbols);
+		Node* right = factor(symbols, byPassDot);
 		if (mError != nullptr) {
 			delete left;
 			return nullptr;
@@ -196,27 +250,27 @@ Node* Parser::term(SymbolsParser* symbols) {
 	return left;
 }
 
-Node* Parser::factor(SymbolsParser* symbols) {
+Node* Parser::factor(SymbolsParser* symbols, bool byPassDot=false) {
 	Token* token = currentToken;
 	if (token->mType == Token::Type::PLUS || token->mType == Token::Type::MINUS) {
 		advance();
-		Node* node = factor(symbols);
+		Node* node = factor(symbols, byPassDot);
 		if (mError != nullptr) 
 			return nullptr;
 		return new UnaryNode(token->mType, node);
 	}
-	return power(symbols);
+	return power(symbols, byPassDot);
 }
 
-Node* Parser::power(SymbolsParser* symbols) {
-	Node* left = complement(symbols);
+Node* Parser::power(SymbolsParser* symbols, bool byPassDot=false) {
+	Node* left = complement(symbols, byPassDot);
 	if (mError != nullptr) 
 		return nullptr;
 	
 	while (currentToken->mType == Token::Type::POWER)
 	{
 		advance();
-		Node* right = factor(symbols);
+		Node* right = factor(symbols, byPassDot);
 		if (mError != nullptr) {
 			delete left;
 			return nullptr;
@@ -226,19 +280,19 @@ Node* Parser::power(SymbolsParser* symbols) {
 	return left;
 }
 
-Node* Parser::complement(SymbolsParser* symbols) {
+Node* Parser::complement(SymbolsParser* symbols, bool byPassDot=false) {
 	if (currentToken->mType == Token::Type::BITWISE_COMPLEMENT) {
 		advance();
-		Node* node = factor(symbols);
+		Node* node = factor(symbols, byPassDot);
 		if (mError != nullptr)
 			return nullptr;
 		return new UnaryNode(Token::Type::BITWISE_COMPLEMENT, node);
 	}
-	return call(symbols);
+	return call(symbols, byPassDot);
 }
 
-Node* Parser::call(SymbolsParser* symbols) {
-	Node* node = atom(symbols);
+Node* Parser::call(SymbolsParser* symbols, bool byPassDot= false) {
+	Node* node = atom(symbols, byPassDot);
 	if (mError != nullptr)
 		return nullptr;
 	if (currentToken->mType == Token::Type::L_PAREN) {
@@ -280,7 +334,7 @@ Node* Parser::call(SymbolsParser* symbols) {
 	return node;
 }
  
-Node* Parser::atom(SymbolsParser* symbols) {
+Node* Parser::atom(SymbolsParser* symbols, bool byPassDot = false) {
 	Token* token = currentToken;
 	if (token->mType == Token::Type::INT_NUMBER) {
 		advance();
@@ -307,6 +361,9 @@ Node* Parser::atom(SymbolsParser* symbols) {
 		}
 		if (currentToken->mType == Token::Type::L_SQ)
 			return subscript(new VarAccess(new String(token->mValue->mPtr)), symbols);
+		else if (!byPassDot && currentToken->mType == Token::Type::DOT) {
+			return attribute(new VarAccess(new String(token->mValue->mPtr)), symbols);
+		}
 		return new VarAccess(new String(token->mValue->mPtr));
 	}
 	else if (token->mType == Token::Type::L_PAREN) {
@@ -351,6 +408,8 @@ Node* Parser::atom(SymbolsParser* symbols) {
 		return method_expr(symbols);
 	else if (token->mType == Token::Type::KEYWORD_RETURN)
 		return return_expr(symbols);
+	else if (token->mType == Token::Type::KEYWORD_CLASS)
+		return class_expr(symbols);
 	else if (token->mType == Token::Type::KEYWORD_BREAK) {
 		advance();
 		return new Node(Node::Type::BREAK);
@@ -363,6 +422,7 @@ Node* Parser::atom(SymbolsParser* symbols) {
 		return if_expr(symbols);
 	else if (token->mType == Token::Type::L_SQ)
 		return list_expr(symbols);
+
 	mError = new String("Expected something!");
 	return nullptr;
 }
@@ -685,4 +745,38 @@ Node* Parser::subscript(Node* base, SymbolsParser* symbols) {
 		return new SubscriptAssignNode(new SubscriptAccessNode(base, expression), node);
 	}
 	return new SubscriptAccessNode(base, expression);
+}
+
+Node* Parser::class_expr(SymbolsParser* symbols) {
+	advance();
+	Token* identifier = currentToken;
+	if (identifier->mType != Token::Type::IDENTIFIER) {
+		mError = new String("Expected an identifier");
+		return nullptr;
+	}
+	advance();
+	skipNewLines();
+	if (currentToken->mType == Token::Type::L_BRACE) {
+		advance();
+		skipNewLines();
+		//int id = symbols->setSymbolIndex(identifier->mValue);
+		Node* node = block(symbols, Token::Type::R_BRACE);
+		advance(); //closing brace
+		if (mError != nullptr)
+			return nullptr;
+		return new ClassNode(new String(identifier->mValue->mPtr), node);
+	}
+	mError = new String("Expected '{'");
+	return nullptr;
+}
+
+Node* Parser::attribute(Node* base, SymbolsParser* symbols) {
+	advance();
+	
+	Node* node = call(symbols, true);
+	if (mError != nullptr)
+		return nullptr;
+	if (currentToken->mType == Token::Type::DOT)
+		return attribute(new AttributeNode(base, node), symbols);
+	return new AttributeNode(base, node);
 }

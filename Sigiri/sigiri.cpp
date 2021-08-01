@@ -37,6 +37,10 @@ Value* Interpreter::visit(Node* node, SymbolsRuntime* symbols) {
 		return visitSubscriptAccess((SubscriptAccessNode*)node, symbols);
 	else if (node->mType == Node::Type::SUBSCRIPT_ASSIGN)
 		return visitSubscriptAssign((SubscriptAssignNode*)node, symbols);
+	else if (node->mType == Node::Type::CLASS)
+		return visitClass((ClassNode*)node, symbols);
+	else if (node->mType == Node::Type::ATTRIBUTE)
+		return visitAttribute((AttributeNode*)node, symbols);
 	else if (node->mType == Node::Type::BREAK) {
 		symbols->mBreak = true;
 		return nullptr;
@@ -142,9 +146,9 @@ Value* Interpreter::visitVarAccess(VarAccess* node, SymbolsRuntime* symbols) {
 	return symbols->getSymbol(node->mId)->clone();
 }
 
-Value* Interpreter::visitVarAssign(VarAssign* node, SymbolsRuntime* symbols) {
+Value* Interpreter::visitVarAssign(VarAssign* node, SymbolsRuntime* symbols, SymbolsRuntime* baseSymbols) {
 	//printf("setting %s\n", node->mId->mPtr);
-	Value* value = visit(node->mNode, symbols);
+	Value* value = visit(node->mNode, baseSymbols != nullptr ? baseSymbols : symbols);
 	symbols->setSymbol(node->mId, value);
 	return value->clone();
 }
@@ -162,8 +166,8 @@ Value* Interpreter::visitBlock(Block* node, SymbolsRuntime* symbols) {
 			){
 			Value* value = visit(node->mStatements->get(i), symbols);
 			if (value != NULL)
-				if (node->mStatements->get(i)->mType != Node::Type::METHOD)
-					if (value->mType != Value::Type::LIST && value->mType != Value::Type::METHOD)
+				if (node->mStatements->get(i)->mType != Node::Type::METHOD && node->mStatements->get(i)->mType != Node::Type::CLASS)
+					if (value->mType != Value::Type::LIST && value->mType != Value::Type::METHOD && value->mType != Value::Type::OBJECT)
 						delete value;
 		}
 		if (symbols->mReturn || symbols->mBreak || symbols->mContinue)
@@ -234,12 +238,12 @@ Value* Interpreter::visitMethod(Method* node, SymbolsRuntime* symbols) {
 	return value;
 }
 
-Value* Interpreter::visitCall(Call* node, SymbolsRuntime* symbols) {
+Value* Interpreter::visitCall(Call* node, SymbolsRuntime* symbols, SymbolsRuntime* baseSymbols) {
 
 	if (node->mBase->mType == Node::Type::VAR_ACCESS) {
 		VarAccess* var = (VarAccess*)node->mBase;
 		if (var->mId->compare("print")) {
-			Value* value = visit(node->mArgs->get(0), symbols);
+			Value* value = visit(node->mArgs->get(0), baseSymbols != nullptr ? baseSymbols : symbols);
 			if (value != NULL) {
 				value->print();
 				//delete value; // dont delete objects
@@ -256,12 +260,12 @@ Value* Interpreter::visitCall(Call* node, SymbolsRuntime* symbols) {
 		if ((paramCount == 0 && node->mArgs == nullptr) || paramCount == node->mArgs->getCount()) {
 			SymbolsRuntime* newSymbols = new SymbolsRuntime(symbols);
 			for (size_t i = 0; i < paramCount; i++)
-				newSymbols->setSymbol(method->mParams->get(i), visit(node->mArgs->get(i), symbols));
+				newSymbols->setSymbol(method->mParams->get(i), visit(node->mArgs->get(i), baseSymbols != nullptr ? baseSymbols : symbols));
 			visit(method->mBody, newSymbols);
 			Value* retVal = nullptr;
 			if (newSymbols->returnValue != nullptr) {
 				retVal = newSymbols->returnValue->clone();
-				if (retVal->mType == Value::Type::LIST)
+				if (retVal->mType == Value::Type::LIST || retVal->mType == Value::Type::OBJECT)
 					newSymbols->keepReturnValue = true;
 			}
 			delete newSymbols;
@@ -270,6 +274,13 @@ Value* Interpreter::visitCall(Call* node, SymbolsRuntime* symbols) {
 		else {
 			// argument count mismatch error
 		}
+	}
+	else if (methodValue->mType == Value::Type::CLASS) {
+		ClassValue* cls = (ClassValue*)methodValue;
+		SymbolsRuntime* newSymbols = new SymbolsRuntime(symbols);
+		visit(cls->mBody, newSymbols);
+		ObjectValue* obj = new ObjectValue(newSymbols);
+		return obj;
 	}
 	else {
 		// method not found error
@@ -326,4 +337,22 @@ Value* Interpreter::visitSubscriptAssign(SubscriptAssignNode* node, SymbolsRunti
 	SubscriptAccessNode* accessNode = (SubscriptAccessNode*)node->mBase;
 	Value* base = visit(accessNode->mBase, symbols);
 	return base->subscriptAssign(visit(accessNode->mNode, symbols), visit(node->mNode, symbols));
+}
+
+Value* Interpreter::visitClass(ClassNode* node, SymbolsRuntime* symbols) {
+	ClassValue* value = new ClassValue(node->mId, node->mBody);
+	symbols->setSymbol(node->mId, value);
+	return value;
+}
+
+Value* Interpreter::visitAttribute(AttributeNode* node, SymbolsRuntime* symbols) {
+	Value* base = visit(node->mBase, symbols);
+	if (base->mType == Value::Type::OBJECT) {
+		if (node->mNode->mType == Node::Type::VAR_ASSIGN)
+			return visitVarAssign((VarAssign*)node->mNode, ((ObjectValue*)base)->mSymbols, symbols);
+		else if (node->mNode->mType == Node::Type::CALL)
+			return visitCall((Call*)node->mNode, ((ObjectValue*)base)->mSymbols, symbols);
+		return visit(node->mNode, ((ObjectValue*)base)->mSymbols);
+	}
+	return nullptr;
 }

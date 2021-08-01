@@ -107,6 +107,10 @@ List<Token*>* Lexer::generateTokens() {
 			tokens->add(new Token(Token::Type::COMMA));
 			advance();
 		}
+		else if (mCurrentChar == '.') {
+			tokens->add(new Token(Token::Type::DOT));
+			advance();
+		}
 		else if (mCurrentChar == '=') {
 			if (peek(1) == '=') {
 				tokens->add(new Token(Token::Type::EQUALS_EQUALS));

@@ -18,18 +18,6 @@ bool strCmp(const char* s1, const char* s2) {
 	return true;
 }
 
-//int strToInt(String* str) {
-//	int value = 0;
-//	uint len = str->getLength();
-//	for (size_t i = 0; i < len; i++)
-//	{
-//		int digit = str->mPtr[i]-'0';
-//		for (size_t j = 0; j < len - i - 1; j++)
-//			digit *= 10;
-//		value += digit;
-//	}
-//	return value;
-//}
 String* intToStr(int i) {
 	if (i == 0)
 		return new String('0');

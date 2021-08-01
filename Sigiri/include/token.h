@@ -43,6 +43,7 @@ public:
 		R_PAREN,
 
 		COMMA,
+		DOT,
 
 		L_BRACE,
 		R_BRACE,

@@ -116,6 +116,7 @@ VarAssign::VarAssign(String* id, Node* node) : Node(Type::VAR_ASSIGN) {
 }
 
 VarAssign::~VarAssign() {
+	delete mId;
 	delete mNode;
 }
 
@@ -131,6 +132,7 @@ VarAccess::VarAccess(String* id) : Node(Type::VAR_ACCESS) {
 }
 
 VarAccess::~VarAccess() {
+	delete mId;
 }
 
 void VarAccess::toString() {
@@ -185,6 +187,7 @@ Method::Method(String* id, Node* body, List<String*>* params) : Node(Type::METHO
 }
 
 Method::~Method() {
+	delete mId;
 	delete mParams;
 	delete mBody;
 }
@@ -266,4 +269,28 @@ SubscriptAssignNode::SubscriptAssignNode(Node* base, Node* node) : Node(Type::SU
 SubscriptAssignNode::~SubscriptAssignNode() {
 	delete mNode;
 	delete mBase;
+}
+
+//-------------------------------------------------------------------------------------------------------------
+
+ClassNode::ClassNode(String* id, Node* body) : Node(Type::CLASS) {
+	mId = id;
+	mBody = body;
+}
+
+ClassNode::~ClassNode() {
+	delete mId;
+	delete mBody;
+}
+
+//-------------------------------------------------------------------------------------------------------------
+
+AttributeNode::AttributeNode(Node* base, Node* node) : Node(Type::ATTRIBUTE) {
+	mBase = base;
+	mNode = node;
+}
+
+AttributeNode::~AttributeNode() {
+	delete mBase;
+	delete mNode;
 }

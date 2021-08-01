@@ -1,6 +1,7 @@
 #pragma once
 
 #include "value.h"
+#include "object.h"
 #include "node.h"
 #include "symbol_table.h"
 #include "../libs/list.cpp"
@@ -21,14 +22,17 @@ private:
 	Value* visitBinary(BinaryNode* node, SymbolsRuntime* symbols);
 	Value* visitUnary(UnaryNode* node, SymbolsRuntime* symbols);
 	Value* visitVarAccess(VarAccess* node, SymbolsRuntime* symbols);
-	Value* visitVarAssign(VarAssign* node, SymbolsRuntime* symbols);
+	Value* visitVarAssign(VarAssign* node, SymbolsRuntime* symbols, SymbolsRuntime* baseSymbols = nullptr);
 	Value* visitBlock(Block* node, SymbolsRuntime* symbols);
 	Value* visitFor(ForLoop* node, SymbolsRuntime* symbols);
 	Value* visitMethod(Method* node, SymbolsRuntime* symbols);
-	Value* visitCall(Call* node, SymbolsRuntime* symbols);
+	Value* visitCall(Call* node, SymbolsRuntime* symbols, SymbolsRuntime* baseSymbols = nullptr);
 	Value* vistiReturn(Return* node, SymbolsRuntime* symbols);
 	Value* visitIf(If* node, SymbolsRuntime* symbols);
 	Value* visitList(ListNode* node, SymbolsRuntime* symbols);
 	Value* visitSubscriptAccess(SubscriptAccessNode* node, SymbolsRuntime* symbols);
 	Value* visitSubscriptAssign(SubscriptAssignNode* node, SymbolsRuntime* symbols);
+	Value* visitClass(ClassNode* node, SymbolsRuntime* symbols);
+	Value* visitAttribute(AttributeNode* node, SymbolsRuntime* symbols);
+
 };

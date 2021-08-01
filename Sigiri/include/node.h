@@ -24,7 +24,9 @@ public:
 		IF,
 		LIST,
 		SUBSCRIPT_ACCESS,
-		SUBSCRIPT_ASSIGN
+		SUBSCRIPT_ASSIGN,
+		CLASS,
+		ATTRIBUTE
 	} mType;
 	Node(Type type);
 	virtual ~Node();
@@ -163,5 +165,20 @@ class SubscriptAssignNode : public Node {
 public:
 	SubscriptAssignNode(Node* base, Node* node);
 	~SubscriptAssignNode();
+	Node* mBase, * mNode;
+};
+
+class ClassNode : public Node {
+public:
+	~ClassNode();
+	ClassNode(String* id, Node* body);
+	String* mId;
+	Node* mBody;
+};
+
+class AttributeNode : public Node {
+public:
+	AttributeNode(Node* base, Node* node);
+	~AttributeNode();
 	Node* mBase, * mNode;
 };
