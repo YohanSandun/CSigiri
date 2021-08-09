@@ -123,10 +123,10 @@ int main() {
 
        
         /*List<Token*>* tokens = lexer.generateTokens();
-        int len = tokens->getCount();
+        int len = tokens->count();
         for (size_t i = 0; i < len; i++)
         {
-            printf("%s\n", tokenNames[(int)tokens->get(i)->mType]);
+            printf("%s\n", tokenNames[(int)tokens->Get(i)->mType]);
         }
 
         return 0;*/

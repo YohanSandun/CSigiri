@@ -10,10 +10,10 @@ SymbolsParser::SymbolsParser(SymbolsParser* parent) {
 }
 
 int SymbolsParser::getSymbolIndex(String* name) {
-	int count = mSymbols->getCount();
+	int count = mSymbols->count();
 	for (size_t i = 0; i < count; i++)
 	{
-		if (mSymbols->get(i)->Compare(name) == 1)
+		if (mSymbols->Get(i)->Compare(name) == 1)
 			return i;
 	}
 	if (mParent != nullptr)
@@ -22,13 +22,13 @@ int SymbolsParser::getSymbolIndex(String* name) {
 }
 
 int SymbolsParser::setSymbolIndex(String* name) {
-	int count = mSymbols->getCount();
+	int count = mSymbols->count();
 	for (size_t i = 0; i < count; i++)
 	{
-		if (mSymbols->get(i)->Compare(name) == 1)
+		if (mSymbols->Get(i)->Compare(name) == 1)
 			return i;
 	}
-	mSymbols->add(name->Clone());
+	mSymbols->Add(name->Clone());
 	return count;
 }
 

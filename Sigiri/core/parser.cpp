@@ -76,31 +76,31 @@ Parser::~Parser() {
 
 void Parser::advance() {
 	mIndex++;
-	if (mIndex < mTokens->getCount())
-		currentToken = mTokens->get(mIndex);
+	if (mIndex < mTokens->count())
+		currentToken = mTokens->Get(mIndex);
 }
 
 void Parser::skipNewLines() {
-	while (currentToken->mType == Token::Type::NEWLINE)
+	while (currentToken->type == Token::Type::kNewLine)
 		advance();
 }
 
 Node* Parser::parse(SymbolsParser* symbols) {
-	return block(symbols, Token::Type::EOF_TOKEN);
+	return block(symbols, Token::Type::kEof);
 }
 
 Node* Parser::block(SymbolsParser* symbols, Token::Type end) {
 	List<Node*>* statements = new List<Node*>();
 	while (true) {
 		skipNewLines();
-		if (currentToken->mType == end)
+		if (currentToken->type == end)
 			break;
 		Node* node = expr(symbols);
 		if (mError != nullptr) {
 			delete statements;
 			return nullptr;
 		}
-		statements->add(node);
+		statements->Add(node);
 	}
 	return new Block(statements);
 }
@@ -109,9 +109,9 @@ Node* Parser::expr(SymbolsParser* symbols) {
 	Node* left = Compare(symbols);
 	if (mError != nullptr)
 		return nullptr;
-	while (currentToken->mType == Token::Type::BOOLEAN_AND || currentToken->mType == Token::Type::BOOLEAN_OR)
+	while (currentToken->type == Token::Type::kBooleanAnd || currentToken->type == Token::Type::kBooleanOr)
 	{
-		Token::Type type = currentToken->mType;
+		Token::Type type = currentToken->type;
 		advance();
 		Node* right = Compare(symbols);
 		if (mError != nullptr) {
@@ -124,17 +124,17 @@ Node* Parser::expr(SymbolsParser* symbols) {
 }
 
 Node* Parser::Compare(SymbolsParser* symbols) {
-	if (currentToken->mType == Token::Type::BOOLEAN_NOT) {
+	if (currentToken->type == Token::Type::kBooleanNot) {
 		advance();
-		return new UnaryNode(Token::Type::BOOLEAN_NOT, Compare(symbols));
+		return new UnaryNode(Token::Type::kBooleanNot, Compare(symbols));
 	}
 	Node* left = bitwise_or(symbols);
 	if (mError != nullptr)
 		return nullptr;
-	while (currentToken->mType == Token::Type::EQUALS_EQUALS || currentToken->mType == Token::Type::NOT_EQUALS ||
-		currentToken->mType == Token::Type::GREATER_THAN || currentToken->mType == Token::Type::LESS_THAN ||
-		currentToken->mType == Token::Type::GREATER_EQ || currentToken->mType == Token::Type::LESS_EQ) {
-		Token::Type type = currentToken->mType;
+	while (currentToken->type == Token::Type::kEqualsEquals || currentToken->type == Token::Type::kNotEquals ||
+		currentToken->type == Token::Type::kGreaterThan || currentToken->type == Token::Type::kLessThan ||
+		currentToken->type == Token::Type::kGreaterEquals || currentToken->type == Token::Type::kLessEquals) {
+		Token::Type type = currentToken->type;
 		advance();
 		Node* right = bitwise_or(symbols);
 		if (mError != nullptr) {
@@ -150,7 +150,7 @@ Node* Parser::bitwise_or(SymbolsParser* symbols) {
 	Node* left = bitwise_xor(symbols);
 	if (mError != nullptr)
 		return nullptr;
-	while (currentToken->mType == Token::Type::BITWISE_OR)
+	while (currentToken->type == Token::Type::kBitwiseOr)
 	{
 		advance();
 		Node* right = bitwise_xor(symbols);
@@ -158,7 +158,7 @@ Node* Parser::bitwise_or(SymbolsParser* symbols) {
 			delete left;
 			return nullptr;
 		}
-		left = new BinaryNode(left, Token::Type::BITWISE_OR, right);
+		left = new BinaryNode(left, Token::Type::kBitwiseOr, right);
 	}
 	return left;
 }
@@ -167,7 +167,7 @@ Node* Parser::bitwise_xor(SymbolsParser* symbols) {
 	Node* left = bitwise_and(symbols);
 	if (mError != nullptr)
 		return nullptr;
-	while (currentToken->mType == Token::Type::BITWISE_XOR)
+	while (currentToken->type == Token::Type::kBitwiseXor)
 	{
 		advance();
 		Node* right = bitwise_and(symbols);
@@ -175,7 +175,7 @@ Node* Parser::bitwise_xor(SymbolsParser* symbols) {
 			delete left;
 			return nullptr;
 		}
-		left = new BinaryNode(left, Token::Type::BITWISE_XOR, right);
+		left = new BinaryNode(left, Token::Type::kBitwiseXor, right);
 	}
 	return left;
 }
@@ -184,7 +184,7 @@ Node* Parser::bitwise_and(SymbolsParser* symbols) {
 	Node* left = shift(symbols);
 	if (mError != nullptr)
 		return nullptr;
-	while (currentToken->mType == Token::Type::BITWISE_AND)
+	while (currentToken->type == Token::Type::kBitwiseAnd)
 	{
 		advance();
 		Node* right = shift(symbols);
@@ -192,7 +192,7 @@ Node* Parser::bitwise_and(SymbolsParser* symbols) {
 			delete left;
 			return nullptr;
 		}
-		left = new BinaryNode(left, Token::Type::BITWISE_AND, right);
+		left = new BinaryNode(left, Token::Type::kBitwiseAnd, right);
 	}
 	return left;
 }
@@ -201,9 +201,9 @@ Node* Parser::shift(SymbolsParser* symbols) {
 	Node* left = arithmetic(symbols, false);
 	if (mError != nullptr)
 		return nullptr;
-	while (currentToken->mType == Token::Type::LEFT_SHIFT || currentToken->mType == Token::Type::RIGHT_SHIFT)
+	while (currentToken->type == Token::Type::kLeftShift || currentToken->type == Token::Type::kRightShift)
 	{
-		Token::Type type = currentToken->mType;
+		Token::Type type = currentToken->type;
 		advance();
 		Node* right = arithmetic(symbols, false);
 		if (mError != nullptr) {
@@ -219,9 +219,9 @@ Node* Parser::arithmetic(SymbolsParser* symbols, bool byPassDot=false) {
 	Node* left = term(symbols, byPassDot);
 	if (mError != nullptr)
 		return nullptr;
-	while (currentToken->mType == Token::Type::PLUS || currentToken->mType == Token::Type::MINUS)
+	while (currentToken->type == Token::Type::kPlus || currentToken->type == Token::Type::kMinus)
 	{
-		Token::Type type = currentToken->mType;
+		Token::Type type = currentToken->type;
 		advance();
 		Node* right = term(symbols, byPassDot);
 		if (mError != nullptr) {
@@ -237,9 +237,9 @@ Node* Parser::term(SymbolsParser* symbols, bool byPassDot=false) {
 	Node* left = factor(symbols, byPassDot);
 	if (mError != nullptr) 
 		return nullptr;
-	while (currentToken->mType == Token::Type::ASTERIX || currentToken->mType == Token::Type::FW_SLASH || currentToken->mType == Token::Type::MODULUS)
+	while (currentToken->type == Token::Type::kAsterix || currentToken->type == Token::Type::kFowardSlash || currentToken->type == Token::Type::kPrecentage)
 	{
-		Token::Type type = currentToken->mType;
+		Token::Type type = currentToken->type;
 		advance();
 		Node* right = factor(symbols, byPassDot);
 		if (mError != nullptr) {
@@ -253,12 +253,12 @@ Node* Parser::term(SymbolsParser* symbols, bool byPassDot=false) {
 
 Node* Parser::factor(SymbolsParser* symbols, bool byPassDot=false) {
 	Token* token = currentToken;
-	if (token->mType == Token::Type::PLUS || token->mType == Token::Type::MINUS) {
+	if (token->type == Token::Type::kPlus || token->type == Token::Type::kMinus) {
 		advance();
 		Node* node = factor(symbols, byPassDot);
 		if (mError != nullptr) 
 			return nullptr;
-		return new UnaryNode(token->mType, node);
+		return new UnaryNode(token->type, node);
 	}
 	return power(symbols, byPassDot);
 }
@@ -268,7 +268,7 @@ Node* Parser::power(SymbolsParser* symbols, bool byPassDot=false) {
 	if (mError != nullptr) 
 		return nullptr;
 	
-	while (currentToken->mType == Token::Type::POWER)
+	while (currentToken->type == Token::Type::kPower)
 	{
 		advance();
 		Node* right = factor(symbols, byPassDot);
@@ -276,18 +276,18 @@ Node* Parser::power(SymbolsParser* symbols, bool byPassDot=false) {
 			delete left;
 			return nullptr;
 		}
-		left = new BinaryNode(left, Token::Type::POWER, right);
+		left = new BinaryNode(left, Token::Type::kPower, right);
 	}
 	return left;
 }
 
 Node* Parser::complement(SymbolsParser* symbols, bool byPassDot=false) {
-	if (currentToken->mType == Token::Type::BITWISE_COMPLEMENT) {
+	if (currentToken->type == Token::Type::kBitwiseComplement) {
 		advance();
 		Node* node = factor(symbols, byPassDot);
 		if (mError != nullptr)
 			return nullptr;
-		return new UnaryNode(Token::Type::BITWISE_COMPLEMENT, node);
+		return new UnaryNode(Token::Type::kBitwiseComplement, node);
 	}
 	return call(symbols, byPassDot);
 }
@@ -296,10 +296,10 @@ Node* Parser::call(SymbolsParser* symbols, bool byPassDot= false) {
 	Node* node = atom(symbols, byPassDot);
 	if (mError != nullptr)
 		return nullptr;
-	if (currentToken->mType == Token::Type::L_PAREN) {
+	if (currentToken->type == Token::Type::kLeftParen) {
 		advance();
 		List<Node*>* arguments = nullptr;
-		if (currentToken->mType == Token::Type::R_PAREN) {
+		if (currentToken->type == Token::Type::kRightParen) {
 			advance();
 		}
 		else {
@@ -310,12 +310,12 @@ Node* Parser::call(SymbolsParser* symbols, bool byPassDot= false) {
 				delete node;
 				return nullptr;
 			}
-			arguments->add(expression);
+			arguments->Add(expression);
 			skipNewLines();
-			while (currentToken->mType == Token::Type::COMMA) {
+			while (currentToken->type == Token::Type::kComma) {
 				advance();
 				skipNewLines();
-				if (currentToken->mType == Token::Type::R_PAREN)
+				if (currentToken->type == Token::Type::kRightParen)
 					break;
 				Node* expression = expr(symbols);
 				if (mError != nullptr) {
@@ -323,10 +323,10 @@ Node* Parser::call(SymbolsParser* symbols, bool byPassDot= false) {
 					delete arguments;
 					return nullptr;
 				}
-				arguments->add(expression);
+				arguments->Add(expression);
 				skipNewLines();
 			}
-			if (currentToken->mType != Token::Type::R_PAREN) {
+			if (currentToken->type != Token::Type::kRightParen) {
 				delete node;
 				delete arguments;
 				mError = new String("Expected ')'");
@@ -334,9 +334,9 @@ Node* Parser::call(SymbolsParser* symbols, bool byPassDot= false) {
 			}
 			advance();
 		}
-		if (currentToken->mType == Token::Type::L_SQ)
+		if (currentToken->type == Token::Type::kLeftSqare)
 			return subscript(new Call(node, arguments), symbols);
-		else if (currentToken->mType == Token::Type::DOT)
+		else if (currentToken->type == Token::Type::kDot)
 			return attribute(new Call(node, arguments), symbols);
 		return new Call(node, arguments);
 	}
@@ -345,39 +345,39 @@ Node* Parser::call(SymbolsParser* symbols, bool byPassDot= false) {
  
 Node* Parser::atom(SymbolsParser* symbols, bool byPassDot = false) {
 	Token* token = currentToken;
-	if (token->mType == Token::Type::INT_NUMBER) {
+	if (token->type == Token::Type::kIntNumber) {
 		advance();
-		return new IntegerNode(StringToInt(token->mValue));
+		return new IntegerNode(StringToInt(token->value));
 	}
-	else if (token->mType == Token::Type::FLOAT_NUMBER) {
+	else if (token->type == Token::Type::kFloatNumber) {
 		advance();
-		return new FloatNode(StringToFloat(token->mValue));
+		return new FloatNode(StringToFloat(token->value));
 	}
-	else if (token->mType == Token::Type::STRING) {
+	else if (token->type == Token::Type::kString) {
 		advance();
-		if (currentToken->mType == Token::Type::L_SQ)
-			return subscript(new StringNode(new String(token->mValue->ptr)), symbols);
-		return new StringNode(new String(token->mValue->ptr));
+		if (currentToken->type == Token::Type::kLeftSqare)
+			return subscript(new StringNode(new String(token->value->ptr)), symbols);
+		return new StringNode(new String(token->value->ptr));
 	}
-	else if (token->mType == Token::Type::IDENTIFIER) {
+	else if (token->type == Token::Type::kIdentifier) {
 		advance();
-		if (currentToken->mType == Token::Type::EQUALS) {
+		if (currentToken->type == Token::Type::kEquals) {
 			advance();
 			Node* expression = expr(symbols);
 			if (mError != nullptr)
 				return nullptr;
-			return new VarAssign(new String(token->mValue->ptr), expression);
+			return new VarAssign(new String(token->value->ptr), expression);
 		}
-		if (currentToken->mType == Token::Type::L_SQ)
-			return subscript(new VarAccess(new String(token->mValue->ptr)), symbols);
-		else if (!byPassDot && currentToken->mType == Token::Type::DOT) {
-			return attribute(new VarAccess(new String(token->mValue->ptr)), symbols);
+		if (currentToken->type == Token::Type::kLeftSqare)
+			return subscript(new VarAccess(new String(token->value->ptr)), symbols);
+		else if (!byPassDot && currentToken->type == Token::Type::kDot) {
+			return attribute(new VarAccess(new String(token->value->ptr)), symbols);
 		}
-		return new VarAccess(new String(token->mValue->ptr));
+		return new VarAccess(new String(token->value->ptr));
 	}
-	else if (token->mType == Token::Type::L_PAREN) {
+	else if (token->type == Token::Type::kLeftParen) {
 		advance();
-		if (currentToken->mType == Token::Type::R_PAREN) {
+		if (currentToken->type == Token::Type::kRightParen) {
 			advance();
 			return new TupleNode(nullptr);
 		}
@@ -385,25 +385,25 @@ Node* Parser::atom(SymbolsParser* symbols, bool byPassDot = false) {
 		if (mError != nullptr)
 			return nullptr;
 
-		if (currentToken->mType == Token::Type::R_PAREN) {
+		if (currentToken->type == Token::Type::kRightParen) {
 			advance();
 			return expression;
 		}
-		else if (currentToken->mType == Token::Type::COMMA) {
+		else if (currentToken->type == Token::Type::kComma) {
 			List<Node*>* items = new List<Node*>();
-			items->add(expression);
-			while (currentToken->mType == Token::Type::COMMA) {
+			items->Add(expression);
+			while (currentToken->type == Token::Type::kComma) {
 				advance();
-				if (currentToken->mType == Token::Type::R_PAREN)
+				if (currentToken->type == Token::Type::kRightParen)
 					break;
 				Node* item = expr(symbols);
 				if (mError != nullptr) {
 					delete items;
 					return nullptr;
 				}
-				items->add(item);
+				items->Add(item);
 			}
-			if (currentToken->mType != Token::Type::R_PAREN) {
+			if (currentToken->type != Token::Type::kRightParen) {
 				mError = new String("Expected ',' or ')'");
 				delete items;
 				return nullptr;
@@ -415,13 +415,13 @@ Node* Parser::atom(SymbolsParser* symbols, bool byPassDot = false) {
 		delete expression;
 		return nullptr;
 	}
-	else if (token->mType == Token::Type::KEYWORD_VAR) {
+	else if (token->type == Token::Type::kKeywordVar) {
 
 		advance();
 		token = currentToken;
-		if (token->mType == Token::Type::IDENTIFIER) {
+		if (token->type == Token::Type::kIdentifier) {
 			advance();
-			if (currentToken->mType != Token::Type::EQUALS) {
+			if (currentToken->type != Token::Type::kEquals) {
 				mError = new String("Expected '='");
 				return nullptr;
 			}
@@ -430,32 +430,32 @@ Node* Parser::atom(SymbolsParser* symbols, bool byPassDot = false) {
 			if (mError != nullptr)
 				return nullptr;
 
-			return new VarAssign(new String(token->mValue->ptr), expression);
+			return new VarAssign(new String(token->value->ptr), expression);
 		}
 		else {
 			mError = new String("Expected an identifier");
 			return nullptr;
 		}
 	}
-	else if (token->mType == Token::Type::KEYWORD_FOR)
+	else if (token->type == Token::Type::kKeywordFor)
 		return for_expr(symbols);
-	else if (token->mType == Token::Type::KEYWORD_METHOD)
+	else if (token->type == Token::Type::kKeywordMethod)
 		return method_expr(symbols);
-	else if (token->mType == Token::Type::KEYWORD_RETURN)
+	else if (token->type == Token::Type::kKeywordReturn)
 		return return_expr(symbols);
-	else if (token->mType == Token::Type::KEYWORD_CLASS)
+	else if (token->type == Token::Type::kKeywordClass)
 		return class_expr(symbols);
-	else if (token->mType == Token::Type::KEYWORD_BREAK) {
+	else if (token->type == Token::Type::kKeywordBreak) {
 		advance();
 		return new Node(Node::Type::BREAK);
 	}
-	else if (token->mType == Token::Type::KEYWORD_CONTINUE) {
+	else if (token->type == Token::Type::kKeywordContinue) {
 		advance();
 		return new Node(Node::Type::CONTINUE);
 	}
-	else if (token->mType == Token::Type::KEYWORD_IF)
+	else if (token->type == Token::Type::kKeywordIf)
 		return if_expr(symbols);
-	else if (token->mType == Token::Type::L_SQ)
+	else if (token->type == Token::Type::kLeftSqare)
 		return list_expr(symbols);
 
 	mError = new String("Expected something!");
@@ -466,57 +466,57 @@ Node* Parser::method_expr(SymbolsParser* symbols) {
 
 	advance(); // method keyword
 	Token* identifier = currentToken;
-	if (currentToken->mType != Token::Type::IDENTIFIER) {
+	if (currentToken->type != Token::Type::kIdentifier) {
 		identifier = nullptr;
 	} else
 		advance();
-	if (currentToken->mType != Token::Type::L_PAREN) {
+	if (currentToken->type != Token::Type::kLeftParen) {
 		mError = new String("Expected '('");
 		return nullptr;
 	}
 	advance();
 	List<String*>* ids = new List<String*>();
 	SymbolsParser* newSymbols = new SymbolsParser(symbols);
-	if (currentToken->mType == Token::Type::IDENTIFIER) {
+	if (currentToken->type == Token::Type::kIdentifier) {
 		
-		ids->add(new String(currentToken->mValue->ptr));
+		ids->Add(new String(currentToken->value->ptr));
 		advance();
-		while (currentToken->mType == Token::Type::COMMA) {
+		while (currentToken->type == Token::Type::kComma) {
 			advance();
-			if (currentToken->mType == Token::Type::IDENTIFIER) {
+			if (currentToken->type == Token::Type::kIdentifier) {
 			
-				ids->add(new String(currentToken->mValue->ptr));
+				ids->Add(new String(currentToken->value->ptr));
 				advance();
 			}
 		}
 	}
 
-	if (currentToken->mType != Token::Type::R_PAREN) {
+	if (currentToken->type != Token::Type::kRightParen) {
 		mError = new String("Expected ')'");
 		return nullptr;
 	}
 	advance();
 	
-	if (currentToken->mType == Token::Type::COLON) {
+	if (currentToken->type == Token::Type::kColon) {
 		advance();
 		skipNewLines();
 		//int id = symbols->setSymbolIndex(identifier->mValue);
 		Node* body = expr(newSymbols);
 		if (mError != nullptr)
 			return nullptr;
-		return new Method(identifier == nullptr ? nullptr : new String(identifier->mValue->ptr), body, ids);
+		return new Method(identifier == nullptr ? nullptr : new String(identifier->value->ptr), body, ids);
 	}
 	else {
 		skipNewLines();
-		if (currentToken->mType == Token::Type::L_BRACE) {
+		if (currentToken->type == Token::Type::kLeftBrace) {
 			advance();
 			skipNewLines();
 			//int id = symbols->setSymbolIndex(identifier->mValue);
-			Node* node = block(newSymbols, Token::Type::R_BRACE);
+			Node* node = block(newSymbols, Token::Type::kRightBrace);
 			advance(); //closing brace
 			if (mError != nullptr)
 				return nullptr;
-			return new Method(identifier == nullptr ? nullptr : new String(identifier->mValue->ptr), node, ids);
+			return new Method(identifier == nullptr ? nullptr : new String(identifier->value->ptr), node, ids);
 		}
 		mError = new String("Expected ':' or '{'");
 		return nullptr;
@@ -528,15 +528,15 @@ Node* Parser::for_expr(SymbolsParser* symbols) {
 	Node* start, * to, * step = nullptr;
 	advance(); // for keyword
 	Token* identifier = currentToken;
-	if (currentToken->mType != Token::Type::IDENTIFIER)
+	if (currentToken->type != Token::Type::kIdentifier)
 	{
 		mError = new String("Expected an identifier (for loop)");
-		printf("%d\n", currentToken->mType);
+		printf("%d\n", currentToken->type);
 		return nullptr;
 	}
 	advance();
 
-	if (currentToken->mType != Token::Type::EQUALS)
+	if (currentToken->type != Token::Type::kEquals)
 	{
 		mError = new String("Expected '='");
 		return nullptr;
@@ -546,7 +546,7 @@ Node* Parser::for_expr(SymbolsParser* symbols) {
 	start = bitwise_or(symbols);
 	if (mError != nullptr)
 		return nullptr;
-	if (currentToken->mType != Token::Type::KEYWORD_TO)
+	if (currentToken->type != Token::Type::kKeywordTo)
 	{
 		mError = new String("Expected 'to'");
 		delete start;
@@ -560,7 +560,7 @@ Node* Parser::for_expr(SymbolsParser* symbols) {
 		return nullptr;
 	}
 
-	if (currentToken->mType == Token::Type::KEYWORD_STEP) {
+	if (currentToken->type == Token::Type::kKeywordStep) {
 		advance();
 		step = bitwise_or(symbols);
 		if (mError != nullptr) {
@@ -570,7 +570,7 @@ Node* Parser::for_expr(SymbolsParser* symbols) {
 		}
 	}
 	
-	if (currentToken->mType == Token::Type::COLON) {
+	if (currentToken->type == Token::Type::kColon) {
 		advance();
 		skipNewLines();
 		//int id = symbols->setSymbolIndex(identifier->mValue);
@@ -583,15 +583,15 @@ Node* Parser::for_expr(SymbolsParser* symbols) {
 				delete step;
 			return nullptr;
 		}
-		return new ForLoop(new String(identifier->mValue->ptr), start, to, step, body);
+		return new ForLoop(new String(identifier->value->ptr), start, to, step, body);
 	}
 	else {
 		skipNewLines();
-		if (currentToken->mType == Token::Type::L_BRACE) {
+		if (currentToken->type == Token::Type::kLeftBrace) {
 			advance();
 			skipNewLines();
 			//int id = symbols->setSymbolIndex(identifier->mValue);
-			Node* node = block(symbols, Token::Type::R_BRACE);
+			Node* node = block(symbols, Token::Type::kRightBrace);
 			advance(); //closing brace
 			if (mError != nullptr)
 			{
@@ -601,7 +601,7 @@ Node* Parser::for_expr(SymbolsParser* symbols) {
 					delete step;
 				return nullptr;
 			}
-			return new ForLoop(new String(identifier->mValue->ptr), start, to, step, node);
+			return new ForLoop(new String(identifier->value->ptr), start, to, step, node);
 		}
 		mError = new String("Expected ':' or '{'");
 		delete start;
@@ -630,7 +630,7 @@ Node* Parser::if_expr(SymbolsParser* symbols) {
 		return nullptr;
 
 	skipNewLines();
-	if (currentToken->mType == Token::Type::COLON) {
+	if (currentToken->type == Token::Type::kColon) {
 		advance();
 		skipNewLines();
 		Node* body = expr(symbols);
@@ -638,23 +638,23 @@ Node* Parser::if_expr(SymbolsParser* symbols) {
 			delete condition;
 			return nullptr;
 		}
-		cases->add(new IfCase(condition, body));
+		cases->Add(new IfCase(condition, body));
 		skipNewLines();
 	}
-	else if (currentToken->mType == Token::Type::L_BRACE) {
+	else if (currentToken->type == Token::Type::kLeftBrace) {
 		advance();
 		skipNewLines();
-		Node* body = block(symbols, Token::Type::R_BRACE);
+		Node* body = block(symbols, Token::Type::kRightBrace);
 		advance(); //closing brace
 		if (mError != nullptr) {
 			delete condition;
 			return nullptr;
 		}
-		cases->add(new IfCase(condition, body));
+		cases->Add(new IfCase(condition, body));
 		skipNewLines();
 	}
 
-	while (currentToken->mType == Token::Type::KEYWORD_ELIF) {
+	while (currentToken->type == Token::Type::kKeywordElif) {
 		advance();
 		Node* elifCondition = expr(symbols);
 		if (mError != nullptr) {
@@ -663,7 +663,7 @@ Node* Parser::if_expr(SymbolsParser* symbols) {
 		}
 
 		skipNewLines();
-		if (currentToken->mType == Token::Type::COLON) {
+		if (currentToken->type == Token::Type::kColon) {
 			advance();
 			skipNewLines();
 			Node* elifBody = expr(symbols);
@@ -672,28 +672,28 @@ Node* Parser::if_expr(SymbolsParser* symbols) {
 				delete cases;
 				return nullptr;
 			}
-			cases->add(new IfCase(elifCondition, elifBody));
+			cases->Add(new IfCase(elifCondition, elifBody));
 			skipNewLines();
 		}
-		else if (currentToken->mType == Token::Type::L_BRACE) {
+		else if (currentToken->type == Token::Type::kLeftBrace) {
 			advance();
 			skipNewLines();
-			Node* elifBody = block(symbols, Token::Type::R_BRACE);
+			Node* elifBody = block(symbols, Token::Type::kRightBrace);
 			advance(); //closing brace
 			if (mError != nullptr) {
 				delete elifCondition;
 				delete cases;
 				return nullptr;
 			}
-			cases->add(new IfCase(elifCondition, elifBody));
+			cases->Add(new IfCase(elifCondition, elifBody));
 			skipNewLines();
 		}
 	}
 
-	if (currentToken->mType == Token::Type::KEYWORD_ELSE) {
+	if (currentToken->type == Token::Type::kKeywordElse) {
 		advance();
 		skipNewLines();
-		if (currentToken->mType == Token::Type::COLON) {
+		if (currentToken->type == Token::Type::kColon) {
 			advance();
 			skipNewLines();
 			Node* elseBody = expr(symbols);
@@ -704,10 +704,10 @@ Node* Parser::if_expr(SymbolsParser* symbols) {
 			skipNewLines();
 			return new If(cases, elseBody);
 		}
-		else if (currentToken->mType == Token::Type::L_BRACE) {
+		else if (currentToken->type == Token::Type::kLeftBrace) {
 			advance();
 			skipNewLines();
-			Node* elseBody = block(symbols, Token::Type::R_BRACE);
+			Node* elseBody = block(symbols, Token::Type::kRightBrace);
 			advance(); //closing brace
 			if (mError != nullptr) {
 				delete cases;
@@ -722,7 +722,7 @@ Node* Parser::if_expr(SymbolsParser* symbols) {
 
 Node* Parser::list_expr(SymbolsParser* symbols) {
 	advance();
-	if (currentToken->mType == Token::Type::R_SQ) {
+	if (currentToken->type == Token::Type::kRightSquare) {
 		advance();
 		return new ListNode(nullptr);
 	}
@@ -730,25 +730,25 @@ Node* Parser::list_expr(SymbolsParser* symbols) {
 	if (mError != nullptr)
 		return nullptr;
 	List<Node*>* items = new List<Node*>();
-	items->add(expression);
+	items->Add(expression);
 
-	while (currentToken->mType == Token::Type::COMMA) {
+	while (currentToken->type == Token::Type::kComma) {
 		advance();
-		if (currentToken->mType == Token::Type::R_SQ)
+		if (currentToken->type == Token::Type::kRightSquare)
 			break;
 		Node* expression = expr(symbols);
 		if (mError != nullptr) {
 			delete items;
 			return nullptr;
 		}
-		items->add(expression);
+		items->Add(expression);
 	}
 
-	if (currentToken->mType == Token::Type::R_SQ) {
+	if (currentToken->type == Token::Type::kRightSquare) {
 		advance();
 		return new ListNode(items);
 	}
-	if (currentToken->mType == Token::Type::L_SQ)
+	if (currentToken->type == Token::Type::kLeftSqare)
 		return subscript(new ListNode(items), symbols);
 	mError = new String("Expected ']'");
 	delete items;
@@ -761,7 +761,7 @@ Node* Parser::subscript(Node* base, SymbolsParser* symbols) {
 	if (mError != nullptr)
 		return nullptr;
 
-	if (currentToken->mType != Token::Type::R_SQ) {
+	if (currentToken->type != Token::Type::kRightSquare) {
 		advance();
 		mError = new String("Expected ']'");
 		delete expression;
@@ -769,10 +769,10 @@ Node* Parser::subscript(Node* base, SymbolsParser* symbols) {
 	}
 	advance();
 
-	if (currentToken->mType == Token::Type::L_SQ) 
+	if (currentToken->type == Token::Type::kLeftSqare) 
 		return subscript(new SubscriptAccessNode(base, expression), symbols);
 		
-	if (currentToken->mType == Token::Type::EQUALS) {
+	if (currentToken->type == Token::Type::kEquals) {
 		advance();
 		Node* node = expr(symbols);
 		if (mError != nullptr) {
@@ -787,21 +787,21 @@ Node* Parser::subscript(Node* base, SymbolsParser* symbols) {
 Node* Parser::class_expr(SymbolsParser* symbols) {
 	advance();
 	Token* identifier = currentToken;
-	if (identifier->mType != Token::Type::IDENTIFIER) {
+	if (identifier->type != Token::Type::kIdentifier) {
 		mError = new String("Expected an identifier");
 		return nullptr;
 	}
 	advance();
 	skipNewLines();
-	if (currentToken->mType == Token::Type::L_BRACE) {
+	if (currentToken->type == Token::Type::kLeftBrace) {
 		advance();
 		skipNewLines();
 		//int id = symbols->setSymbolIndex(identifier->mValue);
-		Node* node = block(symbols, Token::Type::R_BRACE);
+		Node* node = block(symbols, Token::Type::kRightBrace);
 		advance(); //closing brace
 		if (mError != nullptr)
 			return nullptr;
-		return new ClassNode(new String(identifier->mValue->ptr), node);
+		return new ClassNode(new String(identifier->value->ptr), node);
 	}
 	mError = new String("Expected '{'");
 	return nullptr;
@@ -813,7 +813,7 @@ Node* Parser::attribute(Node* base, SymbolsParser* symbols) {
 	Node* node = call(symbols, true);
 	if (mError != nullptr)
 		return nullptr;
-	if (currentToken->mType == Token::Type::DOT)
+	if (currentToken->type == Token::Type::kDot)
 		return attribute(new AttributeNode(base, node), symbols);
 	return new AttributeNode(base, node);
 }

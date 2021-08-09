@@ -11,7 +11,7 @@ private:
 	int mIndex = -1;
 	Token* currentToken;
 
-	Node* block(SymbolsParser* symbols, Token::Type end = Token::Type::R_BRACE);
+	Node* block(SymbolsParser* symbols, Token::Type end = Token::Type::kRightBrace);
 	Node* expr(SymbolsParser* symbols);
 	Node* Compare(SymbolsParser* symbols);
 	Node* bitwise_or(SymbolsParser* symbols);

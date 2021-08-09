@@ -1,15 +1,15 @@
 #include "token.h"
 
 Token::Token(Type type) {
-	mType = type;
+	type = type;
 }
 
 Token::Token(String* value, Type type) {
-	mValue = value;
-	mType = type;
+	value = value;
+	type = type;
 }
 
 Token::~Token() {
-	if (mValue != nullptr)
-		delete mValue;
+	if (value != nullptr)
+		delete value;
 }

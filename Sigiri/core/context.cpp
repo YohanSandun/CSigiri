@@ -17,17 +17,17 @@ SymbolsRuntime::SymbolsRuntime(SymbolsRuntime* parent) {
 void SymbolsRuntime::unlinkValue(String* id) {
 	for (size_t i = 0; i < mSymbolCount; i++)
 	{
-		if (mSymbolNames->get(i)->Compare(id->ptr))
-			mSymbols->unlinkItem(i);
+		if (mSymbolNames->Get(i)->Compare(id->ptr))
+			mSymbols->UnlinkItem(i);
 	}
 }
 
 Value* SymbolsRuntime::getSymbol(String* id) {
 	for (size_t i = 0; i < mSymbolCount; i++)
 	{
-		//printf("%s(%s), ", mSymbolNames->get(i)->mPtr, id->mPtr);
-		if (mSymbolNames->get(i)->Compare(id))
-			return mSymbols->get(i);
+		//printf("%s(%s), ", mSymbolNames->Get(i)->ptr, id->ptr);
+		if (mSymbolNames->Get(i)->Compare(id))
+			return mSymbols->Get(i);
 		
 	}
 	if (mParent != nullptr)
@@ -38,8 +38,8 @@ Value* SymbolsRuntime::getSymbol(String* id) {
 Value* SymbolsRuntime::getDirectSymbol(String* id) {
 	for (size_t i = 0; i < mSymbolCount; i++)
 	{
-		if (mSymbolNames->get(i)->Compare(id))
-			return mSymbols->get(i);
+		if (mSymbolNames->Get(i)->Compare(id))
+			return mSymbols->Get(i);
 	}
 	return nullptr;
 }
@@ -47,22 +47,22 @@ Value* SymbolsRuntime::getDirectSymbol(String* id) {
 void SymbolsRuntime::setSymbol(String* id, Value* value) {
 	for (size_t i = 0; i < mSymbolCount; i++)
 	{
-		if (mSymbolNames->get(i)->Compare(id->ptr))
+		if (mSymbolNames->Get(i)->Compare(id->ptr))
 		{
-			delete mSymbols->get(i);
-			mSymbols->add(i, value);
-			//printf("var update %s\n", id->mPtr);
+			delete mSymbols->Get(i);
+			mSymbols->Add(i, value);
+			//printf("var update %s\n", id->ptr);
 			return;
 		}
 	}
-	mSymbols->add(value);
-	mSymbolNames->add(id);
-	//printf("var set %s\n", id->mPtr);
+	mSymbols->Add(value);
+	mSymbolNames->Add(id);
+	//printf("var set %s\n", id->ptr);
 	mSymbolCount++;
 }
 
 SymbolsRuntime::~SymbolsRuntime() {
-	mSymbolNames->keepItemsAlive = true;
+	mSymbolNames->keep_items_alive_ = true;
 	delete mSymbolNames;
 	delete mSymbols;
 	if (returnValue != nullptr && !keepReturnValue)

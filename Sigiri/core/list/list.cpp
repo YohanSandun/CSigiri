@@ -3,61 +3,61 @@
 
 template <class T>
 List<T>::List() {
-	mPtr = new T[mDefaultSize];
-	mSize = mDefaultSize;
+	ptr = new T[kDefaultSize];
+	size = kDefaultSize;
 }
 
 template <class T>
 List<T>::List(int count) {
-	mPtr = new T[count];
-	mSize = count;
+	ptr = new T[count];
+	size = count;
 }
 
 template <class T>
 List<T>::~List() {
-	if (!keepItemsAlive) {
-		for (int i = 0; i <= mCurrentIndex; i++)
-			if (mPtr[i] != nullptr)
-				delete mPtr[i];
+	if (!keep_items_alive_) {
+		for (int i = 0; i <= current_index_; i++)
+			if (ptr[i] != nullptr)
+				delete ptr[i];
 	}
-	delete[] mPtr;
+	delete[] ptr;
 }
 
 template <class T>
-void List<T>::add(T item) {
-	ensureMemory();
-	mPtr[mCurrentIndex] = item;
+void List<T>::Add(T item) {
+	EnsureMemory();
+	ptr[current_index_] = item;
 }
 
 template <class T>
-void List<T>::add(int index, T item) {
-	//ensureMemory();
-	mPtr[index] = item;
+void List<T>::Add(int index, T item) {
+	//EnsureMemory();
+	ptr[index] = item;
 }
 
 template <class T>
-uint List<T>::getCount() {
-	return mCurrentIndex + 1;
+uint List<T>::count() {
+	return current_index_ + 1;
 }
 
 template <class T>
-void List<T>::unlinkItem(uint index) {
-	mPtr[index] = nullptr;
+void List<T>::UnlinkItem(uint index) {
+	ptr[index] = nullptr;
 }
 
 template <class T>
-T List<T>::get(uint at) {
-	return mPtr[at];
+T List<T>::Get(uint at) {
+	return ptr[at];
 }
 
 template <class T>
-void List<T>::ensureMemory() {
-	if (++mCurrentIndex == mSize) {
-		mSize += mDefaultSize;
-		T* newPtr = new T[mSize];
-		for (int i = 0; i < mCurrentIndex; i++)
-			newPtr[i] = mPtr[i];
-		delete[] mPtr;
-		mPtr = newPtr;
+void List<T>::EnsureMemory() {
+	if (++current_index_ == size) {
+		size += kDefaultSize;
+		T* newPtr = new T[size];
+		for (int i = 0; i < current_index_; i++)
+			newPtr[i] = ptr[i];
+		delete[] ptr;
+		ptr = newPtr;
 	}
 }

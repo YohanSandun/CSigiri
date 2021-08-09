@@ -8,17 +8,17 @@ public:
     List();
     List(int count);
     ~List();
-    void add(T item);
-    void add(int index, T item);
-    uint getCount();
-    T get(uint at);
-    uint mSize;
-    T* mPtr;
-    bool keepItemsAlive = false;
-    void unlinkItem(uint index);
+    void Add(T item);
+    void Add(int index, T item);
+    uint count();
+    T Get(uint at);
+    uint size;
+    T* ptr;
+    bool keep_items_alive_ = false;
+    void UnlinkItem(uint index);
 
 private:
-    void ensureMemory();
-    const uint mDefaultSize = 10;
-    int mCurrentIndex = -1;
+    void EnsureMemory();
+    const uint kDefaultSize = 10;
+    int current_index_ = -1;
 };

@@ -69,9 +69,9 @@ UnaryNode::~UnaryNode() {
 }
 
 void UnaryNode::toString() {
-	if (mOpType == Token::Type::PLUS)
+	if (mOpType == Token::Type::kPlus)
 		printf("(+");
-	else if (mOpType == Token::Type::MINUS)
+	else if (mOpType == Token::Type::kMinus)
 		printf("(-");
 	mNode->toString();
 	printf(")");
@@ -89,15 +89,15 @@ void BinaryNode::toString() {
 	printf("(");
 	mLeft->toString();
 	
-	if (mOpType == Token::Type::PLUS)
+	if (mOpType == Token::Type::kPlus)
 		printf("+");
-	else if (mOpType == Token::Type::MINUS)
+	else if (mOpType == Token::Type::kMinus)
 		printf("-");
-	else if (mOpType == Token::Type::ASTERIX)
+	else if (mOpType == Token::Type::kAsterix)
 		printf("*");
-	else if (mOpType == Token::Type::FW_SLASH)
+	else if (mOpType == Token::Type::kFowardSlash)
 		printf("/");
-	else if (mOpType == Token::Type::POWER)
+	else if (mOpType == Token::Type::kPower)
 		printf("**");
 
 	mRight->toString();
@@ -151,12 +151,12 @@ Block::~Block() {
 }
 
 void Block::toString() {
-	int count = mStatements->getCount();
+	int count = mStatements->count();
 	printf("{\n");
 	for (size_t i = 0; i < count; i++)
 	{
 		printf("\t");
-		mStatements->get(i)->toString();
+		mStatements->Get(i)->toString();
 	}
 	printf("}\n");
 }

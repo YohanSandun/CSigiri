@@ -33,171 +33,171 @@ List<Token*>* Lexer::generateTokens() {
 		else if (mCurrentChar == '\n' || mCurrentChar == '\r') { // todo
 			mLine++;
 			mColumn = 0;
-			tokens->add(new Token(Token::Type::NEWLINE));
+			tokens->Add(new Token(Token::Type::kNewLine));
 			advance();
 		}
 		else if (mCurrentChar == '+') {
-			tokens->add(new Token(Token::Type::PLUS));
+			tokens->Add(new Token(Token::Type::kPlus));
 			advance();
 		}
 		else if (mCurrentChar == '-') {
-			tokens->add(new Token(Token::Type::MINUS));
+			tokens->Add(new Token(Token::Type::kMinus));
 			advance();
 		}
 		else if (mCurrentChar == '*') {
 			if (peek(1) == '*') {
-				tokens->add(new Token(Token::Type::POWER));
+				tokens->Add(new Token(Token::Type::kPower));
 				advance();
 				advance();
 			}
 			else {
-				tokens->add(new Token(Token::Type::ASTERIX));
+				tokens->Add(new Token(Token::Type::kAsterix));
 				advance();
 			}
 		}
 		else if (mCurrentChar == '/') {
-			tokens->add(new Token(Token::Type::FW_SLASH));
+			tokens->Add(new Token(Token::Type::kFowardSlash));
 			advance();
 		}
 		else if (mCurrentChar == '%') {
-			tokens->add(new Token(Token::Type::MODULUS));
+			tokens->Add(new Token(Token::Type::kPrecentage));
 			advance();
 		}
 		else if (mCurrentChar == '(') {
-			tokens->add(new Token(Token::Type::L_PAREN));
+			tokens->Add(new Token(Token::Type::kLeftParen));
 			advance();
 		}
 		else if (mCurrentChar == ')') {
-			tokens->add(new Token(Token::Type::R_PAREN));
+			tokens->Add(new Token(Token::Type::kRightParen));
 			advance();
 		}
 		else if (mCurrentChar == '{') {
-			tokens->add(new Token(Token::Type::L_BRACE));
+			tokens->Add(new Token(Token::Type::kLeftBrace));
 			advance();
 		}
 		else if (mCurrentChar == '}') {
-			tokens->add(new Token(Token::Type::R_BRACE));
+			tokens->Add(new Token(Token::Type::kRightBrace));
 			advance();
 		}
 		else if (mCurrentChar == '[') {
-			tokens->add(new Token(Token::Type::L_SQ));
+			tokens->Add(new Token(Token::Type::kLeftSqare));
 			advance();
 		}
 		else if (mCurrentChar == ']') {
-			tokens->add(new Token(Token::Type::R_SQ));
+			tokens->Add(new Token(Token::Type::kRightSquare));
 			advance();
 		}
 		else if (mCurrentChar == ':') {
-			tokens->add(new Token(Token::Type::COLON));
+			tokens->Add(new Token(Token::Type::kColon));
 			advance();
 		}
 		else if (mCurrentChar == ';') {
-			tokens->add(new Token(Token::Type::NEWLINE));
+			tokens->Add(new Token(Token::Type::kNewLine));
 			advance();
 		}
 		else if (mCurrentChar == '^') {
-			tokens->add(new Token(Token::Type::BITWISE_XOR));
+			tokens->Add(new Token(Token::Type::kBitwiseXor));
 			advance();
 		}
 		else if (mCurrentChar == '~') {
-			tokens->add(new Token(Token::Type::BITWISE_COMPLEMENT));
+			tokens->Add(new Token(Token::Type::kBitwiseComplement));
 			advance();
 		}
 		else if (mCurrentChar == ',') {
-			tokens->add(new Token(Token::Type::COMMA));
+			tokens->Add(new Token(Token::Type::kComma));
 			advance();
 		}
 		else if (mCurrentChar == '.') {
-			tokens->add(new Token(Token::Type::DOT));
+			tokens->Add(new Token(Token::Type::kDot));
 			advance();
 		}
 		else if (mCurrentChar == '=') {
 			if (peek(1) == '=') {
-				tokens->add(new Token(Token::Type::EQUALS_EQUALS));
+				tokens->Add(new Token(Token::Type::kEqualsEquals));
 				advance();
 				advance();
 			} else {
-				tokens->add(new Token(Token::Type::EQUALS));
+				tokens->Add(new Token(Token::Type::kEquals));
 				advance();
 			}
 		}
 		else if (mCurrentChar == '<') {
 			if (peek(1) == '=') {
-				tokens->add(new Token(Token::Type::LESS_EQ));
+				tokens->Add(new Token(Token::Type::kLessEquals));
 				advance();
 				advance();
 			}
 			else if (peek(1) == '<') {
-				tokens->add(new Token(Token::Type::LEFT_SHIFT));
+				tokens->Add(new Token(Token::Type::kLeftShift));
 				advance();
 				advance();
 			}
 			else {
-				tokens->add(new Token(Token::Type::LESS_THAN));
+				tokens->Add(new Token(Token::Type::kLessThan));
 				advance();
 			}
 		}
 		else if (mCurrentChar == '>') {
 			if (peek(1) == '=') {
-				tokens->add(new Token(Token::Type::GREATER_EQ));
+				tokens->Add(new Token(Token::Type::kGreaterEquals));
 				advance();
 				advance();
 			}
 			else if (peek(1) == '>') {
-				tokens->add(new Token(Token::Type::RIGHT_SHIFT));
+				tokens->Add(new Token(Token::Type::kRightShift));
 				advance();
 				advance();
 			}
 			else {
-				tokens->add(new Token(Token::Type::GREATER_THAN));
+				tokens->Add(new Token(Token::Type::kGreaterThan));
 				advance();
 			}
 		}
 		else if (mCurrentChar == '!') {
 			if (peek(1) == '=') {
-				tokens->add(new Token(Token::Type::NOT_EQUALS));
+				tokens->Add(new Token(Token::Type::kNotEquals));
 				advance();
 				advance();
 			}
 			else {
-				tokens->add(new Token(Token::Type::BOOLEAN_NOT));
+				tokens->Add(new Token(Token::Type::kBooleanNot));
 				advance();
 			}
 		}
 		else if (mCurrentChar == '&') {
 			if (peek(1) == '&') {
-				tokens->add(new Token(Token::Type::BOOLEAN_AND));
+				tokens->Add(new Token(Token::Type::kBooleanAnd));
 				advance();
 				advance();
 			}
 			else {
-				tokens->add(new Token(Token::Type::BITWISE_AND));
+				tokens->Add(new Token(Token::Type::kBitwiseAnd));
 				advance();
 			}
 		}
 		else if (mCurrentChar == '|') {
 			if (peek(1) == '|') {
-				tokens->add(new Token(Token::Type::BOOLEAN_OR));
+				tokens->Add(new Token(Token::Type::kBooleanOr));
 				advance();
 				advance();
 			}
 			else {
-				tokens->add(new Token(Token::Type::BITWISE_OR));
+				tokens->Add(new Token(Token::Type::kBitwiseOr));
 				advance();
 			}
 		}
 		else if (mCurrentChar >= '0' && mCurrentChar <= '9') {
-			tokens->add(makeNumber());
+			tokens->Add(makeNumber());
 		}
 		else if (mCurrentChar == '"') {
-			tokens->add(makeString());
+			tokens->Add(makeString());
 		}
 		else if ((mCurrentChar >= 'a' && mCurrentChar <= 'z') ||
 			(mCurrentChar >= 'A' && mCurrentChar <= 'Z') || mCurrentChar == '_') {
-			tokens->add(makeIdentifier());
+			tokens->Add(makeIdentifier());
 		}
 	}
-	tokens->add(new Token(Token::Type::EOF_TOKEN));
+	tokens->Add(new Token(Token::Type::kEof));
 	return tokens;
 }
 
@@ -225,7 +225,7 @@ Token* Lexer::makeString() {
 		str->Append(mCurrentChar);
 		advance();
 	}
-	return new Token(str, Token::Type::STRING);
+	return new Token(str, Token::Type::kString);
 }
 
 Token* Lexer::makeNumber() {
@@ -238,9 +238,9 @@ Token* Lexer::makeNumber() {
 		advance();
 	}
 	if (dotCount == 0)
-		return new Token(number, Token::Type::INT_NUMBER);
+		return new Token(number, Token::Type::kIntNumber);
 	else
-		return new Token(number, Token::Type::FLOAT_NUMBER);
+		return new Token(number, Token::Type::kFloatNumber);
 }
 
 Token* Lexer::makeIdentifier() {
@@ -255,55 +255,55 @@ Token* Lexer::makeIdentifier() {
 
 	if (id->Compare("var")) {
 		delete id;
-		return new Token(Token::Type::KEYWORD_VAR);
+		return new Token(Token::Type::kKeywordVar);
 	}
 	else if (id->Compare("int")) {
 		delete id;
-		return new Token(Token::Type::KEYWORD_INT);
+		return new Token(Token::Type::kKeywordInt);
 	}
 	else if (id->Compare("for")) {
 		delete id;
-		return new Token(Token::Type::KEYWORD_FOR);
+		return new Token(Token::Type::kKeywordFor);
 	}
 	else if (id->Compare("to")) {
 		delete id;
-		return new Token(Token::Type::KEYWORD_TO);
+		return new Token(Token::Type::kKeywordTo);
 	}
 	else if (id->Compare("step")) {
 		delete id;
-		return new Token(Token::Type::KEYWORD_STEP);
+		return new Token(Token::Type::kKeywordStep);
 	}
 	else if (id->Compare("method")) {
 		delete id;
-		return new Token(Token::Type::KEYWORD_METHOD);
+		return new Token(Token::Type::kKeywordMethod);
 	}
 	else if (id->Compare("return")) {
 		delete id;
-		return new Token(Token::Type::KEYWORD_RETURN);
+		return new Token(Token::Type::kKeywordReturn);
 	}
 	else if (id->Compare("break")) {
 		delete id;
-		return new Token(Token::Type::KEYWORD_BREAK);
+		return new Token(Token::Type::kKeywordBreak);
 	}
 	else if (id->Compare("continue")) {
 		delete id;
-		return new Token(Token::Type::KEYWORD_CONTINUE);
+		return new Token(Token::Type::kKeywordContinue);
 	}
 	else if (id->Compare("if")) {
 		delete id;
-		return new Token(Token::Type::KEYWORD_IF);
+		return new Token(Token::Type::kKeywordIf);
 	}
 	else if (id->Compare("elif")) {
 		delete id;
-		return new Token(Token::Type::KEYWORD_ELIF);
+		return new Token(Token::Type::kKeywordElif);
 	}
 	else if (id->Compare("else")) {
 		delete id;
-		return new Token(Token::Type::KEYWORD_ELSE);
+		return new Token(Token::Type::kKeywordElse);
 	}
 	else if (id->Compare("class")) {
 		delete id;
-		return new Token(Token::Type::KEYWORD_CLASS);
+		return new Token(Token::Type::kKeywordClass);
 	}
-	return new Token(id, Token::Type::IDENTIFIER);
+	return new Token(id, Token::Type::kIdentifier);
 }

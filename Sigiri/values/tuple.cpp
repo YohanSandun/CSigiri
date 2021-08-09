@@ -101,14 +101,14 @@ Value* TupleValue::clone() {
 }
 
 void TupleValue::print() {
-	int len = mValues->getCount();
+	int len = mValues->count();
 	printf("(");
 	for (size_t i = 0; i < len; i++)
 	{
 		if (i + 1 == len)
-			mValues->get(i)->print();
+			mValues->Get(i)->print();
 		else {
-			mValues->get(i)->print();
+			mValues->Get(i)->print();
 			printf(", ");
 		}
 	}
@@ -116,13 +116,13 @@ void TupleValue::print() {
 }
 
 bool TupleValue::asBoolean() {
-	return mValues->getCount() == 0 ? false : true;
+	return mValues->count() == 0 ? false : true;
 }
 
 Value* TupleValue::subscriptAccess(Value* at) {
 	if (at->mType == Value::Type::INTEGER) {
 		int index = ((IntegerValue*)at)->mValue;
-		return mValues->get(index)->clone(); // todo check whether correct or not
+		return mValues->Get(index)->clone(); // todo check whether correct or not
 	}
 	return this;
 }
@@ -130,8 +130,8 @@ Value* TupleValue::subscriptAccess(Value* at) {
 Value* TupleValue::subscriptAssign(Value* at, Value* value) {
 	if (at->mType == Value::Type::INTEGER) {
 		int index = ((IntegerValue*)at)->mValue;
-		delete mValues->get(index); // todo dont delete objects
-		mValues->add(index, value);
+		delete mValues->Get(index); // todo dont delete objects
+		mValues->Add(index, value);
 	}
 	return this;
 }

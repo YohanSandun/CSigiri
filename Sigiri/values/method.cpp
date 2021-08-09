@@ -7,7 +7,7 @@ MethodValue::MethodValue(String* name, Node* body, List<String*>* params) : Valu
 }
 
 MethodValue::~MethodValue() {
-	//printf("method '%s' Destroyed!\n", mName->mPtr);
+	//printf("method '%s' Destroyed!\n", mName->ptr);
 	delete mName;
 	delete mBody;
 }

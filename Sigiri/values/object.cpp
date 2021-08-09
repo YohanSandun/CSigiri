@@ -5,7 +5,7 @@ ObjectValue::ObjectValue(SymbolsRuntime* symbols) : Value(Type::OBJECT) {
 }
 
 ObjectValue::~ObjectValue() {
-	//printf("method '%s' Destroyed!\n", mName->mPtr);
+	//printf("method '%s' Destroyed!\n", mName->ptr);
 }
 
 Value* ObjectValue::add(Value* other) {

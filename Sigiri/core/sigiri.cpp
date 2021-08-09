@@ -74,43 +74,43 @@ Value* Interpreter::visitBinary(BinaryNode* node, SymbolsRuntime* symbols) {
 
 	switch (node->mOpType)
 	{
-	case Token::Type::PLUS:
+	case Token::Type::kPlus:
 		return left->add(right);
-	case Token::Type::MINUS:
+	case Token::Type::kMinus:
 		return left->sub(right);
-	case Token::Type::ASTERIX:
+	case Token::Type::kAsterix:
 		return left->mul(right);
-	case Token::Type::FW_SLASH:
+	case Token::Type::kFowardSlash:
 		return left->div(right);
-	case Token::Type::MODULUS:
+	case Token::Type::kPrecentage:
 		return left->mod(right);
-	case Token::Type::POWER:
+	case Token::Type::kPower:
 		return left->s_pow(right);
-	case Token::Type::EQUALS_EQUALS:
+	case Token::Type::kEqualsEquals:
 		return left->comp_eq_eq(right);
-	case Token::Type::NOT_EQUALS:
+	case Token::Type::kNotEquals:
 		return left->comp_not_eq(right);
-	case Token::Type::LESS_THAN:
+	case Token::Type::kLessThan:
 		return left->comp_less(right);
-	case Token::Type::GREATER_THAN:
+	case Token::Type::kGreaterThan:
 		return left->comp_greater(right);
-	case Token::Type::LESS_EQ:
+	case Token::Type::kLessEquals:
 		return left->comp_less_eq(right);
-	case Token::Type::GREATER_EQ:
+	case Token::Type::kGreaterEquals:
 		return left->comp_greater_eq(right);
-	case Token::Type::BITWISE_AND:
+	case Token::Type::kBitwiseAnd:
 		return left->bitwise_and(right);
-	case Token::Type::BITWISE_OR:
+	case Token::Type::kBitwiseOr:
 		return left->bitwise_or(right);
-	case Token::Type::BITWISE_XOR:
+	case Token::Type::kBitwiseXor:
 		return left->bitwise_xor(right);
-	case Token::Type::LEFT_SHIFT:
+	case Token::Type::kLeftShift:
 		return left->shift_left(right);
-	case Token::Type::RIGHT_SHIFT:
+	case Token::Type::kRightShift:
 		return left->shift_right(right);
-	case Token::Type::BOOLEAN_AND:
+	case Token::Type::kBooleanAnd:
 		return left->boolean_and(right);
-	case Token::Type::BOOLEAN_OR:
+	case Token::Type::kBooleanOr:
 		return left->boolean_or(right);
 
 	default:
@@ -121,26 +121,26 @@ Value* Interpreter::visitBinary(BinaryNode* node, SymbolsRuntime* symbols) {
 
 Value* Interpreter::visitUnary(UnaryNode* node, SymbolsRuntime* symbols) {
 	Value* value = visit(node->mNode, symbols);
-	if (node->mOpType == Token::Type::MINUS) {
+	if (node->mOpType == Token::Type::kMinus) {
 		return value->negate();
 	}
-	else if (node->mOpType == Token::Type::BOOLEAN_NOT) {
+	else if (node->mOpType == Token::Type::kBooleanNot) {
 		return value->boolean_not();
 	}
-	else if (node->mOpType == Token::Type::BITWISE_COMPLEMENT) {
+	else if (node->mOpType == Token::Type::kBitwiseComplement) {
 		return value->bitwise_complement();
 	}
 	return value;
 }
 
 Value* Interpreter::visitVarAccess(VarAccess* node, SymbolsRuntime* symbols) {
-	//printf("reading %s\n", node->mId->mPtr);
+	//printf("reading %s\n", node->mId->ptr);
 
 	/*printf("----------------------------\n");
 
 	for (size_t i = 0; i < symbols->mSymbolCount; i++)
 	{
-		printf("%s\n", symbols->mSymbolNames->get(i)->mPtr);
+		printf("%s\n", symbols->mSymbolNames->Get(i)->ptr);
 	}
 
 	printf("----------------------------\n");*/
@@ -149,27 +149,27 @@ Value* Interpreter::visitVarAccess(VarAccess* node, SymbolsRuntime* symbols) {
 }
 
 Value* Interpreter::visitVarAssign(VarAssign* node, SymbolsRuntime* symbols, SymbolsRuntime* baseSymbols) {
-	//printf("setting %s\n", node->mId->mPtr);
+	//printf("setting %s\n", node->mId->ptr);
 	Value* value = visit(node->mNode, baseSymbols != nullptr ? baseSymbols : symbols);
 	symbols->setSymbol(node->mId, value);
 	return value->clone();
 }
 
 Value* Interpreter::visitBlock(Block* node, SymbolsRuntime* symbols) {
-	int count = node->mStatements->getCount();
+	int count = node->mStatements->count();
 	for (size_t i = 0; i < count; i++)
 	{
-		if (node->mStatements->get(i)->mType != Node::Type::INTEGER 
-			&& node->mStatements->get(i)->mType != Node::Type::FLOAT
-			&& node->mStatements->get(i)->mType != Node::Type::STRING
-			&& node->mStatements->get(i)->mType != Node::Type::BINARY
-			&& node->mStatements->get(i)->mType != Node::Type::UNARY
-			&& node->mStatements->get(i)->mType != Node::Type::LIST
-			&& node->mStatements->get(i)->mType != Node::Type::TUPLE
+		if (node->mStatements->Get(i)->mType != Node::Type::INTEGER 
+			&& node->mStatements->Get(i)->mType != Node::Type::FLOAT
+			&& node->mStatements->Get(i)->mType != Node::Type::STRING
+			&& node->mStatements->Get(i)->mType != Node::Type::BINARY
+			&& node->mStatements->Get(i)->mType != Node::Type::UNARY
+			&& node->mStatements->Get(i)->mType != Node::Type::LIST
+			&& node->mStatements->Get(i)->mType != Node::Type::TUPLE
 			){
-			Value* value = visit(node->mStatements->get(i), symbols);
+			Value* value = visit(node->mStatements->Get(i), symbols);
 			if (value != NULL)
-				if (node->mStatements->get(i)->mType != Node::Type::METHOD && node->mStatements->get(i)->mType != Node::Type::CLASS)
+				if (node->mStatements->Get(i)->mType != Node::Type::METHOD && node->mStatements->Get(i)->mType != Node::Type::CLASS)
 					if (value->mType != Value::Type::LIST && value->mType != Value::Type::METHOD && value->mType != Value::Type::OBJECT
 						&& value->mType != Value::Type::TUPLE)
 						delete value;
@@ -247,7 +247,7 @@ Value* Interpreter::visitCall(Call* node, SymbolsRuntime* symbols, SymbolsRuntim
 	if (node->mBase->mType == Node::Type::VAR_ACCESS) {
 		VarAccess* var = (VarAccess*)node->mBase;
 		if (var->mId->Compare("print")) {
-			Value* value = visit(node->mArgs->get(0), baseSymbols != nullptr ? baseSymbols : symbols);
+			Value* value = visit(node->mArgs->Get(0), baseSymbols != nullptr ? baseSymbols : symbols);
 			if (value != NULL) {
 				value->print();
 				//delete value; // dont delete objects
@@ -260,11 +260,11 @@ Value* Interpreter::visitCall(Call* node, SymbolsRuntime* symbols, SymbolsRuntim
 	Value* methodValue = visit(node->mBase, symbols);
 	if (methodValue->mType == Value::Type::METHOD) {
 		MethodValue* method = (MethodValue*)methodValue;
-		int paramCount = method->mParams->getCount();
-		if ((paramCount == 0 && node->mArgs == nullptr) || paramCount == node->mArgs->getCount()) {
+		int paramCount = method->mParams->count();
+		if ((paramCount == 0 && node->mArgs == nullptr) || paramCount == node->mArgs->count()) {
 			SymbolsRuntime* newSymbols = new SymbolsRuntime(symbols);
 			for (size_t i = 0; i < paramCount; i++)
-				newSymbols->setSymbol(method->mParams->get(i), visit(node->mArgs->get(i), baseSymbols != nullptr ? baseSymbols : symbols));
+				newSymbols->setSymbol(method->mParams->Get(i), visit(node->mArgs->Get(i), baseSymbols != nullptr ? baseSymbols : symbols));
 			visit(method->mBody, newSymbols);
 			Value* retVal = nullptr;
 			if (newSymbols->returnValue != nullptr) {
@@ -300,13 +300,13 @@ Value* Interpreter::vistiReturn(Return* node, SymbolsRuntime* symbols) {
 }
 
 Value* Interpreter::visitIf(If* node, SymbolsRuntime* symbols) {
-	int caseCount = node->mCases->getCount();
+	int caseCount = node->mCases->count();
 	for (size_t i = 0; i < caseCount; i++)
 	{
-		Value* condition = visit(node->mCases->get(i)->mCondition, symbols);
+		Value* condition = visit(node->mCases->Get(i)->mCondition, symbols);
 		if (condition->asBoolean()) {
 			delete condition;
-			Value* result = visit(node->mCases->get(i)->mBody, symbols);
+			Value* result = visit(node->mCases->Get(i)->mBody, symbols);
 			if (result != nullptr)
 				delete result;
 			return nullptr;
@@ -325,10 +325,10 @@ Value* Interpreter::visitIf(If* node, SymbolsRuntime* symbols) {
 Value* Interpreter::visitList(ListNode* node, SymbolsRuntime* symbols) {
 	if (node->mItems == nullptr) 
 		return new ListValue(new List<Value*>());
-	int count = node->mItems->getCount();
+	int count = node->mItems->count();
 	List<Value*>* values = new List<Value*>(count + 5); // +5 spaces
 	for (size_t i = 0; i < count; i++)
-		values->add(visit(node->mItems->get(i), symbols));
+		values->Add(visit(node->mItems->Get(i), symbols));
 	return new ListValue(values);
 }
 
@@ -364,9 +364,9 @@ Value* Interpreter::visitAttribute(AttributeNode* node, SymbolsRuntime* symbols)
 Value* Interpreter::visitTuple(TupleNode* node, SymbolsRuntime* symbols) {
 	if (node->mItems == nullptr)
 		return new TupleValue(new List<Value*>(1)); //todo only one space
-	int count = node->mItems->getCount();
+	int count = node->mItems->count();
 	List<Value*>* values = new List<Value*>(count + 5); // +5 spaces
 	for (size_t i = 0; i < count; i++)
-		values->add(visit(node->mItems->get(i), symbols));
+		values->Add(visit(node->mItems->Get(i), symbols));
 	return new TupleValue(values);
 }

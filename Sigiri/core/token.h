@@ -5,80 +5,80 @@
 
 struct Token {
 public:
-	String* mValue = nullptr;
+	String* value = nullptr;
 	enum class Type {
-		NEWLINE,
+		kNewLine,
 
-		INT_NUMBER,
-		FLOAT_NUMBER,
+		kIntNumber,
+		kFloatNumber,
 
-		STRING,
+		kString,
 
-		IDENTIFIER,
+		kIdentifier,
 
-		KEYWORD_VAR,
-		KEYWORD_INT,
-		KEYWORD_FOR,
-		KEYWORD_TO,
-		KEYWORD_STEP,
-		KEYWORD_METHOD,
-		KEYWORD_RETURN,
-		KEYWORD_BREAK,
-		KEYWORD_CONTINUE,
+		kKeywordVar,
+		kKeywordInt,
+		kKeywordFor,
+		kKeywordTo,
+		kKeywordStep,
+		kKeywordMethod,
+		kKeywordReturn,
+		kKeywordBreak,
+		kKeywordContinue,
 
-		KEYWORD_IF,
-		KEYWORD_ELIF,
-		KEYWORD_ELSE,
+		kKeywordIf,
+		kKeywordElif,
+		kKeywordElse,
 
-		KEYWORD_CLASS,
+		kKeywordClass,
 
-		PLUS,
-		MINUS,
-		ASTERIX,
-		FW_SLASH,
-		MODULUS,
-		POWER,
+		kPlus,
+		kMinus,
+		kAsterix,
+		kFowardSlash,
+		kPrecentage,
+		kPower,
 
-		L_PAREN,
-		R_PAREN,
+		kLeftParen,
+		kRightParen,
 
-		COMMA,
-		DOT,
+		kComma,
+		kDot,
 
-		L_BRACE,
-		R_BRACE,
+		kLeftBrace,
+		kRightBrace,
 
-		L_SQ,
-		R_SQ,
+		kLeftSqare,
+		kRightSquare,
 
-		COLON,
-		SEMI_COLON,
+		kColon,
+		kSemiColon,
 
-		EQUALS,
-		EQUALS_EQUALS,
-		NOT_EQUALS,
-		GREATER_THAN,
-		LESS_THAN,
-		GREATER_EQ,
-		LESS_EQ,
+		kEquals,
+		kEqualsEquals,
+		kNotEquals,
+		kGreaterThan,
+		kLessThan,
+		kGreaterEquals,
+		kLessEquals,
 
-		BOOLEAN_NOT,
-		BOOLEAN_AND,
-		BOOLEAN_OR,
+		kBooleanNot,
+		kBooleanAnd,
+		kBooleanOr,
 
-		BITWISE_OR,
-		BITWISE_AND,
-		BITWISE_XOR,
-		BITWISE_COMPLEMENT,
+		kBitwiseOr,
+		kBitwiseAnd,
+		kBitwiseXor,
+		kBitwiseComplement,
 
-		LEFT_SHIFT,
-		RIGHT_SHIFT,
+		kLeftShift,
+		kRightShift,
 
-		EOF_TOKEN
-	} mType;
+		kEof
+	} type;
 
-	uint mLine;
-	uint mColStart, mColEnd;
+	uint line;
+	uint col_start, col_end;
 
 	Token(Type type);
 	Token(String* value, Type type);
