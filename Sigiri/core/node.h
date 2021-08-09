@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../libs/list.cpp"
+#include "list/list.cpp"
 #include "token.h"
 
 class Node {

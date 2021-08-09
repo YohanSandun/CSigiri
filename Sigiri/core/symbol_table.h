@@ -1,8 +1,8 @@
 #pragma once
 
-#include "string.h"
-#include "value.h"
-#include "../libs/list.cpp"
+#include "string/string.h"
+#include "../values/value.h"
+#include "list/list.cpp"
 
 class SymbolsParser {
 public:

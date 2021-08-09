@@ -1,4 +1,4 @@
-#include "../include/value.h"
+#include "value.h"
 
 FloatValue::FloatValue(double value) : Value(Type::FLOAT) {
 	mValue = value;

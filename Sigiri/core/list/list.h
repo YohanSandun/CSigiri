@@ -1,6 +1,6 @@
 #pragma once
 
-#include "declarations.h"
+#include "../declarations.h"
 
 template <class T>
 struct List {

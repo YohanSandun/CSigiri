@@ -1,4 +1,4 @@
-#include "../include/value.h"
+#include "value.h"
 
 IntegerValue::IntegerValue(int value) : Value(Type::INTEGER) {
 	mValue = value;

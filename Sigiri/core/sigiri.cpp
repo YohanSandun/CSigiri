@@ -1,4 +1,4 @@
-#include "include/sigiri.h"
+#include "sigiri.h"
 
 Interpreter::~Interpreter() {
 	//delete mSymbols;

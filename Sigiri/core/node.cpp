@@ -1,5 +1,6 @@
-#include "include/node.h"
 #include <cstdio>
+
+#include "node.h"
 
 Node::Node(Type type) {
 	mType = type;

@@ -1,4 +1,4 @@
-#include "../include/value.h"
+#include "value.h"
 
 ClassValue::ClassValue(String* name, Node* body) : Value(Type::CLASS) {
 	mBody = body;

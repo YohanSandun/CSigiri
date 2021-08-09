@@ -1,4 +1,4 @@
-#include "../include/value.h"
+#include "value.h"
 
 StringValue::StringValue(String* value) : Value(Type::STRING) {
 	mValue = value;

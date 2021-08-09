@@ -1,4 +1,4 @@
-#include "../include/value.h"
+#include "value.h"
 
 MethodValue::MethodValue(String* name, Node* body, List<String*>* params) : Value(Type::METHOD) {
 	mBody = body;

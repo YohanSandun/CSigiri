@@ -1,4 +1,4 @@
-#include "../include/object.h"
+#include "object.h"
 
 ObjectValue::ObjectValue(SymbolsRuntime* symbols) : Value(Type::OBJECT) {
 	mSymbols = symbols;

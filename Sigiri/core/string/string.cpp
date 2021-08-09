@@ -1,4 +1,4 @@
-#include "../include/string.h"
+#include "string.h"
 
 uint strLen(const char* ptr) {
 	uint i = 0;

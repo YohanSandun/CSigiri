@@ -1,8 +1,8 @@
 #pragma once
 
 #include "token.h"
-#include "string.h"
-#include "../libs/list.cpp" // to satisfy the compiler
+#include "string/string.h"
+#include "list/list.cpp" // to satisfy the compiler
 
 struct Lexer
 {

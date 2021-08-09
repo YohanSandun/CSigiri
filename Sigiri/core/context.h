@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../libs/list.cpp"
-#include "value.h"
+#include "list/list.cpp"
+#include "../values/value.h"
 
 class SymbolsRuntime {
 public:

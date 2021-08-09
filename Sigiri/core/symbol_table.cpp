@@ -1,4 +1,4 @@
-#include "include/symbol_table.h"
+#include "symbol_table.h"
 
 SymbolsParser::SymbolsParser() {
 	mSymbols = new List<String*>();

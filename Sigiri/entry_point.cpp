@@ -1,11 +1,11 @@
 #include <cstdio>
-#include "include/string.h"
-#include "include/token.h"
-#include "include/lexer.h"
-#include "include/parser.h"
-#include "include/sigiri.h"
-#include "include/symbol_table.h"
-#include "include/context.h"
+#include "core/string/string.h"
+#include "core/token.h"
+#include "core/lexer.h"
+#include "core/parser.h"
+#include "core/sigiri.h"
+#include "core/symbol_table.h"
+#include "core/context.h"
 
 char* readFile() {
     /* declare a file pointer */

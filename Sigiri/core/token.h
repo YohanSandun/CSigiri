@@ -1,7 +1,7 @@
 #pragma once
 
 #include "declarations.h"
-#include "string.h"
+#include "string/string.h"
 
 struct Token {
 public:

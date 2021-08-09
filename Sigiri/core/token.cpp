@@ -1,4 +1,4 @@
-#include "include/token.h"
+#include "token.h"
 
 Token::Token(Type type) {
 	mType = type;

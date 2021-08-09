@@ -1,4 +1,4 @@
-#include "../include/value.h"
+#include "value.h"
 
 ListValue::ListValue(List<Value*>* value) : Value(Type::LIST) {
 	mValues = value;

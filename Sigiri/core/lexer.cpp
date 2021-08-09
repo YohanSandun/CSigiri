@@ -1,4 +1,4 @@
-#include "include/lexer.h"
+#include "lexer.h"
 
 Lexer::Lexer(String* code) {
 	mCode = code;

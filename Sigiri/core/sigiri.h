@@ -1,10 +1,10 @@
 #pragma once
 
-#include "value.h"
-#include "object.h"
+#include "../values/value.h"
+#include "../values/object.h"
 #include "node.h"
 #include "symbol_table.h"
-#include "../libs/list.cpp"
+#include "list/list.cpp"
 #include "context.h"
 
 class Interpreter {

@@ -1,4 +1,4 @@
-#include "../include/value.h"
+#include "value.h"
 
 TupleValue::TupleValue(List<Value*>* value) : Value(Type::TUPLE) {
 	mValues = value;

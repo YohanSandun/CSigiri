@@ -1,6 +1,7 @@
-#include "include/parser.h"
-#include "include/string.h"
 #include <cstdio>
+
+#include "parser.h"
+#include "string/string.h"
 
 char* tokenNames[] = {
 		"NEWLINE",

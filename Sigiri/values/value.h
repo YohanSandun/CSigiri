@@ -2,8 +2,9 @@
 
 #include <cstdio>
 #include <math.h>
-#include "node.h"
-#include "string.h"
+
+#include "../core/node.h"
+#include "../core/string/string.h"
 
 class Value {
 public:
