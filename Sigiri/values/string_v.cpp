@@ -97,15 +97,15 @@ Value* StringValue::boolean_not() {
 }
 
 Value* StringValue::clone() {
-	return new StringValue(new String(mValue->mPtr));
+	return new StringValue(new String(mValue->ptr));
 }
 
 void StringValue::print() {
-	printf("%s", mValue->mPtr);
+	printf("%s", mValue->ptr);
 }
 
 bool StringValue::asBoolean() {
-	return mValue->getLength() == 0 ? false : true;
+	return mValue->length == 0 ? false : true;
 }
 
 Value* StringValue::subscriptAccess(Value* at) {

@@ -152,7 +152,7 @@ int main() {
 
         }
         else if (parser.mError != nullptr) {
-            printf("%s", parser.mError->mPtr);
+            printf("%s", parser.mError->ptr);
             delete symbols;
             symbols = new SymbolsParser();
             //delete parser.mSymbols;

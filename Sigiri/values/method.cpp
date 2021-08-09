@@ -108,7 +108,7 @@ void MethodValue::print() {
 	if (mName == nullptr)
 		printf("Method '<anonymous>\n'");
 	else
-		printf("Method '%s'\n", mName->mPtr);
+		printf("Method '%s'\n", mName->ptr);
 }
 
 bool MethodValue::asBoolean() {

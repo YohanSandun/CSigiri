@@ -64,7 +64,7 @@ Value* Interpreter::visitFloat(FloatNode* node, SymbolsRuntime* symbols) {
 }
 
 Value* Interpreter::visitString(StringNode* node, SymbolsRuntime* symbols) {
-	Value* value = new StringValue(new String(node->mValue->mPtr));
+	Value* value = new StringValue(new String(node->mValue->ptr));
 	return value;
 }
 
@@ -246,7 +246,7 @@ Value* Interpreter::visitCall(Call* node, SymbolsRuntime* symbols, SymbolsRuntim
 
 	if (node->mBase->mType == Node::Type::VAR_ACCESS) {
 		VarAccess* var = (VarAccess*)node->mBase;
-		if (var->mId->compare("print")) {
+		if (var->mId->Compare("print")) {
 			Value* value = visit(node->mArgs->get(0), baseSymbols != nullptr ? baseSymbols : symbols);
 			if (value != NULL) {
 				value->print();

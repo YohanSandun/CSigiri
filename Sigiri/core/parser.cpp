@@ -106,14 +106,14 @@ Node* Parser::block(SymbolsParser* symbols, Token::Type end) {
 }
 
 Node* Parser::expr(SymbolsParser* symbols) {
-	Node* left = compare(symbols);
+	Node* left = Compare(symbols);
 	if (mError != nullptr)
 		return nullptr;
 	while (currentToken->mType == Token::Type::BOOLEAN_AND || currentToken->mType == Token::Type::BOOLEAN_OR)
 	{
 		Token::Type type = currentToken->mType;
 		advance();
-		Node* right = compare(symbols);
+		Node* right = Compare(symbols);
 		if (mError != nullptr) {
 			delete left;
 			return nullptr;
@@ -123,10 +123,10 @@ Node* Parser::expr(SymbolsParser* symbols) {
 	return left;
 }
 
-Node* Parser::compare(SymbolsParser* symbols) {
+Node* Parser::Compare(SymbolsParser* symbols) {
 	if (currentToken->mType == Token::Type::BOOLEAN_NOT) {
 		advance();
-		return new UnaryNode(Token::Type::BOOLEAN_NOT, compare(symbols));
+		return new UnaryNode(Token::Type::BOOLEAN_NOT, Compare(symbols));
 	}
 	Node* left = bitwise_or(symbols);
 	if (mError != nullptr)
@@ -347,17 +347,17 @@ Node* Parser::atom(SymbolsParser* symbols, bool byPassDot = false) {
 	Token* token = currentToken;
 	if (token->mType == Token::Type::INT_NUMBER) {
 		advance();
-		return new IntegerNode(strToInt(token->mValue));
+		return new IntegerNode(StringToInt(token->mValue));
 	}
 	else if (token->mType == Token::Type::FLOAT_NUMBER) {
 		advance();
-		return new FloatNode(strToFloat(token->mValue));
+		return new FloatNode(StringToFloat(token->mValue));
 	}
 	else if (token->mType == Token::Type::STRING) {
 		advance();
 		if (currentToken->mType == Token::Type::L_SQ)
-			return subscript(new StringNode(new String(token->mValue->mPtr)), symbols);
-		return new StringNode(new String(token->mValue->mPtr));
+			return subscript(new StringNode(new String(token->mValue->ptr)), symbols);
+		return new StringNode(new String(token->mValue->ptr));
 	}
 	else if (token->mType == Token::Type::IDENTIFIER) {
 		advance();
@@ -366,14 +366,14 @@ Node* Parser::atom(SymbolsParser* symbols, bool byPassDot = false) {
 			Node* expression = expr(symbols);
 			if (mError != nullptr)
 				return nullptr;
-			return new VarAssign(new String(token->mValue->mPtr), expression);
+			return new VarAssign(new String(token->mValue->ptr), expression);
 		}
 		if (currentToken->mType == Token::Type::L_SQ)
-			return subscript(new VarAccess(new String(token->mValue->mPtr)), symbols);
+			return subscript(new VarAccess(new String(token->mValue->ptr)), symbols);
 		else if (!byPassDot && currentToken->mType == Token::Type::DOT) {
-			return attribute(new VarAccess(new String(token->mValue->mPtr)), symbols);
+			return attribute(new VarAccess(new String(token->mValue->ptr)), symbols);
 		}
-		return new VarAccess(new String(token->mValue->mPtr));
+		return new VarAccess(new String(token->mValue->ptr));
 	}
 	else if (token->mType == Token::Type::L_PAREN) {
 		advance();
@@ -430,7 +430,7 @@ Node* Parser::atom(SymbolsParser* symbols, bool byPassDot = false) {
 			if (mError != nullptr)
 				return nullptr;
 
-			return new VarAssign(new String(token->mValue->mPtr), expression);
+			return new VarAssign(new String(token->mValue->ptr), expression);
 		}
 		else {
 			mError = new String("Expected an identifier");
@@ -479,13 +479,13 @@ Node* Parser::method_expr(SymbolsParser* symbols) {
 	SymbolsParser* newSymbols = new SymbolsParser(symbols);
 	if (currentToken->mType == Token::Type::IDENTIFIER) {
 		
-		ids->add(new String(currentToken->mValue->mPtr));
+		ids->add(new String(currentToken->mValue->ptr));
 		advance();
 		while (currentToken->mType == Token::Type::COMMA) {
 			advance();
 			if (currentToken->mType == Token::Type::IDENTIFIER) {
 			
-				ids->add(new String(currentToken->mValue->mPtr));
+				ids->add(new String(currentToken->mValue->ptr));
 				advance();
 			}
 		}
@@ -504,7 +504,7 @@ Node* Parser::method_expr(SymbolsParser* symbols) {
 		Node* body = expr(newSymbols);
 		if (mError != nullptr)
 			return nullptr;
-		return new Method(identifier == nullptr ? nullptr : new String(identifier->mValue->mPtr), body, ids);
+		return new Method(identifier == nullptr ? nullptr : new String(identifier->mValue->ptr), body, ids);
 	}
 	else {
 		skipNewLines();
@@ -516,7 +516,7 @@ Node* Parser::method_expr(SymbolsParser* symbols) {
 			advance(); //closing brace
 			if (mError != nullptr)
 				return nullptr;
-			return new Method(identifier == nullptr ? nullptr : new String(identifier->mValue->mPtr), node, ids);
+			return new Method(identifier == nullptr ? nullptr : new String(identifier->mValue->ptr), node, ids);
 		}
 		mError = new String("Expected ':' or '{'");
 		return nullptr;
@@ -583,7 +583,7 @@ Node* Parser::for_expr(SymbolsParser* symbols) {
 				delete step;
 			return nullptr;
 		}
-		return new ForLoop(new String(identifier->mValue->mPtr), start, to, step, body);
+		return new ForLoop(new String(identifier->mValue->ptr), start, to, step, body);
 	}
 	else {
 		skipNewLines();
@@ -601,7 +601,7 @@ Node* Parser::for_expr(SymbolsParser* symbols) {
 					delete step;
 				return nullptr;
 			}
-			return new ForLoop(new String(identifier->mValue->mPtr), start, to, step, node);
+			return new ForLoop(new String(identifier->mValue->ptr), start, to, step, node);
 		}
 		mError = new String("Expected ':' or '{'");
 		delete start;
@@ -801,7 +801,7 @@ Node* Parser::class_expr(SymbolsParser* symbols) {
 		advance(); //closing brace
 		if (mError != nullptr)
 			return nullptr;
-		return new ClassNode(new String(identifier->mValue->mPtr), node);
+		return new ClassNode(new String(identifier->mValue->ptr), node);
 	}
 	mError = new String("Expected '{'");
 	return nullptr;

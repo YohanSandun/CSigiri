@@ -13,7 +13,7 @@ private:
 
 	Node* block(SymbolsParser* symbols, Token::Type end = Token::Type::R_BRACE);
 	Node* expr(SymbolsParser* symbols);
-	Node* compare(SymbolsParser* symbols);
+	Node* Compare(SymbolsParser* symbols);
 	Node* bitwise_or(SymbolsParser* symbols);
 	Node* bitwise_xor(SymbolsParser* symbols);
 	Node* bitwise_and(SymbolsParser* symbols);

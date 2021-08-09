@@ -2,7 +2,7 @@
 
 Lexer::Lexer(String* code) {
 	mCode = code;
-	mCodeLen = code->getLength();
+	mCodeLen = code->length;
 	advance();
 }
 
@@ -13,14 +13,14 @@ Lexer::~Lexer() {
 void Lexer::advance() {
 	mIndex++;
 	if (mIndex < mCodeLen)
-		mCurrentChar = mCode->mPtr[mIndex];
+		mCurrentChar = mCode->ptr[mIndex];
 	else
 		mCurrentChar = '\0';
 }
 
 char Lexer::peek(int amount) {
 	if (mIndex + amount < mCodeLen)
-		return mCode->mPtr[mIndex + amount];
+		return mCode->ptr[mIndex + amount];
 	return '\0';
 }
 
@@ -208,13 +208,13 @@ Token* Lexer::makeString() {
 		if (mCurrentChar == '\\') {
 			advance();
 			if (mCurrentChar == 'n')
-				str->append('\n');
+				str->Append('\n');
 			else if (mCurrentChar == 't')
-				str->append('\t');
+				str->Append('\t');
 			else if (mCurrentChar == 'b')
-				str->append('\b');
+				str->Append('\b');
 			else
-				str->append(mCurrentChar);
+				str->Append(mCurrentChar);
 			advance();
 			continue;
 		}
@@ -222,7 +222,7 @@ Token* Lexer::makeString() {
 			advance();
 			break;
 		}
-		str->append(mCurrentChar);
+		str->Append(mCurrentChar);
 		advance();
 	}
 	return new Token(str, Token::Type::STRING);
@@ -234,7 +234,7 @@ Token* Lexer::makeNumber() {
 	while (mCurrentChar != '\0' && ((mCurrentChar >= '0' && mCurrentChar <= '9') || mCurrentChar == '.')) {
 		if (mCurrentChar == '.')
 			dotCount++;
-		number->append(mCurrentChar);
+		number->Append(mCurrentChar);
 		advance();
 	}
 	if (dotCount == 0)
@@ -249,59 +249,59 @@ Token* Lexer::makeIdentifier() {
 		  ((mCurrentChar >= '0' && mCurrentChar <= '9') || 
 		  ((mCurrentChar >= 'a' && mCurrentChar <= 'z') ||
 		  (mCurrentChar >= 'A' && mCurrentChar <= 'Z') || mCurrentChar == '_'))) {
-		id->append(mCurrentChar);
+		id->Append(mCurrentChar);
 		advance();
 	}
 
-	if (id->compare("var")) {
+	if (id->Compare("var")) {
 		delete id;
 		return new Token(Token::Type::KEYWORD_VAR);
 	}
-	else if (id->compare("int")) {
+	else if (id->Compare("int")) {
 		delete id;
 		return new Token(Token::Type::KEYWORD_INT);
 	}
-	else if (id->compare("for")) {
+	else if (id->Compare("for")) {
 		delete id;
 		return new Token(Token::Type::KEYWORD_FOR);
 	}
-	else if (id->compare("to")) {
+	else if (id->Compare("to")) {
 		delete id;
 		return new Token(Token::Type::KEYWORD_TO);
 	}
-	else if (id->compare("step")) {
+	else if (id->Compare("step")) {
 		delete id;
 		return new Token(Token::Type::KEYWORD_STEP);
 	}
-	else if (id->compare("method")) {
+	else if (id->Compare("method")) {
 		delete id;
 		return new Token(Token::Type::KEYWORD_METHOD);
 	}
-	else if (id->compare("return")) {
+	else if (id->Compare("return")) {
 		delete id;
 		return new Token(Token::Type::KEYWORD_RETURN);
 	}
-	else if (id->compare("break")) {
+	else if (id->Compare("break")) {
 		delete id;
 		return new Token(Token::Type::KEYWORD_BREAK);
 	}
-	else if (id->compare("continue")) {
+	else if (id->Compare("continue")) {
 		delete id;
 		return new Token(Token::Type::KEYWORD_CONTINUE);
 	}
-	else if (id->compare("if")) {
+	else if (id->Compare("if")) {
 		delete id;
 		return new Token(Token::Type::KEYWORD_IF);
 	}
-	else if (id->compare("elif")) {
+	else if (id->Compare("elif")) {
 		delete id;
 		return new Token(Token::Type::KEYWORD_ELIF);
 	}
-	else if (id->compare("else")) {
+	else if (id->Compare("else")) {
 		delete id;
 		return new Token(Token::Type::KEYWORD_ELSE);
 	}
-	else if (id->compare("class")) {
+	else if (id->Compare("class")) {
 		delete id;
 		return new Token(Token::Type::KEYWORD_CLASS);
 	}

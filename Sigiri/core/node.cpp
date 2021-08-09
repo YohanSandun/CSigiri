@@ -54,7 +54,7 @@ StringNode::~StringNode() {
 }
 
 void StringNode::toString() {
-	printf("%s", mValue->mPtr);
+	printf("%s", mValue->ptr);
 }
 
 //-------------------------------------------------------------------------------------------------------------

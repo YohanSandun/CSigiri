@@ -6,7 +6,7 @@ ClassValue::ClassValue(String* name, Node* body) : Value(Type::CLASS) {
 }
 
 ClassValue::~ClassValue() {
-	//printf("method '%s' Destroyed!\n", mName->mPtr);
+	//printf("method '%s' Destroyed!\n", mName->ptr);
 	delete mName;
 	delete mBody;
 }
@@ -104,7 +104,7 @@ Value* ClassValue::clone() {
 }
 
 void ClassValue::print() {
-	printf("Class definition '%s'\n", mName->mPtr);
+	printf("Class definition '%s'\n", mName->ptr);
 }
 
 bool ClassValue::asBoolean() {

@@ -17,7 +17,7 @@ SymbolsRuntime::SymbolsRuntime(SymbolsRuntime* parent) {
 void SymbolsRuntime::unlinkValue(String* id) {
 	for (size_t i = 0; i < mSymbolCount; i++)
 	{
-		if (mSymbolNames->get(i)->compare(id->mPtr))
+		if (mSymbolNames->get(i)->Compare(id->ptr))
 			mSymbols->unlinkItem(i);
 	}
 }
@@ -26,7 +26,7 @@ Value* SymbolsRuntime::getSymbol(String* id) {
 	for (size_t i = 0; i < mSymbolCount; i++)
 	{
 		//printf("%s(%s), ", mSymbolNames->get(i)->mPtr, id->mPtr);
-		if (mSymbolNames->get(i)->compare(id->mPtr))
+		if (mSymbolNames->get(i)->Compare(id))
 			return mSymbols->get(i);
 		
 	}
@@ -38,7 +38,7 @@ Value* SymbolsRuntime::getSymbol(String* id) {
 Value* SymbolsRuntime::getDirectSymbol(String* id) {
 	for (size_t i = 0; i < mSymbolCount; i++)
 	{
-		if (mSymbolNames->get(i)->compare(id->mPtr))
+		if (mSymbolNames->get(i)->Compare(id))
 			return mSymbols->get(i);
 	}
 	return nullptr;
@@ -47,7 +47,7 @@ Value* SymbolsRuntime::getDirectSymbol(String* id) {
 void SymbolsRuntime::setSymbol(String* id, Value* value) {
 	for (size_t i = 0; i < mSymbolCount; i++)
 	{
-		if (mSymbolNames->get(i)->compare(id->mPtr))
+		if (mSymbolNames->get(i)->Compare(id->ptr))
 		{
 			delete mSymbols->get(i);
 			mSymbols->add(i, value);
