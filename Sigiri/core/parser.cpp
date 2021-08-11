@@ -85,17 +85,17 @@ void Parser::skipNewLines() {
 		advance();
 }
 
-Node* Parser::parse(SymbolsParser* symbols) {
-	return block(symbols, Token::Type::kEof);
+Node* Parser::parse(SymbolsParser* context) {
+	return block(context, Token::Type::kEof);
 }
 
-Node* Parser::block(SymbolsParser* symbols, Token::Type end) {
+Node* Parser::block(SymbolsParser* context, Token::Type end) {
 	List<Node*>* statements = new List<Node*>();
 	while (true) {
 		skipNewLines();
 		if (currentToken->type == end)
 			break;
-		Node* node = expr(symbols);
+		Node* node = expr(context);
 		if (mError != nullptr) {
 			delete statements;
 			return nullptr;
@@ -105,15 +105,15 @@ Node* Parser::block(SymbolsParser* symbols, Token::Type end) {
 	return new Block(statements);
 }
 
-Node* Parser::expr(SymbolsParser* symbols) {
-	Node* left = Compare(symbols);
+Node* Parser::expr(SymbolsParser* context) {
+	Node* left = Compare(context);
 	if (mError != nullptr)
 		return nullptr;
 	while (currentToken->type == Token::Type::kBooleanAnd || currentToken->type == Token::Type::kBooleanOr)
 	{
 		Token::Type type = currentToken->type;
 		advance();
-		Node* right = Compare(symbols);
+		Node* right = Compare(context);
 		if (mError != nullptr) {
 			delete left;
 			return nullptr;
@@ -123,12 +123,12 @@ Node* Parser::expr(SymbolsParser* symbols) {
 	return left;
 }
 
-Node* Parser::Compare(SymbolsParser* symbols) {
+Node* Parser::Compare(SymbolsParser* context) {
 	if (currentToken->type == Token::Type::kBooleanNot) {
 		advance();
-		return new UnaryNode(Token::Type::kBooleanNot, Compare(symbols));
+		return new UnaryNode(Token::Type::kBooleanNot, Compare(context));
 	}
-	Node* left = bitwise_or(symbols);
+	Node* left = bitwise_or(context);
 	if (mError != nullptr)
 		return nullptr;
 	while (currentToken->type == Token::Type::kEqualsEquals || currentToken->type == Token::Type::kNotEquals ||
@@ -136,7 +136,7 @@ Node* Parser::Compare(SymbolsParser* symbols) {
 		currentToken->type == Token::Type::kGreaterEquals || currentToken->type == Token::Type::kLessEquals) {
 		Token::Type type = currentToken->type;
 		advance();
-		Node* right = bitwise_or(symbols);
+		Node* right = bitwise_or(context);
 		if (mError != nullptr) {
 			delete left;
 			return nullptr;
@@ -146,14 +146,14 @@ Node* Parser::Compare(SymbolsParser* symbols) {
 	return left;
 }
 
-Node* Parser::bitwise_or(SymbolsParser* symbols) {
-	Node* left = bitwise_xor(symbols);
+Node* Parser::bitwise_or(SymbolsParser* context) {
+	Node* left = bitwise_xor(context);
 	if (mError != nullptr)
 		return nullptr;
 	while (currentToken->type == Token::Type::kBitwiseOr)
 	{
 		advance();
-		Node* right = bitwise_xor(symbols);
+		Node* right = bitwise_xor(context);
 		if (mError != nullptr) {
 			delete left;
 			return nullptr;
@@ -163,14 +163,14 @@ Node* Parser::bitwise_or(SymbolsParser* symbols) {
 	return left;
 }
 
-Node* Parser::bitwise_xor(SymbolsParser* symbols) {
-	Node* left = bitwise_and(symbols);
+Node* Parser::bitwise_xor(SymbolsParser* context) {
+	Node* left = bitwise_and(context);
 	if (mError != nullptr)
 		return nullptr;
 	while (currentToken->type == Token::Type::kBitwiseXor)
 	{
 		advance();
-		Node* right = bitwise_and(symbols);
+		Node* right = bitwise_and(context);
 		if (mError != nullptr) {
 			delete left;
 			return nullptr;
@@ -180,14 +180,14 @@ Node* Parser::bitwise_xor(SymbolsParser* symbols) {
 	return left;
 }
 
-Node* Parser::bitwise_and(SymbolsParser* symbols) {
-	Node* left = shift(symbols);
+Node* Parser::bitwise_and(SymbolsParser* context) {
+	Node* left = shift(context);
 	if (mError != nullptr)
 		return nullptr;
 	while (currentToken->type == Token::Type::kBitwiseAnd)
 	{
 		advance();
-		Node* right = shift(symbols);
+		Node* right = shift(context);
 		if (mError != nullptr) {
 			delete left;
 			return nullptr;
@@ -197,15 +197,15 @@ Node* Parser::bitwise_and(SymbolsParser* symbols) {
 	return left;
 }
 
-Node* Parser::shift(SymbolsParser* symbols) {
-	Node* left = arithmetic(symbols, false);
+Node* Parser::shift(SymbolsParser* context) {
+	Node* left = arithmetic(context, false);
 	if (mError != nullptr)
 		return nullptr;
 	while (currentToken->type == Token::Type::kLeftShift || currentToken->type == Token::Type::kRightShift)
 	{
 		Token::Type type = currentToken->type;
 		advance();
-		Node* right = arithmetic(symbols, false);
+		Node* right = arithmetic(context, false);
 		if (mError != nullptr) {
 			delete left;
 			return nullptr;
@@ -215,15 +215,15 @@ Node* Parser::shift(SymbolsParser* symbols) {
 	return left;
 }
 
-Node* Parser::arithmetic(SymbolsParser* symbols, bool byPassDot=false) {
-	Node* left = term(symbols, byPassDot);
+Node* Parser::arithmetic(SymbolsParser* context, bool byPassDot=false) {
+	Node* left = term(context, byPassDot);
 	if (mError != nullptr)
 		return nullptr;
 	while (currentToken->type == Token::Type::kPlus || currentToken->type == Token::Type::kMinus)
 	{
 		Token::Type type = currentToken->type;
 		advance();
-		Node* right = term(symbols, byPassDot);
+		Node* right = term(context, byPassDot);
 		if (mError != nullptr) {
 			delete left;
 			return nullptr;
@@ -233,15 +233,15 @@ Node* Parser::arithmetic(SymbolsParser* symbols, bool byPassDot=false) {
 	return left;
 }
 
-Node* Parser::term(SymbolsParser* symbols, bool byPassDot=false) {
-	Node* left = factor(symbols, byPassDot);
+Node* Parser::term(SymbolsParser* context, bool byPassDot=false) {
+	Node* left = factor(context, byPassDot);
 	if (mError != nullptr) 
 		return nullptr;
 	while (currentToken->type == Token::Type::kAsterix || currentToken->type == Token::Type::kFowardSlash || currentToken->type == Token::Type::kPrecentage)
 	{
 		Token::Type type = currentToken->type;
 		advance();
-		Node* right = factor(symbols, byPassDot);
+		Node* right = factor(context, byPassDot);
 		if (mError != nullptr) {
 			delete left;
 			return nullptr;
@@ -251,27 +251,27 @@ Node* Parser::term(SymbolsParser* symbols, bool byPassDot=false) {
 	return left;
 }
 
-Node* Parser::factor(SymbolsParser* symbols, bool byPassDot=false) {
+Node* Parser::factor(SymbolsParser* context, bool byPassDot=false) {
 	Token* token = currentToken;
 	if (token->type == Token::Type::kPlus || token->type == Token::Type::kMinus) {
 		advance();
-		Node* node = factor(symbols, byPassDot);
+		Node* node = factor(context, byPassDot);
 		if (mError != nullptr) 
 			return nullptr;
 		return new UnaryNode(token->type, node);
 	}
-	return power(symbols, byPassDot);
+	return power(context, byPassDot);
 }
 
-Node* Parser::power(SymbolsParser* symbols, bool byPassDot=false) {
-	Node* left = complement(symbols, byPassDot);
+Node* Parser::power(SymbolsParser* context, bool byPassDot=false) {
+	Node* left = complement(context, byPassDot);
 	if (mError != nullptr) 
 		return nullptr;
 	
 	while (currentToken->type == Token::Type::kPower)
 	{
 		advance();
-		Node* right = factor(symbols, byPassDot);
+		Node* right = factor(context, byPassDot);
 		if (mError != nullptr) {
 			delete left;
 			return nullptr;
@@ -281,19 +281,19 @@ Node* Parser::power(SymbolsParser* symbols, bool byPassDot=false) {
 	return left;
 }
 
-Node* Parser::complement(SymbolsParser* symbols, bool byPassDot=false) {
+Node* Parser::complement(SymbolsParser* context, bool byPassDot=false) {
 	if (currentToken->type == Token::Type::kBitwiseComplement) {
 		advance();
-		Node* node = factor(symbols, byPassDot);
+		Node* node = factor(context, byPassDot);
 		if (mError != nullptr)
 			return nullptr;
 		return new UnaryNode(Token::Type::kBitwiseComplement, node);
 	}
-	return call(symbols, byPassDot);
+	return call(context, byPassDot);
 }
 
-Node* Parser::call(SymbolsParser* symbols, bool byPassDot= false) {
-	Node* node = atom(symbols, byPassDot);
+Node* Parser::call(SymbolsParser* context, bool byPassDot= false) {
+	Node* node = atom(context, byPassDot);
 	if (mError != nullptr)
 		return nullptr;
 	if (currentToken->type == Token::Type::kLeftParen) {
@@ -305,7 +305,7 @@ Node* Parser::call(SymbolsParser* symbols, bool byPassDot= false) {
 		else {
 			arguments = new List<Node*>();
 			skipNewLines();
-			Node* expression = expr(symbols);
+			Node* expression = expr(context);
 			if (mError != nullptr) {
 				delete node;
 				return nullptr;
@@ -317,7 +317,7 @@ Node* Parser::call(SymbolsParser* symbols, bool byPassDot= false) {
 				skipNewLines();
 				if (currentToken->type == Token::Type::kRightParen)
 					break;
-				Node* expression = expr(symbols);
+				Node* expression = expr(context);
 				if (mError != nullptr) {
 					delete node;
 					delete arguments;
@@ -335,15 +335,15 @@ Node* Parser::call(SymbolsParser* symbols, bool byPassDot= false) {
 			advance();
 		}
 		if (currentToken->type == Token::Type::kLeftSqare)
-			return subscript(new Call(node, arguments), symbols);
+			return subscript(new Call(node, arguments), context);
 		else if (currentToken->type == Token::Type::kDot)
-			return attribute(new Call(node, arguments), symbols);
+			return attribute(new Call(node, arguments), context);
 		return new Call(node, arguments);
 	}
 	return node;
 }
  
-Node* Parser::atom(SymbolsParser* symbols, bool byPassDot = false) {
+Node* Parser::atom(SymbolsParser* context, bool byPassDot = false) {
 	Token* token = currentToken;
 	if (token->type == Token::Type::kIntNumber) {
 		advance();
@@ -356,22 +356,22 @@ Node* Parser::atom(SymbolsParser* symbols, bool byPassDot = false) {
 	else if (token->type == Token::Type::kString) {
 		advance();
 		if (currentToken->type == Token::Type::kLeftSqare)
-			return subscript(new StringNode(new String(token->value->ptr)), symbols);
+			return subscript(new StringNode(new String(token->value->ptr)), context);
 		return new StringNode(new String(token->value->ptr));
 	}
 	else if (token->type == Token::Type::kIdentifier) {
 		advance();
 		if (currentToken->type == Token::Type::kEquals) {
 			advance();
-			Node* expression = expr(symbols);
+			Node* expression = expr(context);
 			if (mError != nullptr)
 				return nullptr;
 			return new VarAssign(new String(token->value->ptr), expression);
 		}
 		if (currentToken->type == Token::Type::kLeftSqare)
-			return subscript(new VarAccess(new String(token->value->ptr)), symbols);
+			return subscript(new VarAccess(new String(token->value->ptr)), context);
 		else if (!byPassDot && currentToken->type == Token::Type::kDot) {
-			return attribute(new VarAccess(new String(token->value->ptr)), symbols);
+			return attribute(new VarAccess(new String(token->value->ptr)), context);
 		}
 		return new VarAccess(new String(token->value->ptr));
 	}
@@ -381,7 +381,7 @@ Node* Parser::atom(SymbolsParser* symbols, bool byPassDot = false) {
 			advance();
 			return new TupleNode(nullptr);
 		}
-		Node* expression = expr(symbols);
+		Node* expression = expr(context);
 		if (mError != nullptr)
 			return nullptr;
 
@@ -396,7 +396,7 @@ Node* Parser::atom(SymbolsParser* symbols, bool byPassDot = false) {
 				advance();
 				if (currentToken->type == Token::Type::kRightParen)
 					break;
-				Node* item = expr(symbols);
+				Node* item = expr(context);
 				if (mError != nullptr) {
 					delete items;
 					return nullptr;
@@ -426,7 +426,7 @@ Node* Parser::atom(SymbolsParser* symbols, bool byPassDot = false) {
 				return nullptr;
 			}
 			advance();
-			Node* expression = expr(symbols);
+			Node* expression = expr(context);
 			if (mError != nullptr)
 				return nullptr;
 
@@ -438,13 +438,13 @@ Node* Parser::atom(SymbolsParser* symbols, bool byPassDot = false) {
 		}
 	}
 	else if (token->type == Token::Type::kKeywordFor)
-		return for_expr(symbols);
+		return for_expr(context);
 	else if (token->type == Token::Type::kKeywordMethod)
-		return method_expr(symbols);
+		return method_expr(context);
 	else if (token->type == Token::Type::kKeywordReturn)
-		return return_expr(symbols);
+		return return_expr(context);
 	else if (token->type == Token::Type::kKeywordClass)
-		return class_expr(symbols);
+		return class_expr(context);
 	else if (token->type == Token::Type::kKeywordBreak) {
 		advance();
 		return new Node(Node::Type::BREAK);
@@ -454,15 +454,15 @@ Node* Parser::atom(SymbolsParser* symbols, bool byPassDot = false) {
 		return new Node(Node::Type::CONTINUE);
 	}
 	else if (token->type == Token::Type::kKeywordIf)
-		return if_expr(symbols);
+		return if_expr(context);
 	else if (token->type == Token::Type::kLeftSqare)
-		return list_expr(symbols);
+		return list_expr(context);
 
 	mError = new String("Expected something!");
 	return nullptr;
 }
 
-Node* Parser::method_expr(SymbolsParser* symbols) {
+Node* Parser::method_expr(SymbolsParser* context) {
 
 	advance(); // method keyword
 	Token* identifier = currentToken;
@@ -476,7 +476,7 @@ Node* Parser::method_expr(SymbolsParser* symbols) {
 	}
 	advance();
 	List<String*>* ids = new List<String*>();
-	SymbolsParser* newSymbols = new SymbolsParser(symbols);
+	SymbolsParser* newSymbols = new SymbolsParser(context);
 	if (currentToken->type == Token::Type::kIdentifier) {
 		
 		ids->Add(new String(currentToken->value->ptr));
@@ -500,7 +500,7 @@ Node* Parser::method_expr(SymbolsParser* symbols) {
 	if (currentToken->type == Token::Type::kColon) {
 		advance();
 		skipNewLines();
-		//int id = symbols->setSymbolIndex(identifier->mValue);
+		//int id = context->setSymbolIndex(identifier->mValue);
 		Node* body = expr(newSymbols);
 		if (mError != nullptr)
 			return nullptr;
@@ -511,7 +511,7 @@ Node* Parser::method_expr(SymbolsParser* symbols) {
 		if (currentToken->type == Token::Type::kLeftBrace) {
 			advance();
 			skipNewLines();
-			//int id = symbols->setSymbolIndex(identifier->mValue);
+			//int id = context->setSymbolIndex(identifier->mValue);
 			Node* node = block(newSymbols, Token::Type::kRightBrace);
 			advance(); //closing brace
 			if (mError != nullptr)
@@ -524,7 +524,7 @@ Node* Parser::method_expr(SymbolsParser* symbols) {
 	return nullptr;
 }
 
-Node* Parser::for_expr(SymbolsParser* symbols) {
+Node* Parser::for_expr(SymbolsParser* context) {
 	Node* start, * to, * step = nullptr;
 	advance(); // for keyword
 	Token* identifier = currentToken;
@@ -543,7 +543,7 @@ Node* Parser::for_expr(SymbolsParser* symbols) {
 	}
 	advance();
 
-	start = bitwise_or(symbols);
+	start = bitwise_or(context);
 	if (mError != nullptr)
 		return nullptr;
 	if (currentToken->type != Token::Type::kKeywordTo)
@@ -554,7 +554,7 @@ Node* Parser::for_expr(SymbolsParser* symbols) {
 	}
 	advance();
 
-	to = bitwise_or(symbols);
+	to = bitwise_or(context);
 	if (mError != nullptr) {
 		delete start;
 		return nullptr;
@@ -562,7 +562,7 @@ Node* Parser::for_expr(SymbolsParser* symbols) {
 
 	if (currentToken->type == Token::Type::kKeywordStep) {
 		advance();
-		step = bitwise_or(symbols);
+		step = bitwise_or(context);
 		if (mError != nullptr) {
 			delete start;
 			delete to;
@@ -573,8 +573,8 @@ Node* Parser::for_expr(SymbolsParser* symbols) {
 	if (currentToken->type == Token::Type::kColon) {
 		advance();
 		skipNewLines();
-		//int id = symbols->setSymbolIndex(identifier->mValue);
-		Node* body = expr(symbols);
+		//int id = context->setSymbolIndex(identifier->mValue);
+		Node* body = expr(context);
 		if (mError != nullptr)
 		{
 			delete start;
@@ -590,8 +590,8 @@ Node* Parser::for_expr(SymbolsParser* symbols) {
 		if (currentToken->type == Token::Type::kLeftBrace) {
 			advance();
 			skipNewLines();
-			//int id = symbols->setSymbolIndex(identifier->mValue);
-			Node* node = block(symbols, Token::Type::kRightBrace);
+			//int id = context->setSymbolIndex(identifier->mValue);
+			Node* node = block(context, Token::Type::kRightBrace);
 			advance(); //closing brace
 			if (mError != nullptr)
 			{
@@ -614,18 +614,18 @@ Node* Parser::for_expr(SymbolsParser* symbols) {
 	return nullptr;
 }
 
-Node* Parser::return_expr(SymbolsParser* symbols) {
+Node* Parser::return_expr(SymbolsParser* context) {
 	advance();
-	Node* body = expr(symbols);
+	Node* body = expr(context);
 	if (mError != nullptr)
 		return nullptr;
 	return new Return(body);
 }
 
-Node* Parser::if_expr(SymbolsParser* symbols) {
+Node* Parser::if_expr(SymbolsParser* context) {
 	advance();
 	List<IfCase*>* cases = new List<IfCase*>();
-	Node* condition = expr(symbols);
+	Node* condition = expr(context);
 	if (mError != nullptr)
 		return nullptr;
 
@@ -633,7 +633,7 @@ Node* Parser::if_expr(SymbolsParser* symbols) {
 	if (currentToken->type == Token::Type::kColon) {
 		advance();
 		skipNewLines();
-		Node* body = expr(symbols);
+		Node* body = expr(context);
 		if (mError != nullptr) {
 			delete condition;
 			return nullptr;
@@ -644,7 +644,7 @@ Node* Parser::if_expr(SymbolsParser* symbols) {
 	else if (currentToken->type == Token::Type::kLeftBrace) {
 		advance();
 		skipNewLines();
-		Node* body = block(symbols, Token::Type::kRightBrace);
+		Node* body = block(context, Token::Type::kRightBrace);
 		advance(); //closing brace
 		if (mError != nullptr) {
 			delete condition;
@@ -656,7 +656,7 @@ Node* Parser::if_expr(SymbolsParser* symbols) {
 
 	while (currentToken->type == Token::Type::kKeywordElif) {
 		advance();
-		Node* elifCondition = expr(symbols);
+		Node* elifCondition = expr(context);
 		if (mError != nullptr) {
 			delete cases;
 			return nullptr;
@@ -666,7 +666,7 @@ Node* Parser::if_expr(SymbolsParser* symbols) {
 		if (currentToken->type == Token::Type::kColon) {
 			advance();
 			skipNewLines();
-			Node* elifBody = expr(symbols);
+			Node* elifBody = expr(context);
 			if (mError != nullptr) {
 				delete elifCondition;
 				delete cases;
@@ -678,7 +678,7 @@ Node* Parser::if_expr(SymbolsParser* symbols) {
 		else if (currentToken->type == Token::Type::kLeftBrace) {
 			advance();
 			skipNewLines();
-			Node* elifBody = block(symbols, Token::Type::kRightBrace);
+			Node* elifBody = block(context, Token::Type::kRightBrace);
 			advance(); //closing brace
 			if (mError != nullptr) {
 				delete elifCondition;
@@ -696,7 +696,7 @@ Node* Parser::if_expr(SymbolsParser* symbols) {
 		if (currentToken->type == Token::Type::kColon) {
 			advance();
 			skipNewLines();
-			Node* elseBody = expr(symbols);
+			Node* elseBody = expr(context);
 			if (mError != nullptr) {
 				delete cases;
 				return nullptr;
@@ -707,7 +707,7 @@ Node* Parser::if_expr(SymbolsParser* symbols) {
 		else if (currentToken->type == Token::Type::kLeftBrace) {
 			advance();
 			skipNewLines();
-			Node* elseBody = block(symbols, Token::Type::kRightBrace);
+			Node* elseBody = block(context, Token::Type::kRightBrace);
 			advance(); //closing brace
 			if (mError != nullptr) {
 				delete cases;
@@ -720,13 +720,13 @@ Node* Parser::if_expr(SymbolsParser* symbols) {
 	return new If(cases, nullptr);
 }
 
-Node* Parser::list_expr(SymbolsParser* symbols) {
+Node* Parser::list_expr(SymbolsParser* context) {
 	advance();
 	if (currentToken->type == Token::Type::kRightSquare) {
 		advance();
 		return new ListNode(nullptr);
 	}
-	Node* expression = expr(symbols);
+	Node* expression = expr(context);
 	if (mError != nullptr)
 		return nullptr;
 	List<Node*>* items = new List<Node*>();
@@ -736,7 +736,7 @@ Node* Parser::list_expr(SymbolsParser* symbols) {
 		advance();
 		if (currentToken->type == Token::Type::kRightSquare)
 			break;
-		Node* expression = expr(symbols);
+		Node* expression = expr(context);
 		if (mError != nullptr) {
 			delete items;
 			return nullptr;
@@ -749,15 +749,15 @@ Node* Parser::list_expr(SymbolsParser* symbols) {
 		return new ListNode(items);
 	}
 	if (currentToken->type == Token::Type::kLeftSqare)
-		return subscript(new ListNode(items), symbols);
+		return subscript(new ListNode(items), context);
 	mError = new String("Expected ']'");
 	delete items;
 	return nullptr;
 }
 
-Node* Parser::subscript(Node* base, SymbolsParser* symbols) {
+Node* Parser::subscript(Node* base, SymbolsParser* context) {
 	advance();
-	Node* expression = expr(symbols);
+	Node* expression = expr(context);
 	if (mError != nullptr)
 		return nullptr;
 
@@ -770,11 +770,11 @@ Node* Parser::subscript(Node* base, SymbolsParser* symbols) {
 	advance();
 
 	if (currentToken->type == Token::Type::kLeftSqare) 
-		return subscript(new SubscriptAccessNode(base, expression), symbols);
+		return subscript(new SubscriptAccessNode(base, expression), context);
 		
 	if (currentToken->type == Token::Type::kEquals) {
 		advance();
-		Node* node = expr(symbols);
+		Node* node = expr(context);
 		if (mError != nullptr) {
 			delete expression;
 			return nullptr;
@@ -784,7 +784,7 @@ Node* Parser::subscript(Node* base, SymbolsParser* symbols) {
 	return new SubscriptAccessNode(base, expression);
 }
 
-Node* Parser::class_expr(SymbolsParser* symbols) {
+Node* Parser::class_expr(SymbolsParser* context) {
 	advance();
 	Token* identifier = currentToken;
 	if (identifier->type != Token::Type::kIdentifier) {
@@ -796,8 +796,8 @@ Node* Parser::class_expr(SymbolsParser* symbols) {
 	if (currentToken->type == Token::Type::kLeftBrace) {
 		advance();
 		skipNewLines();
-		//int id = symbols->setSymbolIndex(identifier->mValue);
-		Node* node = block(symbols, Token::Type::kRightBrace);
+		//int id = context->setSymbolIndex(identifier->mValue);
+		Node* node = block(context, Token::Type::kRightBrace);
 		advance(); //closing brace
 		if (mError != nullptr)
 			return nullptr;
@@ -807,13 +807,13 @@ Node* Parser::class_expr(SymbolsParser* symbols) {
 	return nullptr;
 }
 
-Node* Parser::attribute(Node* base, SymbolsParser* symbols) {
+Node* Parser::attribute(Node* base, SymbolsParser* context) {
 	advance();
 	
-	Node* node = call(symbols, true);
+	Node* node = call(context, true);
 	if (mError != nullptr)
 		return nullptr;
 	if (currentToken->type == Token::Type::kDot)
-		return attribute(new AttributeNode(base, node), symbols);
+		return attribute(new AttributeNode(base, node), context);
 	return new AttributeNode(base, node);
 }

@@ -6,3 +6,11 @@ MapNode::MapNode(int hashCode, String *key, Value* value) {
 	value_ = value;
 	next_ = nullptr;
 }
+
+MapNode::MapNode() {
+	next_ = nullptr;
+}
+
+MapNode::~MapNode() {
+	delete value_;
+}

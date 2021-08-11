@@ -11,31 +11,31 @@ private:
 	int mIndex = -1;
 	Token* currentToken;
 
-	Node* block(SymbolsParser* symbols, Token::Type end = Token::Type::kRightBrace);
-	Node* expr(SymbolsParser* symbols);
-	Node* Compare(SymbolsParser* symbols);
-	Node* bitwise_or(SymbolsParser* symbols);
-	Node* bitwise_xor(SymbolsParser* symbols);
-	Node* bitwise_and(SymbolsParser* symbols);
-	Node* shift(SymbolsParser* symbols);
-	Node* arithmetic(SymbolsParser* symbols, bool byPassDot);
-	Node* term(SymbolsParser* symbols, bool byPassDot);
-	Node* power(SymbolsParser* symbols, bool byPassDot);
-	Node* factor(SymbolsParser* symbols, bool byPassDot);
-	Node* complement(SymbolsParser* symbols, bool byPassDot);
-	Node* call(SymbolsParser* symbols, bool byPassDot);
-	Node* atom(SymbolsParser* symbols, bool byPassDot);
+	Node* block(SymbolsParser* context, Token::Type end = Token::Type::kRightBrace);
+	Node* expr(SymbolsParser* context);
+	Node* Compare(SymbolsParser* context);
+	Node* bitwise_or(SymbolsParser* context);
+	Node* bitwise_xor(SymbolsParser* context);
+	Node* bitwise_and(SymbolsParser* context);
+	Node* shift(SymbolsParser* context);
+	Node* arithmetic(SymbolsParser* context, bool byPassDot);
+	Node* term(SymbolsParser* context, bool byPassDot);
+	Node* power(SymbolsParser* context, bool byPassDot);
+	Node* factor(SymbolsParser* context, bool byPassDot);
+	Node* complement(SymbolsParser* context, bool byPassDot);
+	Node* call(SymbolsParser* context, bool byPassDot);
+	Node* atom(SymbolsParser* context, bool byPassDot);
 
-	Node* for_expr(SymbolsParser* symbols);
-	Node* method_expr(SymbolsParser* symbols);
-	Node* return_expr(SymbolsParser* symbols);
-	Node* if_expr(SymbolsParser* symbols);
-	Node* list_expr(SymbolsParser* symbols);
+	Node* for_expr(SymbolsParser* context);
+	Node* method_expr(SymbolsParser* context);
+	Node* return_expr(SymbolsParser* context);
+	Node* if_expr(SymbolsParser* context);
+	Node* list_expr(SymbolsParser* context);
 
-	Node* subscript(Node* base, SymbolsParser* symbols);
+	Node* subscript(Node* base, SymbolsParser* context);
 
-	Node* class_expr(SymbolsParser* symbols);
-	Node* attribute(Node* base, SymbolsParser* symbols);
+	Node* class_expr(SymbolsParser* context);
+	Node* attribute(Node* base, SymbolsParser* context);
 
 	void skipNewLines();
 
@@ -45,5 +45,5 @@ public:
 	Parser();
 	~Parser();
 	void setTokens(List<Token*>* tokens);
-	Node* parse(SymbolsParser* symbols);
+	Node* parse(SymbolsParser* context);
 };

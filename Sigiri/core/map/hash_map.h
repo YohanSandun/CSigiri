@@ -17,6 +17,7 @@ private:
 
 public:
     HashMap(int size = 16);
+    ~HashMap();
     void Put(String* key, Value* value);
     Value* Get(String* key);
 };
