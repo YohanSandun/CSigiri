@@ -7,6 +7,9 @@
 #include "core/symbol_table.h"
 #include "core/context.h"
 
+#include "core/map/hash_map.h"
+
+
 char* readFile() {
     /* declare a file pointer */
     FILE* infile;
@@ -102,6 +105,7 @@ char* readFile() {
 //};
 
 int main() {
+
     Interpreter interpreter;
     Parser parser;
     SymbolsParser* symbols = new SymbolsParser();

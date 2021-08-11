@@ -2,13 +2,18 @@
 #include "string_helper.h"
 
 int String::IndexOf(char c) {
-	uint len = StringLength(ptr);
-	for (size_t i = 0; i < len; i++)
+	for (size_t i = 0; i < length; i++)
 	{
 		if (ptr[i] == c)
 			return i;
 	}
 	return -1;
+}
+
+void String::CalculateHash() {
+	hash_code_ = 0;
+	for (size_t i = 0; i < length; i++)
+		hash_code_ = 31 * hash_code_ + ptr[i];
 }
 
 String::String(const char* ptr) {
@@ -17,6 +22,7 @@ String::String(const char* ptr) {
 	this->ptr = new char[size];
 	for (size_t i = 0; i < size; i++)
 		this->ptr[i] = ptr[i];
+	CalculateHash();
 }
 
 String::String(uint size) {
@@ -41,7 +47,7 @@ int String::Compare(char* other) {
 }
 
 void String::Append(const char* ptr) {
-	uint len = StringLength(ptr);
+	uint len = length;
 	uint myLen = StringLength(this->ptr);
 	length += len;
 	if (myLen + len < size) {
@@ -59,10 +65,11 @@ void String::Append(const char* ptr) {
 		delete[] this->ptr;
 		this->ptr = newPtr;
 	}
+	CalculateHash();
 }
 
 void String::Append(char c) {
-	uint myLen = StringLength(ptr);
+	uint myLen = length;
 	if (c != '\0')
 		length++;
 	if (myLen + 1 < size) {
@@ -80,6 +87,7 @@ void String::Append(char c) {
 		delete[] ptr;
 		ptr = newPtr;
 	}
+	CalculateHash();
 }
 
 String* String::Clone() {

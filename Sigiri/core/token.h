@@ -7,13 +7,9 @@ struct Token {
 public:
 	String* value = nullptr;
 	enum class Type {
-		kNewLine,
-
 		kIntNumber,
 		kFloatNumber,
-
 		kString,
-
 		kIdentifier,
 
 		kKeywordVar,
@@ -25,11 +21,9 @@ public:
 		kKeywordReturn,
 		kKeywordBreak,
 		kKeywordContinue,
-
 		kKeywordIf,
 		kKeywordElif,
 		kKeywordElse,
-
 		kKeywordClass,
 
 		kPlus,
@@ -41,18 +35,16 @@ public:
 
 		kLeftParen,
 		kRightParen,
-
-		kComma,
-		kDot,
-
 		kLeftBrace,
 		kRightBrace,
-
 		kLeftSqare,
 		kRightSquare,
 
+		kComma,
+		kDot,
 		kColon,
-		kSemiColon,
+		kSemiColon, 
+		kNewLine,
 
 		kEquals,
 		kEqualsEquals,
@@ -70,7 +62,6 @@ public:
 		kBitwiseAnd,
 		kBitwiseXor,
 		kBitwiseComplement,
-
 		kLeftShift,
 		kRightShift,
 

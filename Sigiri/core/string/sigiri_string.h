@@ -8,7 +8,8 @@ public:
 	char* ptr;
 	uint  size;
 	uint  length;
-
+	int hash_code_;
+	void CalculateHash();
 	String(const char* ptr);
 	String(uint size);
 	~String();
