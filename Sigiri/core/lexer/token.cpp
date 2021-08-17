@@ -17,19 +17,19 @@
 #include "token.h"
 
 Token::Token(Type type) {
-	type_ = type;
+	this->type = type;
 }
 
 Token::Token(String* value, Type type) {
-	value_ = value;
-	type_ = type;
+	this->value = value;
+	this->type = type;
 }
 
 Token::~Token() {
-	if (value_ != nullptr)
-		delete value_;
+	if (value != nullptr)
+		delete value;
 }
 
 const char* Token::GetName() {
-	return token_names[(int)type_];
+	return token_names[(int)type];
 }

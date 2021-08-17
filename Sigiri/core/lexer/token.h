@@ -155,10 +155,10 @@ struct Token {
 		kKwStep,				// step
 
 		kEof,
-	} type_;
+	} type;
 
-	String* value_ = nullptr;
-	uint32 line_ = 0, start_column_ = 0, end_column = 0;
+	String* value = nullptr;
+	uint32 line = 0, start_column = 0, end_column = 0;
 	Token(Type type);
 	Token(String* value, Type type);
 	~Token();
