@@ -28,7 +28,7 @@ int main() {
     List<Token*>* tokens = lexer.GenerateTokens();
     for (size_t i = 0; i < tokens->count(); i++)
     {
-        printf("%s\n", token_names_[(int)(tokens->Get(i)->type_)]);
+        printf("%s\n", tokens->Get(i)->GetName());
     }
 
     return 0;

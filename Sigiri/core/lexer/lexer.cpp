@@ -56,11 +56,15 @@ List<Token*>* Lexer::GenerateTokens() {
 			Advance();
 		}
 		else if (current_char_ == '*') {
-			tokens->Add(new Token(Token::Type::kAsterix));
+			tokens->Add(new Token(Token::Type::kMultiply));
 			Advance();
 		}
 		else if (current_char_ == '/') {
-			tokens->Add(new Token(Token::Type::kFowardShlash));
+			tokens->Add(new Token(Token::Type::kDivision));
+			Advance();
+		}
+		else if (current_char_ == '%') {
+			tokens->Add(new Token(Token::Type::kModulus));
 			Advance();
 		}
 	}

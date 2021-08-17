@@ -24,11 +24,65 @@ static const char* token_names_[] = {
 
 		"Integer",
 		"Float",
+		"String",
+		"Identifier",
 
-		"Plus",
-		"Minus",
-		"Asterix",
-		"FowardShlash",
+		"+",
+		"-",
+		"*",
+		"/",
+		"%",
+		"**",
+
+		"==",
+		"!=",
+		"<",
+		"<=",
+		">",
+		">=",
+
+		"&&",
+		"||",
+		"!",
+
+		"&",
+		"|",
+		"~",
+		"^",
+		"<<",
+		">>",
+
+		"=",
+		"+=",
+		"-=",
+		"*=",
+		"/=",
+		"%=",
+		"**=",
+		"&=",
+		"|=",
+		"~=",
+		"<<=",
+		">>=",
+
+		"(",
+		")",
+		"[",
+		"]",
+		"{",
+		"}",
+		",",
+		".",
+		":",
+		"Newline",
+
+		"var",
+		"if",
+		"else",
+		"elif",
+		"for",
+		"to",
+		"step",
 
 		"EOF",
 };
@@ -40,11 +94,65 @@ struct Token {
 
 		kInteger,
 		kFloat,
+		kString,
+		kIdentifier,
 
-		kPlus,			// +
-		kMinus,			// -
-		kAsterix,		// *
-		kFowardShlash,	// /
+		kPlus,					// +
+		kMinus,					// -
+		kMultiply,				// *
+		kDivision,				// /
+		kModulus,				// %
+		kPower,					// **
+
+		kEqualsEquals,			// ==
+		kNotEquals,				// !=
+		kLess,					// <
+		kLessEquals,			// <=
+		kGreater,				// >
+		kGreaterEquals,			// >=
+
+		kBooleanAnd,			// &&
+		kBooleanOr,				// ||
+		kBooleanNot,			// !
+
+		kBitwiseAnd,			// &
+		kBitwiseOr,				// |
+		kBitwiseComplement,		// ~
+		kBitwiseXor,			// ^
+		kBitwiseLeftShift,		// <<
+		kBitwiseRightShift,		// >>
+
+		kEquals,				// =
+		kPlusEq,				// +=
+		kMinusEq,				// -=
+		kMultiplyEq,			// *=
+		kDivisionEq,			// /=
+		kModulusEq,				// %=
+		kPowerEq,				// **=
+		kBitwiseAndEq,			// &=
+		kBitwiseOrEq,			// |=
+		kBitwiseComplementEq,	// ~=
+		kBitwiseLeftShiftEq,	// <<=
+		kBitwiseRightShiftEq,	// >>=	
+
+		kLeftParen,				// (
+		kRightParen,			// )
+		kLeftSquare,			// [
+		kRightSquare,			// ]
+		kLeftBrace,				// {
+		kRightBrace,			// }
+		kComma,					// ,
+		kDot,					// .
+		kColon,					// :
+		kNewline,				// \n and ;(Semi-colon)
+
+		kKwVar,					// var
+		kKwIf,					// if
+		kKwElse,				// else
+		kKwElif,				// elif
+		kKwFor,					// for
+		kKwTo,					// to
+		kKwStep,				// step
 
 		kEof,
 	} type_;
@@ -54,6 +162,7 @@ struct Token {
 	Token(Type type);
 	Token(String* value, Type type);
 	~Token();
+	const char* GetName();
 };
 
 #endif 

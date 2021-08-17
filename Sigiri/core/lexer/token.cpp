@@ -29,3 +29,7 @@ Token::~Token() {
 	if (value_ != nullptr)
 		delete value_;
 }
+
+const char* Token::GetName() {
+	return token_names_[(int)type_];
+}
