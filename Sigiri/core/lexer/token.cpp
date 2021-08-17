@@ -14,22 +14,18 @@
 // limitations under the License.
 //--------------------------------------------------------------------------
 
-#include <cstdio>
+#include "token.h"
 
-#include "core/list/list.h"
-#include "core/string/string.h"
-#include "core/lexer/lexer.h"
+Token::Token(Type type) {
+	type_ = type;
+}
 
-int main() {
-    
-    String code = "* / - +";
-    Lexer lexer(&code);
+Token::Token(String* value, Type type) {
+	value_ = value;
+	type_ = type;
+}
 
-    List<Token*>* tokens = lexer.GenerateTokens();
-    for (size_t i = 0; i < tokens->count(); i++)
-    {
-        printf("%s\n", token_names_[(int)(tokens->Get(i)->type_)]);
-    }
-
-    return 0;
+Token::~Token() {
+	if (value_ != nullptr)
+		delete value_;
 }

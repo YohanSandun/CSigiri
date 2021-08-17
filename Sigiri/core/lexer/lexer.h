@@ -14,22 +14,28 @@
 // limitations under the License.
 //--------------------------------------------------------------------------
 
-#include <cstdio>
+#ifndef LEXER_H
+#define LEXER_H
 
-#include "core/list/list.h"
+#include "token.h"
+#include "core/declarations.h"
 #include "core/string/string.h"
-#include "core/lexer/lexer.h"
+#include "core/list/list.h"
 
-int main() {
-    
-    String code = "* / - +";
-    Lexer lexer(&code);
+class Lexer {
+private:
+	String* code_;
+	int index_ = -1;
+	char current_char_ = '\0';
 
-    List<Token*>* tokens = lexer.GenerateTokens();
-    for (size_t i = 0; i < tokens->count(); i++)
-    {
-        printf("%s\n", token_names_[(int)(tokens->Get(i)->type_)]);
-    }
+	void Advance(int amount = 1);
+	char Peek(int amount = 1);
 
-    return 0;
-}
+public :
+	Lexer(String* code);
+	~Lexer();
+	List<Token*>* GenerateTokens();
+	String* error_ = nullptr;
+};
+
+#endif // !LEXER_H

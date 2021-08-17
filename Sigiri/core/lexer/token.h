@@ -14,22 +14,46 @@
 // limitations under the License.
 //--------------------------------------------------------------------------
 
-#include <cstdio>
+#ifndef TOKEN_H
+#define TOKEN_H
 
-#include "core/list/list.h"
 #include "core/string/string.h"
-#include "core/lexer/lexer.h"
 
-int main() {
-    
-    String code = "* / - +";
-    Lexer lexer(&code);
+static const char* token_names_[] = {
+		"Empty",
 
-    List<Token*>* tokens = lexer.GenerateTokens();
-    for (size_t i = 0; i < tokens->count(); i++)
-    {
-        printf("%s\n", token_names_[(int)(tokens->Get(i)->type_)]);
-    }
+		"Integer",
+		"Float",
 
-    return 0;
-}
+		"Plus",
+		"Minus",
+		"Asterix",
+		"FowardShlash",
+
+		"EOF",
+};
+
+struct Token {
+
+	enum class Type {
+		kEmpty,
+
+		kInteger,
+		kFloat,
+
+		kPlus,			// +
+		kMinus,			// -
+		kAsterix,		// *
+		kFowardShlash,	// /
+
+		kEof,
+	} type_;
+
+	String* value_ = nullptr;
+	uint32 line_ = 0, start_column_ = 0, end_column = 0;
+	Token(Type type);
+	Token(String* value, Type type);
+	~Token();
+};
+
+#endif 
