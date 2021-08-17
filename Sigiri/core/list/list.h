@@ -14,36 +14,31 @@
 // limitations under the License.
 //--------------------------------------------------------------------------
 
-#ifndef SIGIRI_STRING_H
-#define SIGIRI_STRING_H
+#ifndef LIST_H
+#define LIST_H
 
 #include "core/declarations.h"
 
-class String {
+template <typename T>
+class List {
 private:
-	uint32 size_ = 0;
+	const ubyte kDefaultSize = 10;
+	int current_index_;
+	uint32 size_;
+	T* ptr_;
+
+	void EnsureMemory();
 
 public:
-	char* ptr_ = nullptr;
-	uint32 length_ = 0;
-	int hash_code_ = 0;
-	
-	String(const char* ptr);
-	String(uint32 size);
-	~String();
-
-	bool Compare(String* other);
-	bool Compare(const char* other);
-
-	inline char operator [] (int i) {
-		return ptr_[i];
-	}
-
-	void CalculateHash();
-	void Append(const char* ptr);
-	void Append(char c);
-	uint32 IndexOf(char c);
-	String* Clone();
+	bool keep_items_alive_ = false;
+	List();
+	List(uint32 size);
+	~List();
+	void Add(T item);
+	void Add(uint32 index, T item);
+	T Get(uint32 index);
+	inline uint32 count() { return current_index_ + 1; }
 };
 
-#endif
+#endif 
+

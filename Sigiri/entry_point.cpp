@@ -16,10 +16,10 @@
 
 #include <cstdio>
 
+#include "core/list/list.h"
 #include "core/string/string.h"
 
 int main() {
-    String str = "Hello World";
-    printf("%s\n", str.ptr_);
+    
     return 0;
 }
