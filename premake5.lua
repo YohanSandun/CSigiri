@@ -30,6 +30,10 @@ project "Sigiri"
 		"%{prj.name}/**.cpp"
 	}
 
+	includedirs {
+		"%{prj.name}/"
+	}
+
 	filter "system:windows"
 		systemversion "latest"
 		defines "S_WINDOWS"
