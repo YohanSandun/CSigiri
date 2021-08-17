@@ -19,7 +19,7 @@
 
 #include "core/string/string.h"
 
-static const char* token_names_[] = {
+static const char* token_names[] = {
 		"Empty",
 
 		"Integer",

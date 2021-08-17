@@ -31,5 +31,5 @@ Token::~Token() {
 }
 
 const char* Token::GetName() {
-	return token_names_[(int)type_];
+	return token_names[(int)type_];
 }
