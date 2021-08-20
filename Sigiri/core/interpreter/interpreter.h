@@ -14,31 +14,24 @@
 // limitations under the License.
 //--------------------------------------------------------------------------
 
-#include <cstdio>
+#ifndef INTERPRETER_H
+#define INTERPRETER_H
 
-#include "core/string/string.h"
-#include "core/list/list.cpp"
-#include "core/lexer/lexer.h"
-#include "core/parser/parser.h"
 #include "core/parser/nodes/node.h"
-#include "core/values/value.h"
-#include "core/interpreter/interpreter.h"
 
-int main() {
-    String code = u8 "(1 + 3 * 3 / 2) % 3";
-    Lexer lexer(&code);
-    Parser parser(lexer.GenerateTokens());
-    Node* node = parser.Parse();
-    if (parser.HasError()) {
-        parser.PrintError();
-        return 0;
-    }
-    
-    Interpreter interpreter;
-    Value* value = interpreter.Visit(node);
-    if (value != nullptr) {
-        value->Print();
-        printf("\n");
-    }
-    return 0;
-}
+#include "core/values/value.h"
+#include "core/values/integer_value.h"
+
+class Interpreter {
+private:
+	Value* VisitBlockNode(BlockNode* node);
+	Value* VisitLiteralNode(LiteralNode* node);
+	Value* VisitBinaryNode(BinaryNode* node);
+	Value* VisitUnaryNode(UnaryNode* node);
+
+public:
+	Value* Visit(Node* node);
+};
+
+#endif 
+

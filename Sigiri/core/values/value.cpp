@@ -14,31 +14,35 @@
 // limitations under the License.
 //--------------------------------------------------------------------------
 
-#include <cstdio>
+#include "value.h"
 
-#include "core/string/string.h"
-#include "core/list/list.cpp"
-#include "core/lexer/lexer.h"
-#include "core/parser/parser.h"
-#include "core/parser/nodes/node.h"
-#include "core/values/value.h"
-#include "core/interpreter/interpreter.h"
+Value::Value(Type type, uint32 line, uint32 column_start, uint32 column_end) {
+	this->type = type;
+	this->line = line;
+	this->column_start = column_start;
+	this->column_end = column_end;
+}
 
-int main() {
-    String code = u8 "(1 + 3 * 3 / 2) % 3";
-    Lexer lexer(&code);
-    Parser parser(lexer.GenerateTokens());
-    Node* node = parser.Parse();
-    if (parser.HasError()) {
-        parser.PrintError();
-        return 0;
-    }
-    
-    Interpreter interpreter;
-    Value* value = interpreter.Visit(node);
-    if (value != nullptr) {
-        value->Print();
-        printf("\n");
-    }
-    return 0;
+void Value::Print() {
+
+}
+
+Value* Value::Add(Value* other) {
+	return this;
+}
+
+Value* Value::Subtract(Value* other) {
+	return this;
+}
+
+Value* Value::Multiply(Value* other) {
+	return this;
+}
+
+Value* Value::Divide(Value* other) {
+	return this;
+}
+
+Value* Value::Mod(Value* other) {
+	return this;
 }

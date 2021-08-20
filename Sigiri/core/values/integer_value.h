@@ -13,32 +13,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //--------------------------------------------------------------------------
+#ifndef INTEGER_VALUE_H
+#define INTEGER_VALUE_H
 
-#include <cstdio>
+#include "value.h"
 
-#include "core/string/string.h"
-#include "core/list/list.cpp"
-#include "core/lexer/lexer.h"
-#include "core/parser/parser.h"
-#include "core/parser/nodes/node.h"
-#include "core/values/value.h"
-#include "core/interpreter/interpreter.h"
+struct IntegerValue : public Value
+{
+	int value;
+	IntegerValue(int value, uint32 line, uint32 column_start, uint32 column_end);
+	void Print();
 
-int main() {
-    String code = u8 "(1 + 3 * 3 / 2) % 3";
-    Lexer lexer(&code);
-    Parser parser(lexer.GenerateTokens());
-    Node* node = parser.Parse();
-    if (parser.HasError()) {
-        parser.PrintError();
-        return 0;
-    }
-    
-    Interpreter interpreter;
-    Value* value = interpreter.Visit(node);
-    if (value != nullptr) {
-        value->Print();
-        printf("\n");
-    }
-    return 0;
-}
+	Value* Add(Value* other);
+	Value* Subtract(Value* other);
+	Value* Multiply(Value* other);
+	Value* Divide(Value* other);
+	Value* Mod(Value* other);
+};
+
+#endif 
+
