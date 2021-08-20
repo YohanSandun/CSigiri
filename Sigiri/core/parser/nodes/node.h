@@ -38,8 +38,10 @@ struct Node
 		kBlock,
 	} type;
 
-	Node(Type type, uint32 line, uint32 column_start, uint32 column_end);
 	uint32 line = 0, column_start = 0, column_end = 0;
+
+	Node(Type type, uint32 line, uint32 column_start, uint32 column_end);
+	virtual ~Node();
 };
 
 struct LiteralNode : public Node
@@ -60,6 +62,7 @@ struct LiteralNode : public Node
 	LiteralNode(int value, uint32 line, uint32 column_start, uint32 column_end);
 	LiteralNode(double value, uint32 line, uint32 column_start, uint32 column_end);
 	LiteralNode(String* value, uint32 line, uint32 column_start, uint32 column_end);
+	~LiteralNode();
 };
 
 struct BinaryNode : public Node
@@ -90,8 +93,10 @@ struct BinaryNode : public Node
 
 	} operator_type;
 
-	BinaryNode(Node* left, OperatorType operator_type, Node* right, uint32 line, uint32 column_start, uint32 column_end);
 	Node* left, * right;
+
+	BinaryNode(Node* left, OperatorType operator_type, Node* right, uint32 line, uint32 column_start, uint32 column_end);
+	~BinaryNode();
 };
 
 struct UnaryNode : public Node
@@ -103,14 +108,17 @@ struct UnaryNode : public Node
 		kBitwiseComplement,
 	} operator_type;
 
-	UnaryNode(Node* node, UnaryOperatorType operator_type, uint32 line, uint32 column_start, uint32 column_end);
 	Node* node;
+
+	UnaryNode(Node* node, UnaryOperatorType operator_type, uint32 line, uint32 column_start, uint32 column_end);
+	~UnaryNode();
 };
 
 struct BlockNode : public Node
 {
 	List<Node*>* nodes;
 	BlockNode(List<Node*>* nodes, uint32 line, uint32 column_start, uint32 column_end);
+	~BlockNode();
 };
 #endif 
 

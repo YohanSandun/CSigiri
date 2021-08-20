@@ -25,20 +25,37 @@
 #include "core/interpreter/interpreter.h"
 
 int main() {
-    String code = u8 "(1 + 3 * 3 / 2) % 3";
-    Lexer lexer(&code);
-    Parser parser(lexer.GenerateTokens());
-    Node* node = parser.Parse();
-    if (parser.HasError()) {
-        parser.PrintError();
-        return 0;
-    }
-    
+
+    printf("CSigiri v1.0.0\nThis is not a released version. CSigiri is still under development at https://github.com/YohanSandun/CSigiri \nBut my twin brother is way ahead of me. you can find him at https://github.com/YohanSandun/Sigiri \n");
+
     Interpreter interpreter;
-    Value* value = interpreter.Visit(node);
-    if (value != nullptr) {
-        value->Print();
-        printf("\n");
+    while (true)
+    {
+        printf("--> ");
+
+        char buffer[1024];
+        fgets(buffer, sizeof(buffer), stdin);
+        String code(u8 buffer);
+
+        Lexer lexer(&code);
+        List<Token*>* tokens = lexer.GenerateTokens();
+        Parser parser(tokens);
+        Node* node = parser.Parse();
+        if (parser.HasError()) {
+            parser.PrintError();
+            delete tokens;
+            continue;
+        }
+
+        Value* value = interpreter.Visit(node);
+        if (value != nullptr) {
+            value->Print();
+            printf("\n");
+        }
+
+        delete tokens;
+        delete node;
+        delete value;
     }
     return 0;
 }
