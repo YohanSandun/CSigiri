@@ -16,13 +16,26 @@
 
 #include "token.h"
 
-Token::Token(Type type) {
+Token::Token(Type type, uint32 line, uint32 start_column) {
 	this->type = type;
+	this->line = line;
+	this->start_column = start_column;
+	this->end_column = start_column;
 }
 
-Token::Token(String* value, Type type) {
+Token::Token(Type type, uint32 line, uint32 start_column, uint32 end_column) {
+	this->type = type;
+	this->line = line;
+	this->start_column = start_column;
+	this->end_column = end_column;
+}
+
+Token::Token(String* value, Type type, uint32 line, uint32 start_column, uint32 end_column) {
 	this->value = value;
 	this->type = type;
+	this->line = line;
+	this->start_column = start_column;
+	this->end_column = end_column;
 }
 
 Token::~Token() {
@@ -30,6 +43,6 @@ Token::~Token() {
 		delete value;
 }
 
-const char* Token::GetName() {
+const char* Token::name() {
 	return token_names[(int)type];
 }

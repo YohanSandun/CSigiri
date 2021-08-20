@@ -16,20 +16,22 @@
 
 #include <cstdio>
 
-#include "core/list/list.h"
 #include "core/string/string.h"
+#include "core/list/list.cpp"
 #include "core/lexer/lexer.h"
+#include "core/parser/parser.h"
+#include "core/parser/nodes/node.h"
 
 int main() {
-    
-    String code = "* / - +";
+    String code = u8 "23+";
     Lexer lexer(&code);
-
-    List<Token*>* tokens = lexer.GenerateTokens();
-    for (size_t i = 0; i < tokens->count(); i++)
-    {
-        printf("%s\n", tokens->Get(i)->GetName());
+    Parser parser(lexer.GenerateTokens());
+    Node* node = parser.Parse();
+    if (parser.HasError()) {
+        parser.PrintError();
+        return 0;
     }
+    printf("OK!\n");
 
     return 0;
 }

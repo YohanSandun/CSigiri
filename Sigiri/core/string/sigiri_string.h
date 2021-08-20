@@ -24,25 +24,25 @@ private:
 	uint32 size_ = 0;
 
 public:
-	char* ptr_ = nullptr;
+	unsigned char* ptr_ = nullptr;
 	uint32 length_ = 0;
 	int hash_code_ = 0;
 	
-	String(const char* ptr);
+	String(const unsigned char* ptr);
 	String(uint32 size);
 	~String();
 
 	bool Compare(String* other);
-	bool Compare(const char* other);
+	bool Compare(const unsigned char* other);
 
-	inline char operator [] (int i) {
+	inline unsigned char operator [] (int i) {
 		return ptr_[i];
 	}
 
 	void CalculateHash();
-	void Append(const char* ptr);
-	void Append(char c);
-	uint32 IndexOf(char c);
+	void Append(const unsigned char* ptr);
+	void Append(unsigned char c);
+	uint32 IndexOf(unsigned char c);
 	String* Clone();
 };
 

@@ -25,4 +25,6 @@ using sbyte = __int8;
 using sint16 = __int16;
 using sint32 = __int32;
 
+#define u8 (const unsigned char*)
+
 #endif 

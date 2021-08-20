@@ -62,6 +62,7 @@ static const char* token_names[] = {
 		"&=",
 		"|=",
 		"~=",
+		"^=",
 		"<<=",
 		">>=",
 
@@ -132,6 +133,7 @@ struct Token {
 		kBitwiseAndEq,			// &=
 		kBitwiseOrEq,			// |=
 		kBitwiseComplementEq,	// ~=
+		kBitwiseXorEquals,		// ^=
 		kBitwiseLeftShiftEq,	// <<=
 		kBitwiseRightShiftEq,	// >>=	
 
@@ -159,10 +161,11 @@ struct Token {
 
 	String* value = nullptr;
 	uint32 line = 0, start_column = 0, end_column = 0;
-	Token(Type type);
-	Token(String* value, Type type);
+	Token(Type type, uint32 line, uint32 start_column);
+	Token(Type type, uint32 line, uint32 start_column, uint32 end_column);
+	Token(String* value, Type type, uint32 line, uint32 start_column, uint32 end_column);
 	~Token();
-	const char* GetName();
+	const char* name();
 };
 
 #endif 

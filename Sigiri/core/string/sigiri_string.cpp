@@ -20,15 +20,15 @@
 String::String(uint32 size) {
 	size_ = size > 0 ? size : 1;
 	length_ = 0;
-	ptr_ = new char[size_];
+	ptr_ = new unsigned char[size_];
 	*ptr_ = '\0';
 	hash_code_ = 0;
 }
 
-String::String(const char* ptr) {
+String::String(const unsigned char* ptr) {
 	size_ = StringLength(ptr) + 1;
 	length_ = size_ - 1;
-	ptr_ = new char[size_];
+	ptr_ = new unsigned char[size_];
 	for (size_t i = 0; i < size_; i++)
 		ptr_[i] = ptr[i];
 	hash_code_ = 0;
@@ -44,11 +44,11 @@ bool String::Compare(String* other) {
 	return StringCompare(this, other);
 }
 
-bool String::Compare(const char* other) {
+bool String::Compare(const unsigned char* other) {
 	return StringCompare(ptr_, other);
 }
 
-uint32 String::IndexOf(char c) {
+uint32 String::IndexOf(unsigned char c) {
 	for (size_t i = 0; i < length_; i++)
 		if (ptr_[i] == c)
 			return i;
@@ -61,7 +61,7 @@ void String::CalculateHash() {
 		hash_code_ = 31 * hash_code_ + ptr_[i];
 }
 
-void String::Append(const char* ptr) {
+void String::Append(const unsigned char* ptr) {
 	uint32 length = StringLength(ptr);
 	if (length_ + length < size_) {
 		for (size_t i = 0; i <= length; i++)
@@ -70,7 +70,7 @@ void String::Append(const char* ptr) {
 	else {
 		// re-alloc memory
 		size_ += length + 10; // 10 extra bytes
-		char* new_ptr = new char[size_];
+		unsigned char* new_ptr = new unsigned char[size_];
 		for (size_t i = 0; i < length_; i++)
 			new_ptr[i] = ptr_[i];
 		for (size_t i = 0; i <= length; i++)
@@ -82,7 +82,7 @@ void String::Append(const char* ptr) {
 	CalculateHash();
 }
 
-void String::Append(char c) {
+void String::Append(unsigned char c) {
 	if (c == '\0')
 		return;
 	if (length_ + 1 < size_) {
@@ -91,7 +91,7 @@ void String::Append(char c) {
 	else {
 		// re-alloc memory
 		size_ += 10; // 10 extra bytes
-		char* new_ptr = new char[size_];
+		unsigned char* new_ptr = new unsigned char[size_];
 		for (size_t i = 0; i < length_; i++)
 			new_ptr[i] = ptr_[i];
 		new_ptr[length_] = c;

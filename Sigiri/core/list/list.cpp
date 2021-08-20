@@ -13,10 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //--------------------------------------------------------------------------
+#ifndef LIST_CPP
+#define LIST_CPP
 
 #include "list.h"
-#include "core/string/string.h"
-#include "core/lexer/token.h"
 
 template <typename T>
 List<T>::List() {
@@ -34,6 +34,8 @@ List<T>::List(uint32 size) {
 
 template <typename T>
 List<T>::~List() {
+	if (current_index_ == -1)
+		return;
 	if (!keep_items_alive_) {
 		for (size_t i = 0; i <= current_index_; i++) {
 			if (ptr_[i] != nullptr)
@@ -73,18 +75,20 @@ void List<T>::EnsureMemory() {
 
 // Never call or never delete this function
 // This is need by the linker to resolve template types
-void SatisfyLinker() {
-	List<String*>* list1 = new List<String*>();
-	List<String*>* list2 = new List<String*>(0);
-	list1->Add(new String(""));
-	list1->Add(0, new String(""));
-	list1->Get(0);
-	delete list1;
-	delete list2;
+//void SatisfyLinker() {
+//	List<String*>* list1 = new List<String*>();
+//	List<String*>* list2 = new List<String*>(0);
+//	list1->Add(new String((const unsigned char*)""));
+//	list1->Add(0, new String((const unsigned char*)""));
+//	list1->Get(0);
+//	delete list1;
+//	delete list2;
+//
+//	List<Token*>* list3 = new List<Token*>();
+//	list3->Add(new Token(Token::Type::kInteger, 0, 0));
+//	list3->Add(0, new Token(Token::Type::kInteger, 0, 0));
+//	list3->Get(0);
+//	delete list3;
+//}
 
-	List<Token*>* list3 = new List<Token*>();
-	list3->Add(new Token(Token::Type::kInteger));
-	list3->Add(0, new Token(Token::Type::kInteger));
-	list3->Get(0);
-	delete list3;
-}
+#endif

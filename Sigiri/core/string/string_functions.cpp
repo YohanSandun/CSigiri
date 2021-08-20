@@ -16,13 +16,13 @@
 
 #include "string_functions.h"
 
-uint32 StringLength(const char* ptr) {
+uint32 StringLength(const unsigned char* ptr) {
 	uint32 i = 0;
 	while (ptr[i++] != '\0');
 	return i - 1;
 }
 
-bool StringCompare(const char* s1, const char* s2) {
+bool StringCompare(const unsigned char* s1, const unsigned char* s2) {
 	if (StringLength(s1) != StringLength(s2))
 		return false;
 	int i = 0;
