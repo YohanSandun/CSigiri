@@ -36,6 +36,7 @@ private:
 	U_INT32 error_column_end_;
 
 	void Advance(int amount = 1);
+	Token* Peek(int amount = 1);
 	void SkipNewLines();
 	void SetError(const char* error);
 

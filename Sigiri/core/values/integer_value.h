@@ -20,8 +20,9 @@
 
 struct IntegerValue : public Value
 {
+	bool is_boolean = false;
 	int value;
-	IntegerValue(int value, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
+	IntegerValue(int value, U_INT32 line, U_INT32 column_start, U_INT32 column_end, bool is_boolean = false);
 	void Print();
 
 	Value* Add(Value* other);
@@ -29,6 +30,25 @@ struct IntegerValue : public Value
 	Value* Multiply(Value* other);
 	Value* Divide(Value* other);
 	Value* Mod(Value* other);
+	Value* Power(Value* other);
+
+	Value* Equals(Value* other);
+	Value* NotEquals(Value* other);
+	Value* LessThan(Value* other);
+	Value* LessThanOrEqual(Value* other);
+	Value* GreaterThan(Value* other);
+	Value* GreaterThanOrEqual(Value* other);
+
+	Value* BitwiseAnd(Value* other);
+	Value* BitwiseOr(Value* other);
+	Value* BitwiseComplement();
+	Value* BitwiseXor(Value* other);
+	Value* BitwiseLeftShift(Value* other);
+	Value* BitwiseRightShift(Value* other);
+
+	Value* BooleanAnd(Value* other);
+	Value* BooleanOr(Value* other);
+	Value* BooleanNot();
 };
 
 #endif 

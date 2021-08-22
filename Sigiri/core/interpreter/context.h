@@ -14,25 +14,22 @@
 // limitations under the License.
 //--------------------------------------------------------------------------
 
-#ifndef INTERPRETER_H
-#define INTERPRETER_H
+#ifndef CONTEXT_H
+#define CONTEXT_H
 
-#include "core/parser/nodes/node.h"
 #include "core/values/value.h"
-#include "core/values/integer_value.h"
+#include "core/string/string.h"
+#include "core/map/value_hash_map.h"
 
-#include "context.h"
-
-class Interpreter {
+class Context {
 private:
-	Value* VisitBlockNode(BlockNode* node, Context* context);
-	Value* VisitLiteralNode(LiteralNode* node, Context* context);
-	Value* VisitBinaryNode(BinaryNode* node, Context* context);
-	Value* VisitUnaryNode(UnaryNode* node, Context* context);
+	ValueHashMap* symbols_;
+	Context* parent_;
 
 public:
-	Value* Visit(Node* node, Context* context);
+	Context();
+	Context(Context* parent);
+	Value* GetSymbol(String* key);
 };
 
-#endif 
-
+#endif

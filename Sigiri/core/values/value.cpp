@@ -27,6 +27,7 @@ void Value::Print() {
 
 }
 
+// Arithmetic
 Value* Value::Add(Value* other) {
 	return this;
 }
@@ -44,5 +45,75 @@ Value* Value::Divide(Value* other) {
 }
 
 Value* Value::Mod(Value* other) {
+	return this;
+}
+
+Value* Value::Power(Value* other) {
+	return this;
+}
+
+
+// Comparison
+Value* Value::Equals(Value* other) {
+	return this;
+}
+
+Value* Value::NotEquals(Value* other) {
+	return this;
+}
+
+Value* Value::LessThan(Value* other) {
+	return this;
+}
+
+Value* Value::LessThanOrEqual(Value* other) {
+	return this;
+}
+
+Value* Value::GreaterThan(Value* other) {
+	return this;
+}
+
+Value* Value::GreaterThanOrEqual(Value* other) {
+	return this;
+}
+
+
+// Bitwise
+Value* Value::BitwiseAnd(Value* other) {
+	return this;
+}
+
+Value* Value::BitwiseOr(Value* other) {
+	return this;
+}
+
+Value* Value::BitwiseComplement() {
+	return this;
+}
+
+Value* Value::BitwiseXor(Value* other) {
+	return this;
+}
+
+Value* Value::BitwiseLeftShift(Value* other) {
+	return this;
+}
+
+Value* Value::BitwiseRightShift(Value* other) {
+	return this;
+}
+
+
+// Boolean
+Value* Value::BooleanAnd(Value* other) {
+	return this;
+}
+
+Value* Value::BooleanOr(Value* other) {
+	return this;
+}
+
+Value* Value::BooleanNot() {
 	return this;
 }

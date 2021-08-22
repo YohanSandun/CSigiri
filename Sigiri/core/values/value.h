@@ -37,8 +37,26 @@ struct Value
 	virtual Value* Multiply(Value* other);
 	virtual Value* Divide(Value* other);
 	virtual Value* Mod(Value* other);
+	virtual Value* Power(Value* other);
 
-	
+	virtual Value* Equals(Value* other);
+	virtual Value* NotEquals(Value* other);
+	virtual Value* LessThan(Value* other);
+	virtual Value* LessThanOrEqual(Value* other);
+	virtual Value* GreaterThan(Value* other);
+	virtual Value* GreaterThanOrEqual(Value* other);
+
+	virtual Value* BitwiseAnd(Value* other);
+	virtual Value* BitwiseOr(Value* other);
+	virtual Value* BitwiseComplement();
+	virtual Value* BitwiseXor(Value* other);
+	virtual Value* BitwiseLeftShift(Value* other);
+	virtual Value* BitwiseRightShift(Value* other);
+
+	virtual Value* BooleanAnd(Value* other);
+	virtual Value* BooleanOr(Value* other);
+	virtual Value* BooleanNot();
+
 };
 
 #endif 

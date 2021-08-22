@@ -14,25 +14,22 @@
 // limitations under the License.
 //--------------------------------------------------------------------------
 
-#ifndef INTERPRETER_H
-#define INTERPRETER_H
-
-#include "core/parser/nodes/node.h"
-#include "core/values/value.h"
-#include "core/values/integer_value.h"
-
 #include "context.h"
 
-class Interpreter {
-private:
-	Value* VisitBlockNode(BlockNode* node, Context* context);
-	Value* VisitLiteralNode(LiteralNode* node, Context* context);
-	Value* VisitBinaryNode(BinaryNode* node, Context* context);
-	Value* VisitUnaryNode(UnaryNode* node, Context* context);
+Context::Context() {
+	parent_ = nullptr;
+	symbols_ = new ValueHashMap();
+}
 
-public:
-	Value* Visit(Node* node, Context* context);
-};
+Context::Context(Context* parent) {
+	parent_ = parent;
+	symbols_ = new ValueHashMap();
+}
 
-#endif 
-
+Value* Context::GetSymbol(String* key) {
+	Value* value = symbols_->Get(key);
+	if (value != nullptr)
+		return value;
+	if (parent_ != nullptr)
+		return parent_->GetSymbol(key);
+}

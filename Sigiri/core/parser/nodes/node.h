@@ -26,6 +26,7 @@ static char* node_names[] = {
 	"Binary",
 	"Unary",
 	"Block",
+	"Assign",
 };
 
 struct Node
@@ -36,6 +37,7 @@ struct Node
 		kBinary,
 		kUnary,
 		kBlock,
+		kAssign,
 	} type;
 
 	U_INT32 line = 0, column_start = 0, column_end = 0;
@@ -120,5 +122,14 @@ struct BlockNode : public Node
 	BlockNode(List<Node*>* nodes, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
 	~BlockNode();
 };
+
+struct AssignNode : public Node
+{
+	Node* node;
+	String* key;
+	AssignNode(String* key, Node* node, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
+	~AssignNode();
+};
+
 #endif 
 

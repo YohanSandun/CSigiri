@@ -23,12 +23,14 @@
 #include "core/parser/nodes/node.h"
 #include "core/values/value.h"
 #include "core/interpreter/interpreter.h"
+#include "core/interpreter/context.h"
 
 int main() {
 
     printf("CSigiri v1.0.0\nThis is not a released version. CSigiri is still under development at https://github.com/YohanSandun/CSigiri \nBut my twin brother is way ahead of me. you can find him at https://github.com/YohanSandun/Sigiri \n");
 
     Interpreter interpreter;
+    Context context;
     while (true)
     {
         printf("--> ");
@@ -47,7 +49,7 @@ int main() {
             continue;
         }
 
-        Value* value = interpreter.Visit(node);
+        Value* value = interpreter.Visit(node, &context);
         if (value != nullptr) {
             value->Print();
             printf("\n");

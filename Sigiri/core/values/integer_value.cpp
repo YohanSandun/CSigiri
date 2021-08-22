@@ -16,13 +16,17 @@
 
 #include "integer_value.h"
 
-IntegerValue::IntegerValue(int value, U_INT32 line, U_INT32 column_start, U_INT32 column_end) : Value(Value::Type::kInteger, line, column_start, column_end) {
+IntegerValue::IntegerValue(int value, U_INT32 line, U_INT32 column_start, U_INT32 column_end, bool is_boolean) : Value(Value::Type::kInteger, line, column_start, column_end) {
 	this->value = value;
+	this->is_boolean = is_boolean;
 }
 
 
 void IntegerValue::Print() {
-	printf("%d", value);
+	if (is_boolean)
+		printf("%s", value == 0 ? "false" : "true");
+	else
+		printf("%d", value);
 }
 
 Value* IntegerValue::Add(Value* other) {
@@ -63,4 +67,135 @@ Value* IntegerValue::Mod(Value* other) {
 		delete other;
 		return this;
 	}
+}
+
+Value* IntegerValue::Power(Value* other) {
+	if (other->type == Value::Type::kInteger) {
+		//TODO: implement power
+		delete other;
+		return this;
+	}
+}
+
+Value* IntegerValue::Equals(Value* other) {
+	if (other->type == Value::Type::kInteger) {
+		value = value == ((IntegerValue*)other)->value;
+		is_boolean = true;
+		delete other;
+		return this;
+	}
+}
+
+Value* IntegerValue::NotEquals(Value* other) {
+	if (other->type == Value::Type::kInteger) {
+		value = value != ((IntegerValue*)other)->value;
+		is_boolean = true;
+		delete other;
+		return this;
+	}
+}
+
+Value* IntegerValue::LessThan(Value* other) {
+	if (other->type == Value::Type::kInteger) {
+		value = value < ((IntegerValue*)other)->value;
+		is_boolean = true;
+		delete other;
+		return this;
+	}
+}
+
+Value* IntegerValue::LessThanOrEqual(Value* other) {
+	if (other->type == Value::Type::kInteger) {
+		value = value <= ((IntegerValue*)other)->value;
+		is_boolean = true;
+		delete other;
+		return this;
+	}
+}
+
+Value* IntegerValue::GreaterThan(Value* other) {
+	if (other->type == Value::Type::kInteger) {
+		value = value > ((IntegerValue*)other)->value;
+		is_boolean = true;
+		delete other;
+		return this;
+	}
+}
+
+Value* IntegerValue::GreaterThanOrEqual(Value* other) {
+	if (other->type == Value::Type::kInteger) {
+		value = value >= ((IntegerValue*)other)->value;
+		is_boolean = true;
+		delete other;
+		return this;
+	}
+}
+
+Value* IntegerValue::BitwiseAnd(Value* other) {
+	if (other->type == Value::Type::kInteger) {
+		value &= ((IntegerValue*)other)->value;
+		delete other;
+		return this;
+	}
+}
+
+Value* IntegerValue::BitwiseOr(Value* other) {
+	if (other->type == Value::Type::kInteger) {
+		value |= ((IntegerValue*)other)->value;
+		delete other;
+		return this;
+	}
+}
+
+Value* IntegerValue::BitwiseComplement() {
+	value = ~value;
+	return this;
+}
+
+Value* IntegerValue::BitwiseXor(Value* other) {
+	if (other->type == Value::Type::kInteger) {
+		value ^= ((IntegerValue*)other)->value;
+		delete other;
+		return this;
+	}
+}
+
+Value* IntegerValue::BitwiseLeftShift(Value* other) {
+	if (other->type == Value::Type::kInteger) {
+		value <<= ((IntegerValue*)other)->value;
+		delete other;
+		return this;
+	}
+}
+
+Value* IntegerValue::BitwiseRightShift(Value* other) {
+	if (other->type == Value::Type::kInteger) {
+		value >>= ((IntegerValue*)other)->value;
+		delete other;
+		return this;
+	}
+}
+
+Value* IntegerValue::BooleanAnd(Value* other) {
+	if (other->type == Value::Type::kInteger) {
+		value = value && ((IntegerValue*)other)->value;
+		is_boolean = true;
+		delete other;
+		return this;
+	}
+}
+
+Value* IntegerValue::BooleanOr(Value* other) {
+	if (other->type == Value::Type::kInteger) {
+		value = value || ((IntegerValue*)other)->value;
+		is_boolean = true;
+		delete other;
+		return this;
+	}
+}
+
+Value* IntegerValue::BooleanNot() {
+	value = !value;
+	is_boolean = true;
+	return this;
 }

@@ -32,6 +32,13 @@ void Parser::Advance(int amount) {
 	}
 }
 
+Token* Parser::Peek(int amount) {
+	if (index_ + amount < token_count_) {
+		return tokens_->Get(index_ + amount);
+	}
+	return tokens_->Get(token_count_ - 1); // Returning EOF token
+}
+
 void Parser::SkipNewLines() {
 	while (current_token_->type == Token::Type::kNewline)
 		Advance();
@@ -335,6 +342,27 @@ Node* Parser::ParseAtom() {
 		}
 		Advance();
 		return expression;
+	}
+	else if (token->type == Token::Type::kIdentifier) {
+		if (Peek()->type == Token::Type::kColon) {
+			if (Peek(2)->type == Token::Type::kKwVar) {
+				Advance(3);
+				if (current_token_->type != Token::Type::kEquals)
+				{
+					SetError("Expect '='");
+					return nullptr;
+				}
+				Advance();
+				Node* expression = ParseExpression();
+				return new AssignNode(new String(token->value->ptr_), expression, token->line, token->start_column, expression->column_end);
+			}
+			SetError("Expect var or data type!");
+			return nullptr;
+			// else other data types such as long, complex, big
+		}
+		else {
+			// Var access
+		}
 	}
 	SetError("Expect something!");
 	return nullptr;

@@ -74,3 +74,13 @@ BlockNode::BlockNode(List<Node*>* nodes, U_INT32 line, U_INT32 column_start, U_I
 BlockNode::~BlockNode() {
 	delete nodes;
 }
+
+AssignNode::AssignNode(String* key, Node* node, U_INT32 line, U_INT32 column_start, U_INT32 column_end) : Node(Node::Type::kAssign, line, column_start, column_end) {
+	this->key = key;
+	this->node = node;
+}
+
+AssignNode::~AssignNode() {
+	delete key;
+	delete node;
+}
