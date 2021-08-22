@@ -20,10 +20,10 @@
 #include "core/declarations.h"
 #include "sigiri_string.h"
 
-uint32  StringLength(const unsigned char* ptr);
+U_INT32  StringLength(const unsigned char* ptr);
 bool    StringCompare(const unsigned char* s1, const unsigned char* s2);
 bool    StringCompare(String* s1, String* s2);
-uint32  StringToInt(String* str);
+int  StringToInt(String* str);
 double  StringToFloat(String* str);
 
 #endif

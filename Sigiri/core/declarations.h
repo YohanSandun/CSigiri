@@ -17,14 +17,14 @@
 #ifndef DECLARATIONS_H
 #define DECLARATIONS_H
 
-using ubyte = unsigned __int8;
-using uint16 = unsigned __int16;
-using uint32 = unsigned __int32;
+using U_BYTE = unsigned __int8;
+using U_INT16 = unsigned __int16;
+using U_INT32 = unsigned __int32;
 
-using sbyte = __int8;
-using sint16 = __int16;
-using sint32 = __int32;
+using S_BYTE = __int8;
+using S_INT16 = __int16;
+using S_INT32 = __int32;
 
-#define u8 (const unsigned char*)
+#define UTF_8 (const unsigned char*)
 
 #endif 

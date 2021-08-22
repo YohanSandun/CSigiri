@@ -21,15 +21,15 @@
 
 class String {
 private:
-	uint32 size_ = 0;
+	U_INT32 size_ = 0;
 
 public:
 	unsigned char* ptr_ = nullptr;
-	uint32 length_ = 0;
+	U_INT32 length_ = 0;
 	int hash_code_ = 0;
 	
 	String(const unsigned char* ptr);
-	String(uint32 size);
+	String(U_INT32 size);
 	~String();
 
 	bool Compare(String* other);
@@ -42,7 +42,7 @@ public:
 	void CalculateHash();
 	void Append(const unsigned char* ptr);
 	void Append(unsigned char c);
-	uint32 IndexOf(unsigned char c);
+	U_INT32 IndexOf(unsigned char c);
 	String* Clone();
 };
 

@@ -21,7 +21,7 @@
 struct IntegerValue : public Value
 {
 	int value;
-	IntegerValue(int value, uint32 line, uint32 column_start, uint32 column_end);
+	IntegerValue(int value, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
 	void Print();
 
 	Value* Add(Value* other);

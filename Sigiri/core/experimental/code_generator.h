@@ -25,11 +25,11 @@
 class CodeGenerator
 {
 public:
-	uint32 current_data_index_ = 0;
-	uint32 current_opcode_index_ = 0;
+	U_INT32 current_data_index_ = 0;
+	U_INT32 current_opcode_index_ = 0;
 
-	sbyte data_[4096];
-	sbyte opcoeds_[1024];
+	S_BYTE data_[4096];
+	S_BYTE opcoeds_[1024];
 
 	void VisitBlockNode(BlockNode* node);
 	void VisitLiteralNode(LiteralNode* node);

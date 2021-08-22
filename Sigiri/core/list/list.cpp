@@ -26,7 +26,7 @@ List<T>::List() {
 }
 
 template <typename T>
-List<T>::List(uint32 size) {
+List<T>::List(U_INT32 size) {
 	size_ = size;
 	current_index_ = -1;
 	ptr_ = new T[size_];
@@ -52,12 +52,12 @@ void List<T>::Add(T item) {
 }
 
 template <typename T>
-void List<T>::Add(uint32 index, T item) {
+void List<T>::Add(U_INT32 index, T item) {
 	ptr_[index] = item;
 }
 
 template <typename T>
-T List<T>::Get(uint32 index) {
+T List<T>::Get(U_INT32 index) {
 	return ptr_[index];
 }
 

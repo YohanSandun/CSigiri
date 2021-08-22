@@ -17,7 +17,7 @@
 #include "sigiri_string.h"
 #include "string_functions.h"
 
-String::String(uint32 size) {
+String::String(U_INT32 size) {
 	size_ = size > 0 ? size : 1;
 	length_ = 0;
 	ptr_ = new unsigned char[size_];
@@ -48,7 +48,7 @@ bool String::Compare(const unsigned char* other) {
 	return StringCompare(ptr_, other);
 }
 
-uint32 String::IndexOf(unsigned char c) {
+U_INT32 String::IndexOf(unsigned char c) {
 	for (size_t i = 0; i < length_; i++)
 		if (ptr_[i] == c)
 			return i;
@@ -62,7 +62,7 @@ void String::CalculateHash() {
 }
 
 void String::Append(const unsigned char* ptr) {
-	uint32 length = StringLength(ptr);
+	U_INT32 length = StringLength(ptr);
 	if (length_ + length < size_) {
 		for (size_t i = 0; i <= length; i++)
 			ptr_[length_ + i] = ptr[i];

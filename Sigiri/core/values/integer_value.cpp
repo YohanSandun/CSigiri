@@ -16,7 +16,7 @@
 
 #include "integer_value.h"
 
-IntegerValue::IntegerValue(int value, uint32 line, uint32 column_start, uint32 column_end) : Value(Value::Type::kInteger, line, column_start, column_end) {
+IntegerValue::IntegerValue(int value, U_INT32 line, U_INT32 column_start, U_INT32 column_end) : Value(Value::Type::kInteger, line, column_start, column_end) {
 	this->value = value;
 }
 

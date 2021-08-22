@@ -16,7 +16,7 @@
 
 #include "node.h"
 
-Node::Node(Node::Type type, uint32 line, uint32 column_start, uint32 column_end) {
+Node::Node(Node::Type type, U_INT32 line, U_INT32 column_start, U_INT32 column_end) {
 	this->type = type;
 	this->line = line;
 	this->column_start = column_start;
@@ -27,17 +27,17 @@ Node::~Node() {
 
 }
 
-LiteralNode::LiteralNode(int value, uint32 line, uint32 column_start, uint32 column_end) : Node(Node::Type::kLiteral, line, column_start, column_end) {
+LiteralNode::LiteralNode(int value, U_INT32 line, U_INT32 column_start, U_INT32 column_end) : Node(Node::Type::kLiteral, line, column_start, column_end) {
 	this->value.int_value = value;
 	this->literal_type = LiteralType::kInteger;
 }
 
-LiteralNode::LiteralNode(double value, uint32 line, uint32 column_start, uint32 column_end) : Node(Node::Type::kLiteral, line, column_start, column_end) {
+LiteralNode::LiteralNode(double value, U_INT32 line, U_INT32 column_start, U_INT32 column_end) : Node(Node::Type::kLiteral, line, column_start, column_end) {
 	this->value.float_value = value;
 	this->literal_type = LiteralType::kFloat;
 }
 
-LiteralNode::LiteralNode(String* value, uint32 line, uint32 column_start, uint32 column_end) : Node(Node::Type::kLiteral, line, column_start, column_end) {
+LiteralNode::LiteralNode(String* value, U_INT32 line, U_INT32 column_start, U_INT32 column_end) : Node(Node::Type::kLiteral, line, column_start, column_end) {
 	this->value.string_value = value;
 	this->literal_type = LiteralType::kString;
 }
@@ -47,7 +47,7 @@ LiteralNode::~LiteralNode() {
 		delete value.string_value;
 }
 
-BinaryNode::BinaryNode(Node* left, OperatorType operator_type, Node* right, uint32 line, uint32 column_start, uint32 column_end) : Node(Node::Type::kBinary, line, column_start, column_end) {
+BinaryNode::BinaryNode(Node* left, OperatorType operator_type, Node* right, U_INT32 line, U_INT32 column_start, U_INT32 column_end) : Node(Node::Type::kBinary, line, column_start, column_end) {
 	this->left = left;
 	this->right = right;
 	this->operator_type = operator_type;
@@ -58,7 +58,7 @@ BinaryNode::~BinaryNode() {
 	delete right;
 }
 
-UnaryNode::UnaryNode(Node* node, UnaryOperatorType operator_type, uint32 line, uint32 column_start, uint32 column_end) : Node(Node::Type::kUnary, line, column_start, column_end) {
+UnaryNode::UnaryNode(Node* node, UnaryOperatorType operator_type, U_INT32 line, U_INT32 column_start, U_INT32 column_end) : Node(Node::Type::kUnary, line, column_start, column_end) {
 	this->node = node;
 	this->operator_type = operator_type;
 }
@@ -67,7 +67,7 @@ UnaryNode::~UnaryNode() {
 	delete node;
 }
 
-BlockNode::BlockNode(List<Node*>* nodes, uint32 line, uint32 column_start, uint32 column_end) : Node(Node::Type::kBlock, line, column_start, column_end) {
+BlockNode::BlockNode(List<Node*>* nodes, U_INT32 line, U_INT32 column_start, U_INT32 column_end) : Node(Node::Type::kBlock, line, column_start, column_end) {
 	this->nodes = nodes;
 }
 

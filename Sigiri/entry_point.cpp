@@ -35,7 +35,7 @@ int main() {
 
         char buffer[1024];
         fgets(buffer, sizeof(buffer), stdin);
-        String code(u8 buffer);
+        String code(UTF_8 buffer);
 
         Lexer lexer(&code);
         List<Token*>* tokens = lexer.GenerateTokens();

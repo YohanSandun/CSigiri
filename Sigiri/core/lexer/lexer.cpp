@@ -273,7 +273,7 @@ List<Token*>* Lexer::GenerateTokens() {
 Token* Lexer::CreateNumber() {
 	int dot_count = 0;
 	String* number = new String(5);
-	uint32 start_column = current_column_;
+	U_INT32 start_column = current_column_;
 	while (current_char_ != '\0' && ((current_char_ >= '0' && current_char_ <= '9') || current_char_ == '.')) {
 		if (current_char_ == '.')
 			dot_count++;
@@ -287,38 +287,38 @@ Token* Lexer::CreateNumber() {
 }
 
 Token* Lexer::CreateIdentifier() {
-	uint32 start_column = current_column_;
+	U_INT32 start_column = current_column_;
 	String* id = new String(5);
 	while (current_char_ != '\0' && ((current_char_ >= 'A' && current_char_ <= 'Z') || (current_char_ >= 'a' && current_char_ <= 'z')
 		|| ((current_char_ >= '0' && current_char_ <= '9') || current_char_ == '_'))) {
 		id->Append(current_char_);
 		Advance();
 	}
-	if (id->Compare(u8 "var")) {
+	if (id->Compare(UTF_8 "var")) {
 		delete id;
 		return new Token(Token::Type::kKwVar, current_line_, start_column, current_column_);
 	}
-	else if (id->Compare(u8 "if")) {
+	else if (id->Compare(UTF_8 "if")) {
 		delete id;
 		return new Token(Token::Type::kKwIf, current_line_, start_column, current_column_);
 	}
-	else if (id->Compare(u8 "elif")) {
+	else if (id->Compare(UTF_8 "elif")) {
 		delete id;
 		return new Token(Token::Type::kKwElif, current_line_, start_column, current_column_);
 	}
-	else if (id->Compare(u8 "else")) {
+	else if (id->Compare(UTF_8 "else")) {
 		delete id;
 		return new Token(Token::Type::kKwElse, current_line_, start_column, current_column_);
 	}
-	else if (id->Compare(u8 "for")) {
+	else if (id->Compare(UTF_8 "for")) {
 		delete id;
 		return new Token(Token::Type::kKwFor, current_line_, start_column, current_column_);
 	}
-	else if (id->Compare(u8 "to")) {
+	else if (id->Compare(UTF_8 "to")) {
 		delete id;
 		return new Token(Token::Type::kKwTo, current_line_, start_column, current_column_);
 	}
-	else if (id->Compare(u8 "step")) {
+	else if (id->Compare(UTF_8 "step")) {
 		delete id;
 		return new Token(Token::Type::kKwStep, current_line_, start_column, current_column_);
 	}

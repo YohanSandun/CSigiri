@@ -16,21 +16,21 @@
 
 #include "token.h"
 
-Token::Token(Type type, uint32 line, uint32 start_column) {
+Token::Token(Type type, U_INT32 line, U_INT32 start_column) {
 	this->type = type;
 	this->line = line;
 	this->start_column = start_column;
 	this->end_column = start_column;
 }
 
-Token::Token(Type type, uint32 line, uint32 start_column, uint32 end_column) {
+Token::Token(Type type, U_INT32 line, U_INT32 start_column, U_INT32 end_column) {
 	this->type = type;
 	this->line = line;
 	this->start_column = start_column;
 	this->end_column = end_column;
 }
 
-Token::Token(String* value, Type type, uint32 line, uint32 start_column, uint32 end_column) {
+Token::Token(String* value, Type type, U_INT32 line, U_INT32 start_column, U_INT32 end_column) {
 	this->value = value;
 	this->type = type;
 	this->line = line;

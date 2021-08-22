@@ -160,10 +160,10 @@ struct Token {
 	} type;
 
 	String* value = nullptr;
-	uint32 line = 0, start_column = 0, end_column = 0;
-	Token(Type type, uint32 line, uint32 start_column);
-	Token(Type type, uint32 line, uint32 start_column, uint32 end_column);
-	Token(String* value, Type type, uint32 line, uint32 start_column, uint32 end_column);
+	U_INT32 line = 0, start_column = 0, end_column = 0;
+	Token(Type type, U_INT32 line, U_INT32 start_column);
+	Token(Type type, U_INT32 line, U_INT32 start_column, U_INT32 end_column);
+	Token(String* value, Type type, U_INT32 line, U_INT32 start_column, U_INT32 end_column);
 	~Token();
 	const char* name();
 };

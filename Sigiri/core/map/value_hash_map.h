@@ -14,32 +14,26 @@
 // limitations under the License.
 //--------------------------------------------------------------------------
 
-#ifndef VALUE_H
-#define VALUE_H
+#ifndef VALUE_HASH_MAP_H
+#define VALUE_HASH_MAP_H
 
-#include <cstdio>
+#include "value_map_node.h"
 
-#include "core/declarations.h"
+class ValueHashMap {
+private:
+    const float kLoadFactor = 0.75f;
+    int threshold_;
+    int size_;
+    int length_;
+    ValueMapNode** nodes_;
+    void ExpandArray();
+    void PutNode(ValueMapNode** nodes, ValueMapNode* node);
 
-struct Value
-{
-	enum class Type {
-		kInteger,
-		kFloat,
-		kString
-	} type;
-	U_INT32 line, column_start, column_end;
-	Value(Type type, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
-	virtual void Print();
-
-	virtual Value* Add(Value* other);
-	virtual Value* Subtract(Value* other);
-	virtual Value* Multiply(Value* other);
-	virtual Value* Divide(Value* other);
-	virtual Value* Mod(Value* other);
-
-	
+public:
+    ValueHashMap(int size = 16);
+    ~ValueHashMap();
+    void Put(String* key, Value* value);
+    Value* Get(String* key);
 };
 
-#endif 
-
+#endif

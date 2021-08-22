@@ -38,9 +38,9 @@ struct Node
 		kBlock,
 	} type;
 
-	uint32 line = 0, column_start = 0, column_end = 0;
+	U_INT32 line = 0, column_start = 0, column_end = 0;
 
-	Node(Type type, uint32 line, uint32 column_start, uint32 column_end);
+	Node(Type type, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
 	virtual ~Node();
 };
 
@@ -59,9 +59,9 @@ struct LiteralNode : public Node
 		kString
 	} literal_type;
 
-	LiteralNode(int value, uint32 line, uint32 column_start, uint32 column_end);
-	LiteralNode(double value, uint32 line, uint32 column_start, uint32 column_end);
-	LiteralNode(String* value, uint32 line, uint32 column_start, uint32 column_end);
+	LiteralNode(int value, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
+	LiteralNode(double value, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
+	LiteralNode(String* value, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
 	~LiteralNode();
 };
 
@@ -95,7 +95,7 @@ struct BinaryNode : public Node
 
 	Node* left, * right;
 
-	BinaryNode(Node* left, OperatorType operator_type, Node* right, uint32 line, uint32 column_start, uint32 column_end);
+	BinaryNode(Node* left, OperatorType operator_type, Node* right, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
 	~BinaryNode();
 };
 
@@ -110,14 +110,14 @@ struct UnaryNode : public Node
 
 	Node* node;
 
-	UnaryNode(Node* node, UnaryOperatorType operator_type, uint32 line, uint32 column_start, uint32 column_end);
+	UnaryNode(Node* node, UnaryOperatorType operator_type, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
 	~UnaryNode();
 };
 
 struct BlockNode : public Node
 {
 	List<Node*>* nodes;
-	BlockNode(List<Node*>* nodes, uint32 line, uint32 column_start, uint32 column_end);
+	BlockNode(List<Node*>* nodes, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
 	~BlockNode();
 };
 #endif 

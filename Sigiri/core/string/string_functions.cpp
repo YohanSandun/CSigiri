@@ -16,8 +16,8 @@
 
 #include "string_functions.h"
 
-uint32 StringLength(const unsigned char* ptr) {
-	uint32 i = 0;
+U_INT32 StringLength(const unsigned char* ptr) {
+	U_INT32 i = 0;
 	while (ptr[i++] != '\0');
 	return i - 1;
 }
@@ -46,7 +46,7 @@ bool StringCompare(String* s1, String* s2) {
 	return true;
 }
 
-uint32 StringToInt(String* str) {
+int StringToInt(String* str) {
 	int value = 0;
 	int i = 0;
 	while (i < str->length_) {
@@ -74,7 +74,7 @@ double StringToFloat(String* str) {
 	for (size_t i = dotIndex + 1; i < str->length_; i++)
 	{
 		int digit = str->ptr_[i] - '0';
-		uint32 divide = 1;
+		U_INT32 divide = 1;
 		for (size_t j = 0; j < i - dotIndex; j++)
 			divide *= 10;
 		decimal += (digit / (double)divide);

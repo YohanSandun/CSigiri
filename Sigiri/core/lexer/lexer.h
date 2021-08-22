@@ -26,7 +26,7 @@ class Lexer {
 private:
 	String* code_;
 	int index_ = -1;
-	uint32 current_line_ = 1, current_column_ = 0;
+	U_INT32 current_line_ = 1, current_column_ = 0;
 	char current_char_ = '\0';
 
 	void Advance(int amount = 1);

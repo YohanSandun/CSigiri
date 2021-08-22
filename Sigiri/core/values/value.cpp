@@ -16,7 +16,7 @@
 
 #include "value.h"
 
-Value::Value(Type type, uint32 line, uint32 column_start, uint32 column_end) {
+Value::Value(Type type, U_INT32 line, U_INT32 column_start, U_INT32 column_end) {
 	this->type = type;
 	this->line = line;
 	this->column_start = column_start;

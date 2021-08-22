@@ -27,13 +27,13 @@
 class Parser {
 private:
 	List<Token*>* tokens_;
-	uint32 token_count_;
+	U_INT32 token_count_;
 	int index_ = -1;
 	Token* current_token_;
 	String* error_;
-	uint32 error_line_;
-	uint32 error_column_start_;
-	uint32 error_column_end_;
+	U_INT32 error_line_;
+	U_INT32 error_column_start_;
+	U_INT32 error_column_end_;
 
 	void Advance(int amount = 1);
 	void SkipNewLines();

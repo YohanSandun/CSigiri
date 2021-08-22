@@ -22,9 +22,9 @@
 template <typename T>
 class List {
 private:
-	const ubyte kDefaultSize = 10;
+	const U_BYTE kDefaultSize = 10;
 	int current_index_;
-	uint32 size_;
+	U_INT32 size_;
 	T* ptr_;
 
 	void EnsureMemory();
@@ -32,12 +32,12 @@ private:
 public:
 	bool keep_items_alive_ = false;
 	List();
-	List(uint32 size);
+	List(U_INT32 size);
 	~List();
 	void Add(T item);
-	void Add(uint32 index, T item);
-	T Get(uint32 index);
-	inline uint32 count() { return current_index_ + 1; }
+	void Add(U_INT32 index, T item);
+	T Get(U_INT32 index);
+	inline U_INT32 count() { return current_index_ + 1; }
 };
 
 #endif 

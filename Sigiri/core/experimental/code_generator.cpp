@@ -30,7 +30,7 @@ void CodeGenerator::Visit(Node* node) {
 }
 
 void CodeGenerator::VisitBlockNode(BlockNode* node) {
-	uint32 statement_count = node->nodes->count();
+	U_INT32 statement_count = node->nodes->count();
 	for (size_t i = 0; i < statement_count; i++)
 	{
 		Visit(node->nodes->Get(i));

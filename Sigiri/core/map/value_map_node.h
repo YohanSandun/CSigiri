@@ -14,32 +14,21 @@
 // limitations under the License.
 //--------------------------------------------------------------------------
 
-#ifndef VALUE_H
-#define VALUE_H
+#ifndef VALUE_MAP_NODE_H
+#define VALUE_MAP_NODE_H
 
-#include <cstdio>
+#include "core/string/string.h"
+#include "core/values/value.h"
 
-#include "core/declarations.h"
-
-struct Value
+struct ValueMapNode
 {
-	enum class Type {
-		kInteger,
-		kFloat,
-		kString
-	} type;
-	U_INT32 line, column_start, column_end;
-	Value(Type type, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
-	virtual void Print();
-
-	virtual Value* Add(Value* other);
-	virtual Value* Subtract(Value* other);
-	virtual Value* Multiply(Value* other);
-	virtual Value* Divide(Value* other);
-	virtual Value* Mod(Value* other);
-
-	
+	int hash_code;
+	String* key;
+	Value* value;
+	ValueMapNode* next;
+	ValueMapNode();
+	ValueMapNode(int hash_code, String* key, Value* value);
+	~ValueMapNode();
 };
 
-#endif 
-
+#endif

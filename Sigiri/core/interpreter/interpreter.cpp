@@ -28,7 +28,7 @@ Value* Interpreter::Visit(Node* node) {
 }
 
 Value* Interpreter::VisitBlockNode(BlockNode* node) {
-	uint32 statement_count = node->nodes->count();
+	U_INT32 statement_count = node->nodes->count();
 	for (size_t i = 0; i < statement_count; i++)
 	{
 		if (i+1 == statement_count)

@@ -38,7 +38,7 @@ void Parser::SkipNewLines() {
 }
 
 void Parser::SetError(const char* error) {
-	error_ = new String(u8 error);
+	error_ = new String(UTF_8 error);
 	error_line_ = current_token_->line;
 	error_column_start_ = current_token_->start_column;
 	error_column_end_ = current_token_->end_column;
@@ -60,7 +60,7 @@ Node* Parser::Parse() {
 
 Node* Parser::ParseBlock(Token::Type end_token_type) {
 	List<Node*>* statements = new List<Node*>();
-	uint32 start_line = current_token_->line;
+	U_INT32 start_line = current_token_->line;
 	while (true)
 	{
 		SkipNewLines();
@@ -77,8 +77,8 @@ Node* Parser::ParseBlock(Token::Type end_token_type) {
 }
 
 Node* Parser::ParseExpression() {
-	uint32 start_column = current_token_->start_column;
-	uint32 start_line = current_token_->line;
+	U_INT32 start_column = current_token_->start_column;
+	U_INT32 start_line = current_token_->line;
 	Node* left = ParseCompare();
 	if (ERROR)
 		return nullptr;
@@ -99,15 +99,15 @@ Node* Parser::ParseExpression() {
 Node* Parser::ParseCompare() {
 	if (current_token_->type == Token::Type::kBooleanNot) {
 		Advance();
-		uint32 start_line = current_token_->line;
-		uint32 start_column = current_token_->start_column;
+		U_INT32 start_line = current_token_->line;
+		U_INT32 start_column = current_token_->start_column;
 		Node* node = ParseCompare();
 		if (ERROR)
 			return nullptr;
 		return new UnaryNode(node, UnaryNode::UnaryOperatorType::kBooleanNot, start_line, start_column, current_token_->start_column);
 	}
-	uint32 start_line = current_token_->line;
-	uint32 start_column = current_token_->start_column;
+	U_INT32 start_line = current_token_->line;
+	U_INT32 start_column = current_token_->start_column;
 	Node* left = ParseBitwiseOr();
 	if (ERROR)
 		return nullptr;
@@ -142,8 +142,8 @@ Node* Parser::ParseCompare() {
 
 
 Node* Parser::ParseBitwiseOr() {
-	uint32 start_line = current_token_->line;
-	uint32 start_column = current_token_->start_column;
+	U_INT32 start_line = current_token_->line;
+	U_INT32 start_column = current_token_->start_column;
 	Node* left = ParseBitwiseXor();
 	if (ERROR)
 		return nullptr;
@@ -160,8 +160,8 @@ Node* Parser::ParseBitwiseOr() {
 }
 
 Node* Parser::ParseBitwiseXor() {
-	uint32 start_line = current_token_->line;
-	uint32 start_column = current_token_->start_column;
+	U_INT32 start_line = current_token_->line;
+	U_INT32 start_column = current_token_->start_column;
 	Node* left = ParseBitwiseAnd();
 	if (ERROR)
 		return nullptr;
@@ -178,8 +178,8 @@ Node* Parser::ParseBitwiseXor() {
 }
 
 Node* Parser::ParseBitwiseAnd() {
-	uint32 start_line = current_token_->line;
-	uint32 start_column = current_token_->start_column;
+	U_INT32 start_line = current_token_->line;
+	U_INT32 start_column = current_token_->start_column;
 	Node* left = ParseBitwiseShift();
 	if (ERROR)
 		return nullptr;
@@ -196,8 +196,8 @@ Node* Parser::ParseBitwiseAnd() {
 }
 
 Node* Parser::ParseBitwiseShift() {
-	uint32 start_line = current_token_->line;
-	uint32 start_column = current_token_->start_column;
+	U_INT32 start_line = current_token_->line;
+	U_INT32 start_column = current_token_->start_column;
 	Node* left = ParseArithmetic();
 	if (ERROR)
 		return nullptr;
@@ -216,8 +216,8 @@ Node* Parser::ParseBitwiseShift() {
 }
 
 Node* Parser::ParseArithmetic() {
-	uint32 start_line = current_token_->line;
-	uint32 start_column = current_token_->start_column;
+	U_INT32 start_line = current_token_->line;
+	U_INT32 start_column = current_token_->start_column;
 	Node* left = ParseTerm();
 	if (ERROR)
 		return nullptr;
@@ -236,8 +236,8 @@ Node* Parser::ParseArithmetic() {
 }
 
 Node* Parser::ParseTerm() {
-	uint32 start_line = current_token_->line;
-	uint32 start_column = current_token_->start_column;
+	U_INT32 start_line = current_token_->line;
+	U_INT32 start_column = current_token_->start_column;
 	Node* left = ParseFactor();
 	if (ERROR)
 		return nullptr;
@@ -261,8 +261,8 @@ Node* Parser::ParseTerm() {
 }
 
 Node* Parser::ParseFactor() {
-	uint32 start_line = current_token_->line;
-	uint32 start_column = current_token_->start_column;
+	U_INT32 start_line = current_token_->line;
+	U_INT32 start_column = current_token_->start_column;
 	Token* token = current_token_;
 	if (current_token_->type == Token::Type::kPlus || current_token_->type == Token::Type::kMinus) {
 		UnaryNode::UnaryOperatorType operator_type = current_token_->type == Token::Type::kPlus ?
@@ -277,8 +277,8 @@ Node* Parser::ParseFactor() {
 }
 
 Node* Parser::ParsePower() {
-	uint32 start_line = current_token_->line;
-	uint32 start_column = current_token_->start_column;
+	U_INT32 start_line = current_token_->line;
+	U_INT32 start_column = current_token_->start_column;
 	Node* left = ParseComplement();
 	if (ERROR)
 		return nullptr;
@@ -298,8 +298,8 @@ Node* Parser::ParsePower() {
 Node* Parser::ParseComplement() {
 	if (current_token_->type == Token::Type::kBitwiseComplement) {
 		Advance();
-		uint32 start_line = current_token_->line;
-		uint32 start_column = current_token_->start_column;
+		U_INT32 start_line = current_token_->line;
+		U_INT32 start_column = current_token_->start_column;
 		Node* node = ParseFactor();
 		if (ERROR)
 			return nullptr;
@@ -313,8 +313,8 @@ Node* Parser::ParseCall() {
 }
 
 Node* Parser::ParseAtom() {
-	uint32 start_line = current_token_->line;
-	uint32 start_column = current_token_->start_column;
+	U_INT32 start_line = current_token_->line;
+	U_INT32 start_column = current_token_->start_column;
 	Token* token = current_token_;
 	if (token->type == Token::Type::kInteger) {
 		Advance();
