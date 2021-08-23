@@ -53,6 +53,10 @@ Value* Interpreter::Visit(Node* node, Context* context) {
 		return VisitVarAccessNode((VarAccessNode*)node, context);
 	else if (node->type == Node::Type::kIfStatement)
 		return VisitIfNode((IfNode*)node, context);
+	else if (node->type == Node::Type::kMethod)
+		return VisitMethodNode((MethodNode*)node, context);
+	else if (node->type == Node::Type::kCall)
+		return VisitCallNode((CallNode*)node, context);
 
 	return nullptr;
 }
@@ -147,7 +151,7 @@ Value* Interpreter::VisitAssignNode(AssignNode* node, Context* context) {
 	Value* value = Visit(node->node, context);
 	if (ERROR)
 		return nullptr;
-	context->symbols_->Put(new String(node->key->ptr_), value->Clone());
+	context->symbols_->Put(node->key->Clone(), value->Clone());
 	return value;
 }
 
@@ -178,6 +182,22 @@ Value* Interpreter::VisitIfNode(IfNode* node, Context* context) {
 		Value* result = Visit(node->else_case, context);
 		// TODO deleting the result if its not a ref type
 		return result;
+	}
+	return nullptr;
+}
+
+Value* Interpreter::VisitMethodNode(MethodNode* node, Context* context) {
+	MethodValue* value = new MethodValue(node->name == nullptr ? nullptr : node->name->Clone(), node->body, node->parameters, node->line, node->column_start, node->column_end);
+	if (node->name != nullptr)
+		context->symbols_->Put(node->name->Clone(), value);
+	return value;
+}
+
+Value* Interpreter::VisitCallNode(CallNode* node, Context* context) {
+	Value* value = Visit(node->callee, context);
+	if (value->type == Value::Type::kMethod) {
+		MethodValue* method_value = static_cast<MethodValue*>(value);
+
 	}
 	return nullptr;
 }

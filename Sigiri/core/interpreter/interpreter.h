@@ -20,6 +20,7 @@
 #include "core/parser/nodes/node.h"
 #include "core/values/value.h"
 #include "core/values/integer_value.h"
+#include "core/values/method_value.h"
 
 #include "context.h"
 
@@ -37,6 +38,8 @@ private:
 	Value* VisitAssignNode(AssignNode* node, Context* context);
 	Value* VisitVarAccessNode(VarAccessNode* node, Context* context);
 	Value* VisitIfNode(IfNode* node, Context* context);
+	Value* VisitMethodNode(MethodNode* node, Context* context);
+	Value* VisitCallNode(CallNode*node, Context* context);
 
 public:
 	void PrintError();

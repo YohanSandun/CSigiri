@@ -29,6 +29,8 @@ static char* node_names[] = {
 	"Assign",
 	"VarAccess",
 	"If",
+	"Method",
+	"Call",
 };
 
 struct Node
@@ -42,6 +44,8 @@ struct Node
 		kAssign,
 		kVarAccess,
 		kIfStatement,
+		kMethod,
+		kCall,
 	} type;
 
 	U_INT32 line = 0, column_start = 0, column_end = 0;
@@ -158,6 +162,45 @@ struct IfNode : public Node {
 	Node* else_case;
 	IfNode(List<IfCase*>* cases, Node* else_case, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
 	~IfNode();
+};
+
+struct MethodNode : public Node {
+	struct MethodParameter {
+		String* name;
+		Node* default_value;
+		MethodParameter(String* name, Node* default_value) {
+			this->name = name;
+			this->default_value = default_value;
+		}
+		~MethodParameter() {
+			// name is destroyed by the token
+			delete default_value;
+		}
+	};
+	String* name;
+	Node* body;
+	List<MethodParameter*>* parameters;
+	MethodNode(String* name, Node* body, List<MethodParameter*>* parameters, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
+	~MethodNode();
+};
+
+struct CallNode : public Node {
+	struct MethodArgument {
+		String* name;
+		Node* value;
+		MethodArgument(String* name, Node* value) {
+			this->name = name;
+			this->value = value;
+		}
+		~MethodArgument() {
+			// name is destroyed by the token
+			delete value;
+		}
+	};
+	List<MethodArgument*>* arguments;
+	Node* callee;
+	CallNode(Node* callee, List<MethodArgument*>* arguments, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
+	~CallNode();
 };
 #endif 
 

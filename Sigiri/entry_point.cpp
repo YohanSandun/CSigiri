@@ -57,6 +57,8 @@ int main() {
             if (value != nullptr) {
                 value->Print();
                 printf("\nPress any key to continue...");
+                if (value->type != Value::Type::kMethod)
+                    delete value;
             }
         }
         else {
@@ -67,7 +69,6 @@ int main() {
 
         delete tokens;
         delete node;
-        delete value;
 
         getchar();
     }
@@ -84,7 +85,7 @@ int main() {
             char buffer[1024];
             fgets(buffer, sizeof(buffer), stdin);
             String code(UTF_8 buffer);
-            delete[] buffer;
+            //delete[] buffer;
 
             Lexer lexer(&code);
             List<Token*>* tokens = lexer.GenerateTokens();

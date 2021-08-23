@@ -26,10 +26,13 @@ struct Value
 	enum class Type {
 		kInteger,
 		kFloat,
-		kString
+		kString,
+		kMethod,
 	} type;
+
 	U_INT32 line, column_start, column_end;
 	Value(Type type, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
+	virtual ~Value();
 	virtual void Print();
 	virtual Value* Clone();
 	virtual bool GetAsBoolean();

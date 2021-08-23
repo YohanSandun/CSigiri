@@ -27,6 +27,10 @@ void Value::Print() {
 
 }
 
+Value::~Value() {
+
+}
+
 Value* Value::Clone() {
 	return this;
 }

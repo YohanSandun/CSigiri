@@ -55,7 +55,11 @@ private:
 	Node* ParseCall();
 	Node* ParseAtom();
 	Node* ParseIfStatement();
-	Node* ParseIfStatementBody();
+	Node* ParseBody();
+	Node* ParseMethod();
+	MethodNode::MethodParameter* ParseMethodParameter();
+	CallNode::MethodArgument* ParseMethodArgument();
+
 public:
 	Parser(List<Token*>* tokens);
 	bool HasError();

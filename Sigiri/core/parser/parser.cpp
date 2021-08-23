@@ -315,7 +315,69 @@ Node* Parser::ParseComplement() {
 }
 
 Node* Parser::ParseCall() {
-	return ParseAtom();
+	Node* node = ParseAtom();
+	if (ERROR)
+		return nullptr;
+	if (current_token_->type == Token::Type::kLeftParen) {
+		Advance();
+		List<CallNode::MethodArgument*>* arguments = nullptr;
+		if (current_token_->type == Token::Type::kRightParen) {
+			Advance();
+		}
+		else {
+			SkipNewLines();
+			arguments = new List<CallNode::MethodArgument*>();
+			CallNode::MethodArgument* first_argument = ParseMethodArgument();
+			if (ERROR) {
+				delete node;
+				delete arguments;
+				return nullptr;
+			}
+			arguments->Add(first_argument);
+			SkipNewLines();
+			while (current_token_->type == Token::Type::kComma) {
+				Advance();
+				SkipNewLines();
+				CallNode::MethodArgument* argument = ParseMethodArgument();
+				if (ERROR) {
+					delete node;
+					delete arguments;
+					return nullptr;
+				}
+				arguments->Add(argument);
+				SkipNewLines();
+			}
+
+			if (current_token_->type != Token::Type::kRightParen) {
+				SetError("Expected ',' or ')'");
+				delete node;
+				delete arguments;
+				return nullptr;
+			}
+			Advance();
+		}
+		// TODO line number
+		return new CallNode(node, arguments, 0, 0, 0);
+	}
+	return node;
+}
+
+CallNode::MethodArgument* Parser::ParseMethodArgument() {
+	if (current_token_->type == Token::Type::kIdentifier && Peek()->type == Token::Type::kColon) {
+		Token* first_argument = current_token_;
+		Advance(2);
+		Node* value = ParseExpression();
+		if (ERROR) 
+			return nullptr;
+		return new CallNode::MethodArgument(first_argument->value, value);
+	}
+	else
+	{
+		Node* value = ParseExpression();
+		if (ERROR) 
+			return nullptr;
+		return new CallNode::MethodArgument(nullptr, value);
+	}
 }
 
 Node* Parser::ParseAtom() {
@@ -371,6 +433,8 @@ Node* Parser::ParseAtom() {
 	}
 	else if (token->type == Token::Type::kKwIf)
 		return ParseIfStatement();
+	else if (token->type == Token::Type::kKwMethod)
+		return ParseMethod();
 
 	SetError("Expect something!");
 	return nullptr;
@@ -389,7 +453,7 @@ Node* Parser::ParseIfStatement() {
 	}
 	SkipNewLines();
 
-	Node* body = ParseIfStatementBody();
+	Node* body = ParseBody();
 	if (ERROR) {
 		delete condition;
 		delete cases;
@@ -405,7 +469,7 @@ Node* Parser::ParseIfStatement() {
 			return nullptr;
 		}
 		SkipNewLines();
-		Node* elif_body = ParseIfStatementBody();
+		Node* elif_body = ParseBody();
 		if (ERROR) {
 			delete elif_condition;
 			delete cases;
@@ -417,7 +481,7 @@ Node* Parser::ParseIfStatement() {
 	if (current_token_->type == Token::Type::kKwElse) {
 		Advance();
 		SkipNewLines();
-		Node* else_case = ParseIfStatementBody();
+		Node* else_case = ParseBody();
 		if (ERROR) {
 			delete cases;
 			return nullptr;
@@ -427,8 +491,8 @@ Node* Parser::ParseIfStatement() {
 	return new IfNode(cases, nullptr, start_line, start_column, current_token_->start_column);
 }
 
-Node* Parser::ParseIfStatementBody() {
-	// if condition : body
+Node* Parser::ParseBody() {
+	// : body
 	if (current_token_->type == Token::Type::kColon) {
 		Advance();
 		SkipNewLines();
@@ -439,7 +503,7 @@ Node* Parser::ParseIfStatementBody() {
 		SkipNewLines();
 		return body;
 	}
-	// if condition { }
+	// { body }
 	else if (current_token_->type == Token::Type::kLeftBrace) {
 		Advance();
 		SkipNewLines();
@@ -451,5 +515,79 @@ Node* Parser::ParseIfStatementBody() {
 		return body;
 	}
 	SetError("Expected : or {");
+	return nullptr;
+}
+
+Node* Parser::ParseMethod() {
+	Advance();
+	Token* identifier = nullptr;
+	if (current_token_->type == Token::Type::kIdentifier) {
+		identifier = current_token_;
+		Advance();
+	}
+
+	if (current_token_->type != Token::Type::kLeftParen) {
+		SetError("Expected '('");
+		return nullptr;
+	}
+	Advance();
+
+	if (current_token_->type == Token::Type::kRightParen) {
+		Advance();
+		SkipNewLines();
+		Node* body = ParseBody();
+		if (ERROR) 
+			return nullptr;
+		//TODO line number
+		return new MethodNode(identifier == nullptr ? nullptr : identifier->value, body, nullptr, 0, 0, 0);
+	}
+
+	List<MethodNode::MethodParameter*>* parameters = new List<MethodNode::MethodParameter*>();
+	MethodNode::MethodParameter* first_parameter = ParseMethodParameter();
+	if (ERROR) {
+		delete parameters;
+		return nullptr;
+	}
+	parameters->Add(first_parameter);
+	while (current_token_->type == Token::Type::kComma) {
+		Advance();
+		MethodNode::MethodParameter* parameter = ParseMethodParameter();
+		if (ERROR) {
+			delete parameters;
+			return nullptr;
+		}
+		parameters->Add(parameter);
+	}
+
+	if (current_token_->type != Token::Type::kRightParen) {
+		SetError("Expexted ',' or ')'");
+		delete parameters;
+		return nullptr;
+	}
+	Advance();
+
+	Node* body = ParseBody();
+	if (ERROR) {
+		delete parameters;
+		return nullptr;
+	}
+	//TODO line number
+	return new MethodNode(identifier == nullptr ? nullptr : identifier->value, body, parameters, 0, 0, 0);
+}
+
+MethodNode::MethodParameter* Parser::ParseMethodParameter() {
+	if (current_token_->type == Token::Type::kIdentifier) {
+		Token* parameter_name = current_token_;
+		Advance();
+		if (current_token_->type == Token::Type::kEquals) {
+			Advance();
+			Node* default_value = ParseExpression();
+			if (ERROR)
+				return nullptr;
+			return new MethodNode::MethodParameter(parameter_name->value, default_value);
+		}
+		return new MethodNode::MethodParameter(parameter_name->value, nullptr);
+	}
+	SetError("Expexted an identifier");
 	return nullptr;
 }

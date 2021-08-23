@@ -84,6 +84,7 @@ static const char* token_names[] = {
 		"for",
 		"to",
 		"step",
+		"method",
 
 		"EOF",
 };
@@ -155,6 +156,7 @@ struct Token {
 		kKwFor,					// for
 		kKwTo,					// to
 		kKwStep,				// step
+		kKwMethod,				// method
 
 		kEof,
 	} type;

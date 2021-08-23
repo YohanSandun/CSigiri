@@ -103,3 +103,25 @@ IfNode::~IfNode() {
 	if (else_case != nullptr)
 		delete else_case;
 }
+
+MethodNode::MethodNode(String* name, Node* body, List<MethodParameter*>* parameters, U_INT32 line, U_INT32 column_start, U_INT32 column_end) : Node(Node::Type::kMethod, line, column_start, column_end) {
+	this->name = name;
+	this->body = body;
+	this->parameters = parameters;
+}
+
+MethodNode::~MethodNode() {
+	// name is destroyed by the token
+	delete body;
+	delete parameters;
+}
+
+CallNode::CallNode(Node* callee, List<MethodArgument*>* arguments, U_INT32 line, U_INT32 column_start, U_INT32 column_end) : Node(Node::Type::kCall, line, column_start, column_end) {
+	this->callee = callee;
+	this->arguments = arguments;
+}
+
+CallNode::~CallNode() {
+	delete callee;
+	delete arguments;
+}
