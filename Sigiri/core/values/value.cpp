@@ -27,6 +27,10 @@ void Value::Print() {
 
 }
 
+Value* Value::Clone() {
+	return this;
+}
+
 // Arithmetic
 Value* Value::Add(Value* other) {
 	return this;

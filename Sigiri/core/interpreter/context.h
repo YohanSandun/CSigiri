@@ -23,10 +23,10 @@
 
 class Context {
 private:
-	ValueHashMap* symbols_;
 	Context* parent_;
 
 public:
+	ValueHashMap* symbols_;
 	Context();
 	Context(Context* parent);
 	Value* GetSymbol(String* key);

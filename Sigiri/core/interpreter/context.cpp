@@ -32,4 +32,5 @@ Value* Context::GetSymbol(String* key) {
 		return value;
 	if (parent_ != nullptr)
 		return parent_->GetSymbol(key);
+	return nullptr;
 }

@@ -16,6 +16,28 @@
 
 #include "interpreter.h"
 
+#define ERROR error_ != nullptr
+
+void Interpreter::SetError(const char* error, U_INT32 line, U_INT32 column_start, U_INT32 column_end) {
+	error_ = new String(UTF_8 error);
+	error_line = line;
+	error_column_start = column_start;
+	error_column_end = column_end;
+}
+
+void Interpreter::PrintError() {
+	printf("Rutime Error: %s\n\t", error_->ptr_);
+	printf("near line %d column %d to %d\n", error_line, error_column_start, error_column_end);
+}
+
+void Interpreter::ClearError() {
+	delete error_;
+	error_ = nullptr;
+	error_line = 0;
+	error_column_start = 0;
+	error_column_end = 0;
+}
+
 Value* Interpreter::Visit(Node* node, Context* context) {
 	if (node->type == Node::Type::kBlock)
 		return VisitBlockNode((BlockNode*)node, context);
@@ -25,6 +47,10 @@ Value* Interpreter::Visit(Node* node, Context* context) {
 		return VisitBinaryNode((BinaryNode*)node, context);
 	else if (node->type == Node::Type::kUnary)
 		return VisitUnaryNode((UnaryNode*)node, context);
+	else if (node->type == Node::Type::kAssign)
+		return VisitAssignNode((AssignNode*)node, context);
+	else if (node->type == Node::Type::kVarAccess)
+		return VisitVarAccessNode((VarAccessNode*)node, context);
 }
 
 Value* Interpreter::VisitBlockNode(BlockNode* node, Context* context) {
@@ -34,6 +60,8 @@ Value* Interpreter::VisitBlockNode(BlockNode* node, Context* context) {
 		if (i+1 == statement_count)
 			return Visit(node->nodes->Get(i), context);
 		Visit(node->nodes->Get(i), context);
+		if (ERROR)
+			return nullptr;
 	}
 }
 
@@ -44,7 +72,12 @@ Value* Interpreter::VisitLiteralNode(LiteralNode* node, Context* context) {
 
 Value* Interpreter::VisitBinaryNode(BinaryNode* node, Context* context) {
 	Value* left = Visit(node->left, context);
+	if (ERROR)
+		return nullptr;
+
 	Value* right = Visit(node->right, context);
+	if (ERROR)
+		return nullptr;
 
 	switch (node->operator_type)
 	{
@@ -96,10 +129,29 @@ Value* Interpreter::VisitBinaryNode(BinaryNode* node, Context* context) {
 
 Value* Interpreter::VisitUnaryNode(UnaryNode* node, Context* context) {
 	Value* value = Visit(node->node,  context);
+	if (ERROR)
+		return nullptr;
 	if (node->operator_type == UnaryNode::UnaryOperatorType::kMinus)
 		return value->Multiply(new IntegerValue(-1, 0, 0, 0));
 	else if (node->operator_type == UnaryNode::UnaryOperatorType::kBitwiseComplement)
 		return value->BitwiseComplement();
 	else if (node->operator_type == UnaryNode::UnaryOperatorType::kBooleanNot)
 		return value->BooleanNot();
+}
+
+Value* Interpreter::VisitAssignNode(AssignNode* node, Context* context) {
+	Value* value = Visit(node->node, context);
+	if (ERROR)
+		return nullptr;
+	context->symbols_->Put(new String(node->key->ptr_), value->Clone());
+	return value;
+}
+
+Value* Interpreter::VisitVarAccessNode(VarAccessNode* node, Context* context) {
+	Value* value = context->GetSymbol(node->key);
+	if (value == nullptr) {
+		SetError("Undefined variable!", node->line, node->column_start, node->column_end);
+		return nullptr;
+	}
+	return value->Clone();
 }

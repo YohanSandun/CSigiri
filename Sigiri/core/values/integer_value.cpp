@@ -21,12 +21,15 @@ IntegerValue::IntegerValue(int value, U_INT32 line, U_INT32 column_start, U_INT3
 	this->is_boolean = is_boolean;
 }
 
-
 void IntegerValue::Print() {
 	if (is_boolean)
 		printf("%s", value == 0 ? "false" : "true");
 	else
 		printf("%d", value);
+}
+
+Value* IntegerValue::Clone() {
+	return new IntegerValue(value, line, column_start, column_end, is_boolean);
 }
 
 Value* IntegerValue::Add(Value* other) {

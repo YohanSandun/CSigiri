@@ -26,7 +26,6 @@ struct ValueMapNode
 	String* key;
 	Value* value;
 	ValueMapNode* next;
-	ValueMapNode();
 	ValueMapNode(int hash_code, String* key, Value* value);
 	~ValueMapNode();
 };

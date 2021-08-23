@@ -23,13 +23,6 @@ ValueMapNode::ValueMapNode(int hash_code, String* key, Value* value) {
 	next = nullptr;
 }
 
-ValueMapNode::ValueMapNode() {
-	hash_code = 0;
-	key = nullptr;
-	value = nullptr;
-	next = nullptr;
-}
-
 ValueMapNode::~ValueMapNode() {
 	delete value;
 }

@@ -25,13 +25,23 @@
 
 class Interpreter {
 private:
+	U_INT32 error_line, error_column_start, error_column_end;
+	String* error_ = nullptr;
+
+	void SetError(const char* error, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
+
 	Value* VisitBlockNode(BlockNode* node, Context* context);
 	Value* VisitLiteralNode(LiteralNode* node, Context* context);
 	Value* VisitBinaryNode(BinaryNode* node, Context* context);
 	Value* VisitUnaryNode(UnaryNode* node, Context* context);
+	Value* VisitAssignNode(AssignNode* node, Context* context);
+	Value* VisitVarAccessNode(VarAccessNode* node, Context* context);
 
 public:
+	void PrintError();
+	void ClearError();
 	Value* Visit(Node* node, Context* context);
+	inline bool HasError() { return error_ != nullptr; }
 };
 
 #endif 

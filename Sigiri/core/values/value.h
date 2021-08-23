@@ -31,6 +31,7 @@ struct Value
 	U_INT32 line, column_start, column_end;
 	Value(Type type, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
 	virtual void Print();
+	virtual Value* Clone();
 
 	virtual Value* Add(Value* other);
 	virtual Value* Subtract(Value* other);

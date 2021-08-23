@@ -27,6 +27,7 @@ static char* node_names[] = {
 	"Unary",
 	"Block",
 	"Assign",
+	"VarAccess",
 };
 
 struct Node
@@ -38,6 +39,7 @@ struct Node
 		kUnary,
 		kBlock,
 		kAssign,
+		kVarAccess,
 	} type;
 
 	U_INT32 line = 0, column_start = 0, column_end = 0;
@@ -129,6 +131,12 @@ struct AssignNode : public Node
 	String* key;
 	AssignNode(String* key, Node* node, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
 	~AssignNode();
+};
+
+struct VarAccessNode : public Node {
+	String* key;
+	VarAccessNode(String* key, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
+	~VarAccessNode();
 };
 
 #endif 

@@ -26,11 +26,11 @@
 #include "core/interpreter/context.h"
 
 int main() {
-
     printf("CSigiri v1.0.0\nThis is not a released version. CSigiri is still under development at https://github.com/YohanSandun/CSigiri \nBut my twin brother is way ahead of me. you can find him at https://github.com/YohanSandun/Sigiri \n");
 
     Interpreter interpreter;
     Context context;
+
     while (true)
     {
         printf("--> ");
@@ -50,8 +50,15 @@ int main() {
         }
 
         Value* value = interpreter.Visit(node, &context);
-        if (value != nullptr) {
-            value->Print();
+        if (!interpreter.HasError()) {
+            if (value != nullptr) {
+                value->Print();
+                printf("\n");
+            }
+        }
+        else {
+            interpreter.PrintError();
+            interpreter.ClearError();
             printf("\n");
         }
 

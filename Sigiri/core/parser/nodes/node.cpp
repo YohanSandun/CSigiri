@@ -81,6 +81,14 @@ AssignNode::AssignNode(String* key, Node* node, U_INT32 line, U_INT32 column_sta
 }
 
 AssignNode::~AssignNode() {
-	delete key;
 	delete node;
+}
+
+VarAccessNode::VarAccessNode(String* key, U_INT32 line, U_INT32 column_start, U_INT32 column_end) : Node(Node::Type::kVarAccess, line, column_start, column_end) {
+	// key is destroyed by the token
+	this->key = key;
+}
+
+VarAccessNode::~VarAccessNode() {
+	// key is destroyed by the token
 }

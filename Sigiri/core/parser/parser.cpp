@@ -354,14 +354,20 @@ Node* Parser::ParseAtom() {
 				}
 				Advance();
 				Node* expression = ParseExpression();
-				return new AssignNode(new String(token->value->ptr_), expression, token->line, token->start_column, expression->column_end);
+				return new AssignNode(token->value, expression, token->line, token->start_column, expression->column_end);
 			}
 			SetError("Expect var or data type!");
 			return nullptr;
 			// else other data types such as long, complex, big
 		}
 		else {
-			// Var access
+			Advance();
+			if (current_token_->type == Token::Type::kEquals) {
+				Advance();
+				Node* expression = ParseExpression();
+				return new AssignNode(token->value, expression, token->line, token->start_column, expression->column_end);
+			}
+			return new VarAccessNode(token->value, token->line, token->start_column, current_token_->start_column);
 		}
 	}
 	SetError("Expect something!");
