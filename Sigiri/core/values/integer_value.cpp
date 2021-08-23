@@ -34,7 +34,7 @@ Value* IntegerValue::Clone() {
 
 Value* IntegerValue::Add(Value* other) {
 	if (other->type == Value::Type::kInteger) {
-		value += ((IntegerValue*)other)->value;
+		value += (static_cast<IntegerValue*>(other))->value;
 		delete other;
 		return this;
 	}
@@ -42,7 +42,7 @@ Value* IntegerValue::Add(Value* other) {
 
 Value* IntegerValue::Subtract(Value* other) {
 	if (other->type == Value::Type::kInteger) {
-		value -= ((IntegerValue*)other)->value;
+		value -= (static_cast<IntegerValue*>(other))->value;
 		delete other;
 		return this;
 	}
@@ -50,7 +50,7 @@ Value* IntegerValue::Subtract(Value* other) {
 
 Value* IntegerValue::Multiply(Value* other) {
 	if (other->type == Value::Type::kInteger) {
-		value *= ((IntegerValue*)other)->value;
+		value *= (static_cast<IntegerValue*>(other))->value;
 		delete other;
 		return this;
 	}
@@ -58,7 +58,7 @@ Value* IntegerValue::Multiply(Value* other) {
 
 Value* IntegerValue::Divide(Value* other) {
 	if (other->type == Value::Type::kInteger) {
-		value /= ((IntegerValue*)other)->value;
+		value /= (static_cast<IntegerValue*>(other))->value;
 		delete other;
 		return this;
 	}
@@ -66,7 +66,7 @@ Value* IntegerValue::Divide(Value* other) {
 
 Value* IntegerValue::Mod(Value* other) {
 	if (other->type == Value::Type::kInteger) {
-		value %= ((IntegerValue*)other)->value;
+		value %= (static_cast<IntegerValue*>(other))->value;
 		delete other;
 		return this;
 	}
@@ -82,7 +82,7 @@ Value* IntegerValue::Power(Value* other) {
 
 Value* IntegerValue::Equals(Value* other) {
 	if (other->type == Value::Type::kInteger) {
-		value = value == ((IntegerValue*)other)->value;
+		value = value == (static_cast<IntegerValue*>(other))->value;
 		is_boolean = true;
 		delete other;
 		return this;
@@ -91,7 +91,7 @@ Value* IntegerValue::Equals(Value* other) {
 
 Value* IntegerValue::NotEquals(Value* other) {
 	if (other->type == Value::Type::kInteger) {
-		value = value != ((IntegerValue*)other)->value;
+		value = value != (static_cast<IntegerValue*>(other))->value;
 		is_boolean = true;
 		delete other;
 		return this;
@@ -100,7 +100,7 @@ Value* IntegerValue::NotEquals(Value* other) {
 
 Value* IntegerValue::LessThan(Value* other) {
 	if (other->type == Value::Type::kInteger) {
-		value = value < ((IntegerValue*)other)->value;
+		value = value < (static_cast<IntegerValue*>(other))->value;
 		is_boolean = true;
 		delete other;
 		return this;
@@ -109,7 +109,7 @@ Value* IntegerValue::LessThan(Value* other) {
 
 Value* IntegerValue::LessThanOrEqual(Value* other) {
 	if (other->type == Value::Type::kInteger) {
-		value = value <= ((IntegerValue*)other)->value;
+		value = value <= (static_cast<IntegerValue*>(other))->value;
 		is_boolean = true;
 		delete other;
 		return this;
@@ -118,7 +118,7 @@ Value* IntegerValue::LessThanOrEqual(Value* other) {
 
 Value* IntegerValue::GreaterThan(Value* other) {
 	if (other->type == Value::Type::kInteger) {
-		value = value > ((IntegerValue*)other)->value;
+		value = value > (static_cast<IntegerValue*>(other))->value;
 		is_boolean = true;
 		delete other;
 		return this;
@@ -127,7 +127,7 @@ Value* IntegerValue::GreaterThan(Value* other) {
 
 Value* IntegerValue::GreaterThanOrEqual(Value* other) {
 	if (other->type == Value::Type::kInteger) {
-		value = value >= ((IntegerValue*)other)->value;
+		value = value >= (static_cast<IntegerValue*>(other))->value;
 		is_boolean = true;
 		delete other;
 		return this;
@@ -136,7 +136,7 @@ Value* IntegerValue::GreaterThanOrEqual(Value* other) {
 
 Value* IntegerValue::BitwiseAnd(Value* other) {
 	if (other->type == Value::Type::kInteger) {
-		value &= ((IntegerValue*)other)->value;
+		value &= (static_cast<IntegerValue*>(other))->value;
 		delete other;
 		return this;
 	}
@@ -144,7 +144,7 @@ Value* IntegerValue::BitwiseAnd(Value* other) {
 
 Value* IntegerValue::BitwiseOr(Value* other) {
 	if (other->type == Value::Type::kInteger) {
-		value |= ((IntegerValue*)other)->value;
+		value |= (static_cast<IntegerValue*>(other))->value;
 		delete other;
 		return this;
 	}
@@ -157,7 +157,7 @@ Value* IntegerValue::BitwiseComplement() {
 
 Value* IntegerValue::BitwiseXor(Value* other) {
 	if (other->type == Value::Type::kInteger) {
-		value ^= ((IntegerValue*)other)->value;
+		value ^= (static_cast<IntegerValue*>(other))->value;
 		delete other;
 		return this;
 	}
@@ -165,7 +165,7 @@ Value* IntegerValue::BitwiseXor(Value* other) {
 
 Value* IntegerValue::BitwiseLeftShift(Value* other) {
 	if (other->type == Value::Type::kInteger) {
-		value <<= ((IntegerValue*)other)->value;
+		value <<= (static_cast<IntegerValue*>(other))->value;
 		delete other;
 		return this;
 	}
@@ -173,7 +173,7 @@ Value* IntegerValue::BitwiseLeftShift(Value* other) {
 
 Value* IntegerValue::BitwiseRightShift(Value* other) {
 	if (other->type == Value::Type::kInteger) {
-		value >>= ((IntegerValue*)other)->value;
+		value >>= (static_cast<IntegerValue*>(other))->value;
 		delete other;
 		return this;
 	}
@@ -181,7 +181,7 @@ Value* IntegerValue::BitwiseRightShift(Value* other) {
 
 Value* IntegerValue::BooleanAnd(Value* other) {
 	if (other->type == Value::Type::kInteger) {
-		value = value && ((IntegerValue*)other)->value;
+		value = value && (static_cast<IntegerValue*>(other))->value;
 		is_boolean = true;
 		delete other;
 		return this;
@@ -190,7 +190,7 @@ Value* IntegerValue::BooleanAnd(Value* other) {
 
 Value* IntegerValue::BooleanOr(Value* other) {
 	if (other->type == Value::Type::kInteger) {
-		value = value || ((IntegerValue*)other)->value;
+		value = value || (static_cast<IntegerValue*>(other))->value;
 		is_boolean = true;
 		delete other;
 		return this;

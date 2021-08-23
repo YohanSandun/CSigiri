@@ -270,7 +270,6 @@ Node* Parser::ParseTerm() {
 Node* Parser::ParseFactor() {
 	U_INT32 start_line = current_token_->line;
 	U_INT32 start_column = current_token_->start_column;
-	Token* token = current_token_;
 	if (current_token_->type == Token::Type::kPlus || current_token_->type == Token::Type::kMinus) {
 		UnaryNode::UnaryOperatorType operator_type = current_token_->type == Token::Type::kPlus ?
 			UnaryNode::UnaryOperatorType::kPlus : UnaryNode::UnaryOperatorType::kMinus;
