@@ -25,19 +25,20 @@
 #include "core/interpreter/interpreter.h"
 #include "core/interpreter/context.h"
 
+char* read_file(const char* file_name);
+
 int main() {
-    printf("CSigiri v1.0.0\nThis is not a released version. CSigiri is still under development at https://github.com/YohanSandun/CSigiri \nBut my twin brother is way ahead of me. you can find him at https://github.com/YohanSandun/Sigiri \n");
 
-    Interpreter interpreter;
-    Context context;
+    bool read_from_file = true;
 
-    while (true)
-    {
-        printf("--> ");
+    if (read_from_file) {
+        
+        Interpreter interpreter;
+        Context context;
 
-        char buffer[1024];
-        fgets(buffer, sizeof(buffer), stdin);
-        String code(UTF_8 buffer);
+        char* file_data = read_file("e:\\test.si");
+        String code(UTF_8 file_data);
+        delete[] file_data;
 
         Lexer lexer(&code);
         List<Token*>* tokens = lexer.GenerateTokens();
@@ -46,25 +47,102 @@ int main() {
         if (parser.HasError()) {
             parser.PrintError();
             delete tokens;
-            continue;
+            printf("\nPress any key to continue...");
+            getchar();
+            return 0;
         }
 
         Value* value = interpreter.Visit(node, &context);
         if (!interpreter.HasError()) {
             if (value != nullptr) {
                 value->Print();
-                printf("\n");
+                printf("\nPress any key to continue...");
             }
         }
         else {
             interpreter.PrintError();
             interpreter.ClearError();
-            printf("\n");
+            printf("\nPress any key to continue...");
         }
 
         delete tokens;
         delete node;
         delete value;
+
+        getchar();
+    }
+    else {
+        printf("CSigiri v1.0.0\nThis is not a released version. CSigiri is still under development at https://github.com/YohanSandun/CSigiri \nBut my twin brother is way ahead of me. you can find him at https://github.com/YohanSandun/Sigiri \n");
+
+        Interpreter interpreter;
+        Context context;
+
+        while (true)
+        {
+            printf("--> ");
+
+            char buffer[1024];
+            fgets(buffer, sizeof(buffer), stdin);
+            String code(UTF_8 buffer);
+            delete[] buffer;
+
+            Lexer lexer(&code);
+            List<Token*>* tokens = lexer.GenerateTokens();
+            Parser parser(tokens);
+            Node* node = parser.Parse();
+            if (parser.HasError()) {
+                parser.PrintError();
+                delete tokens;
+                continue;
+            }
+
+            Value* value = interpreter.Visit(node, &context);
+            if (!interpreter.HasError()) {
+                if (value != nullptr) {
+                    value->Print();
+                    printf("\n");
+                }
+            }
+            else {
+                interpreter.PrintError();
+                interpreter.ClearError();
+                printf("\n");
+            }
+
+            delete tokens;
+            delete node;
+            delete value;
+        }
     }
     return 0;
+}
+
+char* read_file(const char* file_name) {
+    FILE* infile;
+    long numbytes;
+
+    infile = fopen(file_name, "r");
+
+    if (infile == NULL)
+        return nullptr;
+
+    fseek(infile, 0L, SEEK_END);
+    numbytes = ftell(infile);
+
+    fseek(infile, 0L, SEEK_SET);
+
+    char* buffer = new char[numbytes + 1];
+
+    for (size_t i = 0; i < numbytes + 1; i++)
+        buffer[i] = '\0';
+
+    if (buffer == NULL)
+        return nullptr;
+
+    fread(buffer, sizeof(char), numbytes, infile);
+
+    fclose(infile);
+    buffer[numbytes] = '\0';
+
+    return buffer;
 }
