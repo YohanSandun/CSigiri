@@ -25,6 +25,7 @@ struct IntegerValue : public Value
 	IntegerValue(int value, U_INT32 line, U_INT32 column_start, U_INT32 column_end, bool is_boolean = false);
 	void Print();
 	Value* Clone();
+	bool GetAsBoolean();
 
 	Value* Add(Value* other);
 	Value* Subtract(Value* other);

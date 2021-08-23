@@ -28,6 +28,7 @@ static char* node_names[] = {
 	"Block",
 	"Assign",
 	"VarAccess",
+	"If",
 };
 
 struct Node
@@ -40,6 +41,7 @@ struct Node
 		kBlock,
 		kAssign,
 		kVarAccess,
+		kIfStatement,
 	} type;
 
 	U_INT32 line = 0, column_start = 0, column_end = 0;
@@ -139,5 +141,23 @@ struct VarAccessNode : public Node {
 	~VarAccessNode();
 };
 
+struct IfNode : public Node {
+	struct IfCase
+	{
+		Node* condition, *body;
+		IfCase(Node* condition, Node* body) {
+			this->condition = condition;
+			this->body = body;
+		}
+		~IfCase() {
+			delete condition;
+			delete body;
+		}
+	};
+	List<IfCase*>* cases;
+	Node* else_case;
+	IfNode(List<IfCase*>* cases, Node* else_case, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
+	~IfNode();
+};
 #endif 
 

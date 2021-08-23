@@ -51,6 +51,10 @@ Value* Interpreter::Visit(Node* node, Context* context) {
 		return VisitAssignNode((AssignNode*)node, context);
 	else if (node->type == Node::Type::kVarAccess)
 		return VisitVarAccessNode((VarAccessNode*)node, context);
+	else if (node->type == Node::Type::kIfStatement)
+		return VisitIfNode((IfNode*)node, context);
+
+	return nullptr;
 }
 
 Value* Interpreter::VisitBlockNode(BlockNode* node, Context* context) {
@@ -154,4 +158,26 @@ Value* Interpreter::VisitVarAccessNode(VarAccessNode* node, Context* context) {
 		return nullptr;
 	}
 	return value->Clone();
+}
+
+Value* Interpreter::VisitIfNode(IfNode* node, Context* context) {
+	int case_count = node->cases->count();
+	for (size_t i = 0; i < case_count; i++)
+	{
+		Value* condition = Visit(node->cases->Get(i)->condition, context);
+		if (condition->GetAsBoolean()) {
+			delete condition;
+			Value* result = Visit(node->cases->Get(i)->body, context);
+			// TODO deleting the result if its not a ref type
+			return result;
+		}
+		delete condition;
+	}
+
+	if (node->else_case != nullptr) {
+		Value* result = Visit(node->else_case, context);
+		// TODO deleting the result if its not a ref type
+		return result;
+	}
+	return nullptr;
 }

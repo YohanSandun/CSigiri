@@ -32,6 +32,10 @@ Value* IntegerValue::Clone() {
 	return new IntegerValue(value, line, column_start, column_end, is_boolean);
 }
 
+bool IntegerValue::GetAsBoolean() {
+	return value == 0 ? false : true;
+}
+
 Value* IntegerValue::Add(Value* other) {
 	if (other->type == Value::Type::kInteger) {
 		value += (static_cast<IntegerValue*>(other))->value;

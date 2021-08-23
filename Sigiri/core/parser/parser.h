@@ -54,7 +54,8 @@ private:
 	Node* ParseComplement();
 	Node* ParseCall();
 	Node* ParseAtom();
-
+	Node* ParseIfStatement();
+	Node* ParseIfStatementBody();
 public:
 	Parser(List<Token*>* tokens);
 	bool HasError();

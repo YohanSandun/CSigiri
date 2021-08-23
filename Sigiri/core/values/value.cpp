@@ -31,6 +31,10 @@ Value* Value::Clone() {
 	return this;
 }
 
+bool Value::GetAsBoolean() {
+	return false;
+}
+
 // Arithmetic
 Value* Value::Add(Value* other) {
 	return this;

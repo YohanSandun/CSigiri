@@ -325,7 +325,7 @@ Node* Parser::ParseAtom() {
 	if (token->type == Token::Type::kInteger) {
 		Advance();
 		return new LiteralNode((int)StringToInt(token->value), start_line, start_column, current_token_->start_column);
-	} 
+	}
 	else if (token->type == Token::Type::kFloat) {
 		Advance();
 		return new LiteralNode(StringToFloat(token->value), start_line, start_column, current_token_->start_column);
@@ -369,6 +369,87 @@ Node* Parser::ParseAtom() {
 			return new VarAccessNode(token->value, token->line, token->start_column, current_token_->start_column);
 		}
 	}
+	else if (token->type == Token::Type::kKwIf)
+		return ParseIfStatement();
+
 	SetError("Expect something!");
+	return nullptr;
+}
+
+Node* Parser::ParseIfStatement() {
+	U_INT32 start_line = current_token_->line;
+	U_INT32 start_column = current_token_->start_column;
+	Advance();
+	List<IfNode::IfCase*>* cases = new List<IfNode::IfCase*>();
+	Node* condition = ParseExpression();
+	if (ERROR)
+	{
+		delete cases;
+		return nullptr;
+	}
+	SkipNewLines();
+
+	Node* body = ParseIfStatementBody();
+	if (ERROR) {
+		delete condition;
+		delete cases;
+		return nullptr;
+	}
+	cases->Add(new IfNode::IfCase(condition, body));
+
+	while (current_token_->type == Token::Type::kKwElif) {
+		Advance();
+		Node* elif_condition = ParseExpression();
+		if (ERROR) {
+			delete cases;
+			return nullptr;
+		}
+		SkipNewLines();
+		Node* elif_body = ParseIfStatementBody();
+		if (ERROR) {
+			delete elif_condition;
+			delete cases;
+			return nullptr;
+		}
+		cases->Add(new IfNode::IfCase(elif_condition, elif_body));
+	}
+
+	if (current_token_->type == Token::Type::kKwElse) {
+		Advance();
+		SkipNewLines();
+		Node* else_case = ParseIfStatementBody();
+		if (ERROR) {
+			delete cases;
+			return nullptr;
+		}
+		return new IfNode(cases, else_case, start_line, start_column, current_token_->start_column);
+	}
+	return new IfNode(cases, nullptr, start_line, start_column, current_token_->start_column);
+}
+
+Node* Parser::ParseIfStatementBody() {
+	// if condition : body
+	if (current_token_->type == Token::Type::kColon) {
+		Advance();
+		SkipNewLines();
+		Node* body = ParseExpression();
+		if (ERROR) {
+			return nullptr;
+		}
+		SkipNewLines();
+		return body;
+	}
+	// if condition { }
+	else if (current_token_->type == Token::Type::kLeftBrace) {
+		Advance();
+		SkipNewLines();
+		Node* body = ParseBlock(Token::Type::kRightBrace);
+		Advance(); // closing brace
+		if (ERROR) 
+			return nullptr;
+		SkipNewLines();
+		return body;
+	}
+	SetError("Expected : or {");
 	return nullptr;
 }

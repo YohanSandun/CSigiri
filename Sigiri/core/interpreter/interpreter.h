@@ -36,6 +36,7 @@ private:
 	Value* VisitUnaryNode(UnaryNode* node, Context* context);
 	Value* VisitAssignNode(AssignNode* node, Context* context);
 	Value* VisitVarAccessNode(VarAccessNode* node, Context* context);
+	Value* VisitIfNode(IfNode* node, Context* context);
 
 public:
 	void PrintError();
