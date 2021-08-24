@@ -26,6 +26,22 @@
 
 class Interpreter {
 private:
+	struct Argument {
+		String* name;
+		Value* value;
+		Argument() {
+			name = nullptr;
+			value = nullptr;
+		}
+		Argument(String* name, Value* value) {
+			this->name = name;
+			this->value = value;
+		}
+		~Argument() {
+			delete  value;
+		}
+	};
+
 	U_INT32 error_line, error_column_start, error_column_end;
 	String* error_ = nullptr;
 

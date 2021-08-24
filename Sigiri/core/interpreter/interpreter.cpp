@@ -197,7 +197,117 @@ Value* Interpreter::VisitCallNode(CallNode* node, Context* context) {
 	Value* value = Visit(node->callee, context);
 	if (value->type == Value::Type::kMethod) {
 		MethodValue* method_value = static_cast<MethodValue*>(value);
+		
+		U_INT32 parameter_count = method_value->parameters != nullptr ? method_value->parameters->count() : 0;
+		U_INT32 argument_count = node->arguments != nullptr ? node->arguments->count() : 0;
 
+		if (argument_count > parameter_count) {
+			//TODO line
+			delete value;
+			SetError("Too much arguments passed into method", 0, 0, 0);
+			return nullptr;
+		}
+
+		Context* new_context = new Context(context);
+
+		if (parameter_count == 0) {
+			Value* body_result = Visit(method_value->body, new_context);
+			//TODO delete result if we dont need
+			return body_result;
+		}
+		else {
+			Value** arguments = new Value*[parameter_count];
+			// Assigning default values
+			for (size_t i = 0; i < parameter_count; i++)
+			{
+				if (method_value->parameters->Get(i)->default_value != nullptr) {
+					Value* default_value = Visit(method_value->parameters->Get(i)->default_value, context);
+					if (ERROR) {
+						delete value;
+						delete new_context;
+						return nullptr;
+					}
+					arguments[i] = default_value;
+				}
+				else
+					arguments[i] = nullptr;
+			}
+
+			for (size_t i = 0; i < argument_count; i++)
+			{
+				if (node->arguments->Get(i)->name != nullptr) {
+					bool found_parameter = false;
+					for (size_t j = 0; j < parameter_count; j++)
+					{
+						if (method_value->parameters->Get(j)->name->Compare(node->arguments->Get(i)->name)) {
+							Value* argument_value = Visit(node->arguments->Get(i)->value, context);
+							if (ERROR) {
+								delete value;
+								delete[] arguments;
+								delete new_context;
+								return nullptr;
+							}
+							if (arguments[j] != nullptr)
+								delete arguments[j];
+							arguments[j] = argument_value;
+							found_parameter = true;
+							break;
+						}
+					}
+					if (!found_parameter) {
+						//TODO line
+						delete value;
+						delete[] arguments;
+						delete new_context;
+						SetError("Couldn't find parameter for named argument", 0, 0, 0);
+						return nullptr;
+					}
+				}
+				else {
+					if (i < parameter_count) {
+						Value* argument_value = Visit(node->arguments->Get(i)->value, context);
+						if (ERROR) {
+							delete value;
+							delete[] arguments;
+							delete new_context;
+							return nullptr;
+						}
+						if (arguments[i] != nullptr)
+							delete arguments[i];
+						arguments[i] = argument_value;
+					}
+					else {
+						//TODO line
+						delete value;
+						delete[] arguments;
+						delete new_context;
+						SetError("Too much arguments passed into method", 0, 0, 0);
+						return nullptr;
+					}
+				}
+			}
+
+			for (size_t i = 0; i < parameter_count; i++)
+			{
+				if (arguments[i] == nullptr) {
+					//TODO line
+					delete value;
+					delete[] arguments;
+					delete new_context;
+					SetError("Missing argument", 0, 0, 0);
+					return nullptr;
+				}
+				else {
+					//TODO Do we want to clone parameter name?
+					new_context->symbols_->Put(method_value->parameters->Get(i)->name, arguments[i]);
+				}
+			}
+
+			delete[] arguments;
+			Value* body_result = Visit(method_value->body, new_context);
+			//TODO delete result if we dont need
+			return body_result;
+		}
 	}
 	return nullptr;
 }
