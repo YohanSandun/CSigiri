@@ -125,3 +125,26 @@ CallNode::~CallNode() {
 	delete callee;
 	delete arguments;
 }
+
+ForNode::ForNode(String* identifier, Node* start, Node* to, Node* step, Node* body, U_INT32 line, U_INT32 column_start, U_INT32 column_end) : Node(Node::Type::kFor, line, column_start, column_end) {
+	this->identifier = identifier;
+	this->start = start;
+	this->to = to;
+	this->step = step;
+	this->body = body;
+}
+
+ForNode::~ForNode() {
+	delete start;
+	delete to;
+	delete step;
+	delete body;
+}
+
+ReturnNode::ReturnNode(Node* node, U_INT32 line, U_INT32 column_start, U_INT32 column_end) : Node(Node::Type::kReturn, line, column_start, column_end) {
+	this->node = node;
+}
+
+ReturnNode::~ReturnNode() {
+	delete node;
+}

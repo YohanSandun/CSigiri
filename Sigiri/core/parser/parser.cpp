@@ -435,7 +435,10 @@ Node* Parser::ParseAtom() {
 		return ParseIfStatement();
 	else if (token->type == Token::Type::kKwMethod)
 		return ParseMethod();
-
+	else if (token->type == Token::Type::kKwFor)
+		return ParseFor();
+	else if (token->type == Token::Type::kKwReturn)
+		return ParseReturn();
 	SetError("Expect something!");
 	return nullptr;
 }
@@ -590,4 +593,67 @@ MethodNode::MethodParameter* Parser::ParseMethodParameter() {
 	}
 	SetError("Expexted an identifier");
 	return nullptr;
+}
+
+Node* Parser::ParseFor() {
+	Advance();
+	if (current_token_->type != Token::Type::kIdentifier) {
+		SetError("Expected an identifier");
+		return nullptr;
+	}
+	Token* identifier = current_token_;
+	Advance();
+
+	if (current_token_->type != Token::Type::kEquals) {
+		SetError("Expected '='");
+		return nullptr;
+	}
+	Advance();
+
+	Node* start = ParseExpression();
+	if (ERROR)
+		return nullptr;
+	
+	if (current_token_->type != Token::Type::kKwTo) {
+		SetError("Expected 'to'");
+		return nullptr;
+	}
+	Advance();
+
+	Node* to = ParseExpression();
+	if (ERROR) {
+		delete start;
+		return nullptr;
+	}
+	
+	Node* step = nullptr;
+	if (current_token_->type == Token::Type::kKwStep) {
+		Advance();
+		step = ParseExpression();
+		if (ERROR) {
+			delete start;
+			delete to;
+			return nullptr;
+		}
+	}
+	SkipNewLines();
+
+	Node* body = ParseBody();
+	if (ERROR) {
+		delete start;
+		delete to;
+		if (step != nullptr)
+			delete step;
+		return nullptr;
+	}
+
+	return new ForNode(identifier->value, start, to, step, body, identifier->line, identifier->start_column, current_token_->start_column);
+}
+
+Node* Parser::ParseReturn() {
+	Advance();
+	Node* node = ParseExpression();
+	if (ERROR)
+		return nullptr;
+	return new ReturnNode(node, node->line, node->column_start, node->column_end);
 }

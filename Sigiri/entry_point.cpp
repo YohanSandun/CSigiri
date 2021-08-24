@@ -33,44 +33,53 @@ int main() {
 
     if (read_from_file) {
         
-        Interpreter interpreter;
-        Context context;
+        bool memory_check = false;
+        while (true) {
 
-        char* file_data = read_file("e:\\test.si");
-        String code(UTF_8 file_data);
-        delete[] file_data;
+            Interpreter interpreter;
+            Context context;
 
-        Lexer lexer(&code);
-        List<Token*>* tokens = lexer.GenerateTokens();
-        Parser parser(tokens);
-        Node* node = parser.Parse();
-        if (parser.HasError()) {
-            parser.PrintError();
-            delete tokens;
-            printf("\nPress any key to continue...");
-            getchar();
-            return 0;
-        }
+            char* file_data = read_file("e:\\test.si");
+            String code(UTF_8 file_data);
+            delete[] file_data;
 
-        Value* value = interpreter.Visit(node, &context);
-        if (!interpreter.HasError()) {
-            if (value != nullptr) {
-                value->Print();
-                printf("\nPress any key to continue...");
-                if (value->type != Value::Type::kMethod)
+            Lexer lexer(&code);
+            List<Token*>* tokens = lexer.GenerateTokens();
+
+            Parser parser(tokens);
+            Node* node = parser.Parse();
+
+            if (parser.HasError()) {
+                parser.PrintError();
+                delete tokens;
+                if (!memory_check) {
+                    printf("\nPress any key to continue...");
+                    getchar();
+                    return 0;
+                }
+                continue;
+            }
+
+            Value* value = interpreter.Visit(node, &context);
+            if (!interpreter.HasError()) {
+                if (value != nullptr)
                     delete value;
             }
-        }
-        else {
-            interpreter.PrintError();
-            interpreter.ClearError();
-            printf("\nPress any key to continue...");
-        }
+            else {
+                interpreter.PrintError();
+                interpreter.ClearError();
+            }
 
-        delete tokens;
-        delete node;
+            delete tokens;
+            //delete node;
 
-        getchar();
+            if (!memory_check) {
+                printf("\nPress any key to continue...");
+                getchar();
+                return 0;
+            }
+
+        }
     }
     else {
         printf("CSigiri v1.0.0\nThis is not a released version. CSigiri is still under development at https://github.com/YohanSandun/CSigiri \nBut my twin brother is way ahead of me. you can find him at https://github.com/YohanSandun/Sigiri \n");

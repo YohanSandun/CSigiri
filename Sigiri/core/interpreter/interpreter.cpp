@@ -57,6 +57,8 @@ Value* Interpreter::Visit(Node* node, Context* context) {
 		return VisitMethodNode((MethodNode*)node, context);
 	else if (node->type == Node::Type::kCall)
 		return VisitCallNode((CallNode*)node, context);
+	else if (node->type == Node::Type::kReturn)
+		return VisitReturnNode((ReturnNode*)node, context);
 
 	return nullptr;
 }
@@ -65,12 +67,19 @@ Value* Interpreter::VisitBlockNode(BlockNode* node, Context* context) {
 	U_INT32 statement_count = node->nodes->count();
 	for (size_t i = 0; i < statement_count; i++)
 	{
-		if (i+1 == statement_count)
-			return Visit(node->nodes->Get(i), context);
-		Visit(node->nodes->Get(i), context);
-		if (ERROR)
-			return nullptr;
+		if (node->nodes->Get(i)->type != Node::Type::kLiteral) {
+			Value* value = Visit(node->nodes->Get(i), context);
+			if (ERROR)
+				return nullptr;
+			if (value != nullptr && value->type != Value::Type::kMethod) {
+				if (value != nullptr)
+					delete value;
+			}
+			if (context->return_value_ != nullptr)
+				return nullptr;
+		}
 	}
+	return nullptr;
 }
 
 Value* Interpreter::VisitLiteralNode(LiteralNode* node, Context* context) {
@@ -194,6 +203,25 @@ Value* Interpreter::VisitMethodNode(MethodNode* node, Context* context) {
 }
 
 Value* Interpreter::VisitCallNode(CallNode* node, Context* context) {
+
+	//TODO move built-in methods to seperate class
+	if (node->callee->type == Node::Type::kVarAccess) {
+		VarAccessNode* var_access = static_cast<VarAccessNode*>(node->callee);
+		if (var_access->key->Compare(UTF_8 "print")) {
+			if (node->arguments != nullptr) {
+				if (node->arguments->count() == 1) {
+					Value* value = Visit(node->arguments->Get(0)->value, context);
+					if (value != nullptr) {
+						value->Print();
+						delete value;
+					}
+				}
+			}
+			printf("\n");
+			return nullptr;
+		}
+	}
+
 	Value* value = Visit(node->callee, context);
 	if (value->type == Value::Type::kMethod) {
 		MethodValue* method_value = static_cast<MethodValue*>(value);
@@ -303,11 +331,24 @@ Value* Interpreter::VisitCallNode(CallNode* node, Context* context) {
 				}
 			}
 
-			delete[] arguments;
-			Value* body_result = Visit(method_value->body, new_context);
-			//TODO delete result if we dont need
-			return body_result;
+			Visit(method_value->body, new_context);
+			Value* return_value = new_context->return_value_->Clone();
+			delete new_context;
+			//delete[] arguments;
+			/*for (size_t i = 0; i < parameter_count; i++)
+				if (arguments[i] != nullptr)
+					delete arguments[i];*/
+			
+			return return_value;
 		}
 	}
+	return nullptr;
+}
+
+Value* Interpreter::VisitReturnNode(ReturnNode* node, Context* context) {
+	Value* value = Visit(node->node, context);
+	if (ERROR)
+		return nullptr;
+	context->return_value_ = value;
 	return nullptr;
 }

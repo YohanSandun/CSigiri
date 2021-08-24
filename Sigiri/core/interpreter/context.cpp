@@ -18,12 +18,18 @@
 
 Context::Context() {
 	parent_ = nullptr;
+	return_value_ = nullptr;
 	symbols_ = new ValueHashMap();
 }
 
 Context::Context(Context* parent) {
+	return_value_ = nullptr;
 	parent_ = parent;
 	symbols_ = new ValueHashMap();
+}
+
+Context::~Context() {
+	delete symbols_;
 }
 
 Value* Context::GetSymbol(String* key) {

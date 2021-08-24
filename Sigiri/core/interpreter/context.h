@@ -27,8 +27,10 @@ private:
 
 public:
 	ValueHashMap* symbols_;
+	Value* return_value_;
 	Context();
 	Context(Context* parent);
+	~Context();
 	Value* GetSymbol(String* key);
 };
 

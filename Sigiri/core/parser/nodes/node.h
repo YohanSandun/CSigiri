@@ -31,6 +31,8 @@ static char* node_names[] = {
 	"If",
 	"Method",
 	"Call",
+	"For",
+	"Return",
 };
 
 struct Node
@@ -46,6 +48,8 @@ struct Node
 		kIfStatement,
 		kMethod,
 		kCall,
+		kFor,
+		kReturn,
 	} type;
 
 	U_INT32 line = 0, column_start = 0, column_end = 0;
@@ -202,5 +206,18 @@ struct CallNode : public Node {
 	CallNode(Node* callee, List<MethodArgument*>* arguments, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
 	~CallNode();
 };
-#endif 
 
+struct ForNode : public Node {
+	String* identifier;
+	Node* start, * to, * step, * body;
+	ForNode(String* identifier, Node* start, Node* to, Node* step, Node* body, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
+	~ForNode();
+};
+
+struct ReturnNode : public Node {
+	Node* node;
+	ReturnNode(Node* node, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
+	~ReturnNode();
+};
+
+#endif 
