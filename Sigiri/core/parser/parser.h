@@ -61,6 +61,7 @@ private:
 	CallNode::MethodArgument* ParseMethodArgument();
 	Node* ParseFor();
 	Node* ParseReturn();
+	Node* ParseWhile();
 
 public:
 	Parser(List<Token*>* tokens);

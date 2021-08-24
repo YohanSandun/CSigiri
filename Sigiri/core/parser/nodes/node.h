@@ -33,6 +33,7 @@ static char* node_names[] = {
 	"Call",
 	"For",
 	"Return",
+	"While",
 };
 
 struct Node
@@ -50,6 +51,7 @@ struct Node
 		kCall,
 		kFor,
 		kReturn,
+		kWhile,
 	} type;
 
 	U_INT32 line = 0, column_start = 0, column_end = 0;
@@ -218,6 +220,12 @@ struct ReturnNode : public Node {
 	Node* node;
 	ReturnNode(Node* node, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
 	~ReturnNode();
+};
+
+struct WhileNode : public Node {
+	Node* condition, * body;
+	WhileNode(Node* condition, Node* body, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
+	~WhileNode();
 };
 
 #endif 

@@ -148,3 +148,13 @@ ReturnNode::ReturnNode(Node* node, U_INT32 line, U_INT32 column_start, U_INT32 c
 ReturnNode::~ReturnNode() {
 	delete node;
 }
+
+WhileNode::WhileNode(Node* condition, Node* body, U_INT32 line, U_INT32 column_start, U_INT32 column_end) : Node(Node::Type::kWhile, line, column_start, column_end) {
+	this->body = body;
+	this->condition = condition;
+}
+
+WhileNode::~WhileNode() {
+	delete body;
+	delete condition;
+}

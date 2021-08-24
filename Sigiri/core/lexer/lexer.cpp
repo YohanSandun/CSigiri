@@ -330,5 +330,9 @@ Token* Lexer::CreateIdentifier() {
 		delete id;
 		return new Token(Token::Type::kKwReturn, current_line_, start_column, current_column_);
 	}
+	else if (id->Compare(UTF_8 "while")) {
+		delete id;
+		return new Token(Token::Type::kKwWhile, current_line_, start_column, current_column_);
+	}
 	return new Token(id, Token::Type::kIdentifier, current_line_, start_column, current_column_);
 }

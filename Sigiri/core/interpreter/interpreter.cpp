@@ -68,6 +68,8 @@ Value* Interpreter::Visit(Node* node, Context* context) {
 		return VisitReturnNode((ReturnNode*)node, context);
 	else if (node->type == Node::Type::kFor)
 		return VisitForNode((ForNode*)node, context);
+	else if (node->type == Node::Type::kWhile)
+		return VisitWhileNode((WhileNode*)node, context);
 	return nullptr;
 }
 
@@ -430,6 +432,25 @@ Value* Interpreter::VisitForNode(ForNode* node, Context* context) {
 			start += step;
 			integer_start->value = start;
 		}
+	}
+	return nullptr;
+}
+
+Value* Interpreter::VisitWhileNode(WhileNode* node, Context* context) {
+	Value* condition = Visit(node->condition, context);
+	if (ERROR)
+		return nullptr;
+
+	while (condition->GetAsBoolean()) {
+		ReleaseMemory(Visit(node->body, context));
+		if (ERROR) {
+			delete condition;
+			return nullptr;
+		}
+		delete condition;
+		condition = Visit(node->condition, context);
+		if (ERROR)
+			return nullptr;
 	}
 	return nullptr;
 }

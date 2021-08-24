@@ -44,6 +44,7 @@ private:
 	Value* VisitCallNode(CallNode*node, Context* context);
 	Value* VisitReturnNode(ReturnNode* node, Context* context);
 	Value* VisitForNode(ForNode* node, Context* context);
+	Value* VisitWhileNode(WhileNode* node, Context* context);
 
 public:
 	void PrintError();

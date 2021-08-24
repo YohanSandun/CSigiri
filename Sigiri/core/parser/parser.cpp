@@ -439,6 +439,8 @@ Node* Parser::ParseAtom() {
 		return ParseFor();
 	else if (token->type == Token::Type::kKwReturn)
 		return ParseReturn();
+	else if (token->type == Token::Type::kKwWhile)
+		return ParseWhile();
 	SetError("Expect something!");
 	return nullptr;
 }
@@ -656,4 +658,19 @@ Node* Parser::ParseReturn() {
 	if (ERROR)
 		return nullptr;
 	return new ReturnNode(node, node->line, node->column_start, node->column_end);
+}
+
+Node* Parser::ParseWhile() {
+	Advance();
+	Node* condition = ParseExpression();
+	if (ERROR)
+		return nullptr;
+
+	Node* body = ParseBody();
+	if (ERROR) {
+		delete condition;
+		return nullptr;
+	}
+
+	return new WhileNode(condition, body, condition->line, condition->column_start, body->column_end);
 }
