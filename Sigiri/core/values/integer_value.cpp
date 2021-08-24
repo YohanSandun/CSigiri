@@ -21,6 +21,10 @@ IntegerValue::IntegerValue(int value, U_INT32 line, U_INT32 column_start, U_INT3
 	this->is_boolean = is_boolean;
 }
 
+IntegerValue::~IntegerValue() {
+
+}
+
 void IntegerValue::Print() {
 	if (is_boolean)
 		printf("%s", value == 0 ? "false" : "true");

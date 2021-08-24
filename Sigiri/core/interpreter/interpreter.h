@@ -31,6 +31,7 @@ private:
 	String* error_ = nullptr;
 
 	void SetError(const char* error, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
+	void ReleaseMemory(Value* value);
 
 	Value* VisitBlockNode(BlockNode* node, Context* context);
 	Value* VisitLiteralNode(LiteralNode* node, Context* context);
@@ -42,6 +43,7 @@ private:
 	Value* VisitMethodNode(MethodNode* node, Context* context);
 	Value* VisitCallNode(CallNode*node, Context* context);
 	Value* VisitReturnNode(ReturnNode* node, Context* context);
+	Value* VisitForNode(ForNode* node, Context* context);
 
 public:
 	void PrintError();

@@ -38,6 +38,13 @@ void Interpreter::ClearError() {
 	error_column_end = 0;
 }
 
+void Interpreter::ReleaseMemory(Value* value) {
+	if (value == nullptr)
+		return;
+	if (value->type != Value::Type::kMethod)
+		delete value;
+}
+
 Value* Interpreter::Visit(Node* node, Context* context) {
 	if (node->type == Node::Type::kBlock)
 		return VisitBlockNode((BlockNode*)node, context);
@@ -59,7 +66,8 @@ Value* Interpreter::Visit(Node* node, Context* context) {
 		return VisitCallNode((CallNode*)node, context);
 	else if (node->type == Node::Type::kReturn)
 		return VisitReturnNode((ReturnNode*)node, context);
-
+	else if (node->type == Node::Type::kFor)
+		return VisitForNode((ForNode*)node, context);
 	return nullptr;
 }
 
@@ -71,10 +79,8 @@ Value* Interpreter::VisitBlockNode(BlockNode* node, Context* context) {
 			Value* value = Visit(node->nodes->Get(i), context);
 			if (ERROR)
 				return nullptr;
-			if (value != nullptr && value->type != Value::Type::kMethod) {
-				if (value != nullptr)
-					delete value;
-			}
+			if (value != nullptr && value->type != Value::Type::kMethod) 
+				delete value;
 			if (context->return_value_ != nullptr)
 				return nullptr;
 		}
@@ -160,7 +166,7 @@ Value* Interpreter::VisitAssignNode(AssignNode* node, Context* context) {
 	Value* value = Visit(node->node, context);
 	if (ERROR)
 		return nullptr;
-	context->symbols_->Put(node->key->Clone(), value->Clone());
+	context->symbols_->Put(node->key, value->Clone());
 	return value;
 }
 
@@ -180,25 +186,20 @@ Value* Interpreter::VisitIfNode(IfNode* node, Context* context) {
 		Value* condition = Visit(node->cases->Get(i)->condition, context);
 		if (condition->GetAsBoolean()) {
 			delete condition;
-			Value* result = Visit(node->cases->Get(i)->body, context);
-			// TODO deleting the result if its not a ref type
-			return result;
+			ReleaseMemory(Visit(node->cases->Get(i)->body, context));
 		}
 		delete condition;
 	}
 
-	if (node->else_case != nullptr) {
-		Value* result = Visit(node->else_case, context);
-		// TODO deleting the result if its not a ref type
-		return result;
-	}
+	if (node->else_case != nullptr) 
+		ReleaseMemory(Visit(node->else_case, context));
 	return nullptr;
 }
 
 Value* Interpreter::VisitMethodNode(MethodNode* node, Context* context) {
-	MethodValue* value = new MethodValue(node->name == nullptr ? nullptr : node->name->Clone(), node->body, node->parameters, node->line, node->column_start, node->column_end);
+	MethodValue* value = new MethodValue(node->name == nullptr ? nullptr : node->name, node->body, node->parameters, node->line, node->column_start, node->column_end);
 	if (node->name != nullptr)
-		context->symbols_->Put(node->name->Clone(), value);
+		context->symbols_->Put(node->name, value);
 	return value;
 }
 
@@ -223,6 +224,9 @@ Value* Interpreter::VisitCallNode(CallNode* node, Context* context) {
 	}
 
 	Value* value = Visit(node->callee, context);
+	if (ERROR) 
+		return nullptr;
+
 	if (value->type == Value::Type::kMethod) {
 		MethodValue* method_value = static_cast<MethodValue*>(value);
 		
@@ -239,9 +243,10 @@ Value* Interpreter::VisitCallNode(CallNode* node, Context* context) {
 		Context* new_context = new Context(context);
 
 		if (parameter_count == 0) {
-			Value* body_result = Visit(method_value->body, new_context);
-			//TODO delete result if we dont need
-			return body_result;
+			ReleaseMemory(Visit(method_value->body, new_context));
+			Value* return_value = new_context->return_value_;
+			delete new_context;
+			return return_value;
 		}
 		else {
 			Value** arguments = new Value*[parameter_count];
@@ -331,14 +336,10 @@ Value* Interpreter::VisitCallNode(CallNode* node, Context* context) {
 				}
 			}
 
-			Visit(method_value->body, new_context);
-			Value* return_value = new_context->return_value_->Clone();
+			ReleaseMemory(Visit(method_value->body, new_context));
+			Value* return_value = new_context->return_value_;
 			delete new_context;
-			//delete[] arguments;
-			/*for (size_t i = 0; i < parameter_count; i++)
-				if (arguments[i] != nullptr)
-					delete arguments[i];*/
-			
+			delete[] arguments;
 			return return_value;
 		}
 	}
@@ -350,5 +351,85 @@ Value* Interpreter::VisitReturnNode(ReturnNode* node, Context* context) {
 	if (ERROR)
 		return nullptr;
 	context->return_value_ = value;
+	return nullptr;
+}
+
+Value* Interpreter::VisitForNode(ForNode* node, Context* context) {
+	int start = 0, to = 0, step = 1;
+	Value* start_value = Visit(node->start, context);
+	if (ERROR)
+		return nullptr;
+	if (start_value->type != Value::Type::kInteger) {
+		SetError("Start value must be an integer", start_value->line, start_value->column_start, start_value->column_end);
+		delete start_value;
+		return nullptr;
+	}
+	start = (static_cast<IntegerValue*>(start_value))->value;
+
+	Value* to_value = Visit(node->to, context);
+	if (ERROR) {
+		delete start_value;
+		return nullptr;
+	}
+	if (to_value->type != Value::Type::kInteger) {
+		SetError("End value must be an integer", to_value->line, to_value->column_start, to_value->column_end);
+		delete to_value;
+		delete start_value;
+		return nullptr;
+	}
+	to = (static_cast<IntegerValue*>(to_value))->value;
+
+	if (node->step != nullptr) {
+		Value* step_value = Visit(node->step, context);
+		if (ERROR) {
+			delete start_value;
+			delete to_value;
+			return nullptr;
+		}
+		if (step_value->type != Value::Type::kInteger) {
+			SetError("End value must be an integer", step_value->line, step_value->column_start, step_value->column_end);
+			delete to_value;
+			delete start_value;
+			delete step_value;
+			return nullptr;
+		}
+		step = (static_cast<IntegerValue*>(step_value))->value;
+		delete step_value;
+	}
+
+	delete to_value;
+
+	context->symbols_->Put(node->identifier, start_value);
+	IntegerValue* integer_start = static_cast<IntegerValue*>(start_value);
+
+	if (start < to) {
+		while (start < to)
+		{
+			ReleaseMemory(Visit(node->body, context));
+			if (ERROR) {
+				delete start_value;
+				delete to_value;
+				return nullptr;
+			}
+			if (context->return_value_ != nullptr)
+				break;
+			start += step;
+			integer_start->value = start;
+		}
+	}
+	else {
+		while (start > to) {
+			ReleaseMemory(Visit(node->body, context));
+			if (ERROR) {
+				delete start_value;
+				delete to_value;
+				return nullptr;
+			}
+			if (context->return_value_ != nullptr)
+				break;
+			start += step;
+			integer_start->value = start;
+		}
+	}
 	return nullptr;
 }

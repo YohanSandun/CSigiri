@@ -23,6 +23,7 @@ struct IntegerValue : public Value
 	bool is_boolean = false;
 	int value;
 	IntegerValue(int value, U_INT32 line, U_INT32 column_start, U_INT32 column_end, bool is_boolean = false);
+	~IntegerValue();
 	void Print();
 	Value* Clone();
 	bool GetAsBoolean();

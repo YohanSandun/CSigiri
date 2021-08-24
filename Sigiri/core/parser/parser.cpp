@@ -369,7 +369,7 @@ CallNode::MethodArgument* Parser::ParseMethodArgument() {
 		Node* value = ParseExpression();
 		if (ERROR) 
 			return nullptr;
-		return new CallNode::MethodArgument(first_argument->value, value);
+		return new CallNode::MethodArgument(first_argument->value->Clone(), value);
 	}
 	else
 	{
@@ -415,7 +415,7 @@ Node* Parser::ParseAtom() {
 				}
 				Advance();
 				Node* expression = ParseExpression();
-				return new AssignNode(token->value, expression, token->line, token->start_column, expression->column_end);
+				return new AssignNode(token->value->Clone(), expression, token->line, token->start_column, expression->column_end);
 			}
 			SetError("Expect var or data type!");
 			return nullptr;
@@ -426,9 +426,9 @@ Node* Parser::ParseAtom() {
 			if (current_token_->type == Token::Type::kEquals) {
 				Advance();
 				Node* expression = ParseExpression();
-				return new AssignNode(token->value, expression, token->line, token->start_column, expression->column_end);
+				return new AssignNode(token->value->Clone(), expression, token->line, token->start_column, expression->column_end);
 			}
-			return new VarAccessNode(token->value, token->line, token->start_column, current_token_->start_column);
+			return new VarAccessNode(token->value->Clone(), token->line, token->start_column, current_token_->start_column);
 		}
 	}
 	else if (token->type == Token::Type::kKwIf)
@@ -542,7 +542,7 @@ Node* Parser::ParseMethod() {
 		if (ERROR) 
 			return nullptr;
 		//TODO line number
-		return new MethodNode(identifier == nullptr ? nullptr : identifier->value, body, nullptr, 0, 0, 0);
+		return new MethodNode(identifier == nullptr ? nullptr : identifier->value->Clone(), body, nullptr, 0, 0, 0);
 	}
 
 	List<MethodNode::MethodParameter*>* parameters = new List<MethodNode::MethodParameter*>();
@@ -575,7 +575,7 @@ Node* Parser::ParseMethod() {
 		return nullptr;
 	}
 	//TODO line number
-	return new MethodNode(identifier == nullptr ? nullptr : identifier->value, body, parameters, 0, 0, 0);
+	return new MethodNode(identifier == nullptr ? nullptr : identifier->value->Clone(), body, parameters, 0, 0, 0);
 }
 
 MethodNode::MethodParameter* Parser::ParseMethodParameter() {
@@ -587,9 +587,9 @@ MethodNode::MethodParameter* Parser::ParseMethodParameter() {
 			Node* default_value = ParseExpression();
 			if (ERROR)
 				return nullptr;
-			return new MethodNode::MethodParameter(parameter_name->value, default_value);
+			return new MethodNode::MethodParameter(parameter_name->value->Clone(), default_value);
 		}
-		return new MethodNode::MethodParameter(parameter_name->value, nullptr);
+		return new MethodNode::MethodParameter(parameter_name->value->Clone(), nullptr);
 	}
 	SetError("Expexted an identifier");
 	return nullptr;
@@ -647,7 +647,7 @@ Node* Parser::ParseFor() {
 		return nullptr;
 	}
 
-	return new ForNode(identifier->value, start, to, step, body, identifier->line, identifier->start_column, current_token_->start_column);
+	return new ForNode(identifier->value->Clone(), start, to, step, body, identifier->line, identifier->start_column, current_token_->start_column);
 }
 
 Node* Parser::ParseReturn() {
