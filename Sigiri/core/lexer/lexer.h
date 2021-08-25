@@ -34,6 +34,7 @@ private:
 
 	Token* CreateNumber();
 	Token* CreateIdentifier();
+	Token* CreateString(char string_char = '"');
 
 public :
 	Lexer(String* code);

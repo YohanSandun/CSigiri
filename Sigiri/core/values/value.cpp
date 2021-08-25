@@ -23,6 +23,11 @@ Value::Value(Type type, U_INT32 line, U_INT32 column_start, U_INT32 column_end) 
 	this->column_end = column_end;
 }
 
+Value* Value::IncrementRefCount(int amount) {
+	ref_count += amount;
+	return this;
+}
+
 void Value::Print() {
 
 }

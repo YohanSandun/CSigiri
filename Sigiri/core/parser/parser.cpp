@@ -402,6 +402,10 @@ Node* Parser::ParseAtom() {
 		Advance();
 		return new LiteralNode(StringToFloat(token->value), start_line, start_column, current_token_->start_column);
 	}
+	else if (token->type == Token::Type::kString) {
+		Advance();
+		return new LiteralNode(token->value->Clone(), start_line, start_column, current_token_->start_column);
+	}
 	else if (token->type == Token::Type::kLeftParen) {
 		Advance();
 		Node* expression = ParseExpression();

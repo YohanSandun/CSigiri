@@ -14,6 +14,9 @@
 // limitations under the License.
 //--------------------------------------------------------------------------
 
+#ifndef FLOAT_VALUE_H
+#define FLOAT_VALUE_H
+
 #include "value.h"
 
 struct FloatValue : public Value {
@@ -25,3 +28,5 @@ struct FloatValue : public Value {
 	Value* Clone();
 	bool GetAsBoolean();
 };
+
+#endif

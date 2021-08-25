@@ -14,23 +14,20 @@
 // limitations under the License.
 //--------------------------------------------------------------------------
 
-#include "value_map_node.h"
+#include "string_value.h"
 
-ValueMapNode::ValueMapNode(int hash_code, String* key, Value* value) {
-	this->hash_code = hash_code;
-	this->key = key;
+StringValue::StringValue(String* value, U_INT32 line, U_INT32 column_start, U_INT32 column_end) : Value(Value::Type::kString, line, column_start, column_end) {
 	this->value = value;
-	next = nullptr;
 }
 
-ValueMapNode::~ValueMapNode() {
-	if (value == nullptr)
-		return;
-	if (value->type == Value::Type::kMethod)
-		return;
-	if (value->type == Value::Type::kString) {
-		if (value->ref_count >= 2)
-			return;
-	}
+StringValue::~StringValue() {
 	delete value;
+}
+
+void StringValue::Print() {
+	printf("%s", value->ptr_);
+}
+
+bool StringValue::GetAsBoolean() {
+	return value->length_ != 0;
 }

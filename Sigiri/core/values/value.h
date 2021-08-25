@@ -30,8 +30,10 @@ struct Value
 		kMethod,
 	} type;
 
+	int ref_count = 0;
 	U_INT32 line, column_start, column_end;
 	Value(Type type, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
+	Value* IncrementRefCount(int amount = 1);
 	virtual ~Value();
 	virtual void Print();
 	virtual Value* Clone();

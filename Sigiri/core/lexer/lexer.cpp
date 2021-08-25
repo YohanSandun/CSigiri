@@ -275,6 +275,10 @@ List<Token*>* Lexer::GenerateTokens() {
 			tokens->Add(CreateNumber());
 		else if ((current_char_ >= 'A' && current_char_ <= 'Z') || (current_char_ >= 'a' && current_char_ <= 'z') || current_char_ == '_') 
 			tokens->Add(CreateIdentifier());
+		else if (current_char_ == '"')
+			tokens->Add(CreateString());
+		else if (current_char_ == '\'')
+			tokens->Add(CreateString('\''));
 	}
 	tokens->Add(new Token(Token::Type::kEof, current_line_, current_column_));
 	return tokens;
@@ -294,6 +298,34 @@ Token* Lexer::CreateNumber() {
 		return new Token(number, Token::Type::kFloat, current_line_, start_column, current_column_);
 	return new Token(number, Token::Type::kInteger, current_line_, start_column, current_column_);
 	//TODO : Throw an error when dot_count > 1
+}
+
+Token* Lexer::CreateString(char string_char) {
+	U_INT32 start_column = current_column_;
+	Advance();
+	String* string = new String(10);
+	while (current_char_ != '\0') {
+		if (current_char_ == '\\') {
+			Advance();
+			if (current_char_ == 'n')
+				string->Append('\n');
+			else if (current_char_ == 't')
+				string->Append('\t');
+			else if (current_char_ == 'b')
+				string->Append('\b');
+			else
+				string->Append(current_char_);
+			Advance();
+			continue;
+		}
+		if (current_char_ == string_char) {
+			Advance();
+			break;
+		}
+		string->Append(current_char_);
+		Advance();
+	}
+	return new Token(string, Token::Type::kString, current_line_, start_column, current_column_);
 }
 
 Token* Lexer::CreateIdentifier() {

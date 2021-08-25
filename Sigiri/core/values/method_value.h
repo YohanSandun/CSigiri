@@ -14,6 +14,9 @@
 // limitations under the License.
 //--------------------------------------------------------------------------
 
+#ifndef METHOD_VALUE_H
+#define METHOD_VALUE_H
+
 #include "value.h"
 #include "core/list/list.cpp"
 #include "core/parser/nodes/node.h"
@@ -30,3 +33,5 @@ struct MethodValue : public Value
 	bool GetAsBoolean();
 
 };
+
+#endif

@@ -41,8 +41,13 @@ void Interpreter::ClearError() {
 void Interpreter::ReleaseMemory(Value* value) {
 	if (value == nullptr)
 		return;
-	if (value->type != Value::Type::kMethod)
-		delete value;
+	if (value->type == Value::Type::kMethod)
+		return;
+	if (value->type == Value::Type::kString) {
+		if (value->ref_count != 0)
+			return;
+	}
+	delete value;
 }
 
 Value* Interpreter::Visit(Node* node, Context* context) {
@@ -81,8 +86,7 @@ Value* Interpreter::VisitBlockNode(BlockNode* node, Context* context) {
 			Value* value = Visit(node->nodes->Get(i), context);
 			if (ERROR)
 				return nullptr;
-			if (value != nullptr && value->type != Value::Type::kMethod) 
-				delete value;
+			ReleaseMemory(value);
 			if (context->return_value_ != nullptr)
 				return nullptr;
 		}
@@ -95,6 +99,8 @@ Value* Interpreter::VisitLiteralNode(LiteralNode* node, Context* context) {
 		return new IntegerValue(node->value.int_value, node->line, node->column_start, node->column_end);
 	else if (node->literal_type == LiteralNode::LiteralType::kFloat)
 		return new FloatValue(node->value.float_value, node->line, node->column_start, node->column_end);
+	else if (node->literal_type == LiteralNode::LiteralType::kString)
+		return new StringValue(node->value.string_value->Clone(), node->line, node->column_start, node->column_end);
 }
 
 Value* Interpreter::VisitBinaryNode(BinaryNode* node, Context* context) {
@@ -179,7 +185,7 @@ Value* Interpreter::VisitAssignNode(AssignNode* node, Context* context) {
 	Value* value = Visit(node->node, context);
 	if (ERROR)
 		return nullptr;
-	context->symbols_->Put(node->key, value->Clone());
+	context->symbols_->Put(node->key, value->Clone()->IncrementRefCount());
 	return value;
 }
 
@@ -227,7 +233,7 @@ Value* Interpreter::VisitCallNode(CallNode* node, Context* context) {
 					Value* value = Visit(node->arguments->Get(0)->value, context);
 					if (value != nullptr) {
 						value->Print();
-						delete value;
+						ReleaseMemory(value);
 					}
 				}
 			}
@@ -295,6 +301,8 @@ Value* Interpreter::VisitCallNode(CallNode* node, Context* context) {
 							}
 							if (arguments[j] != nullptr)
 								delete arguments[j];
+							if (argument_value != nullptr && argument_value->ref_count > 0)
+								argument_value->ref_count++;
 							arguments[j] = argument_value;
 							found_parameter = true;
 							break;
@@ -320,6 +328,8 @@ Value* Interpreter::VisitCallNode(CallNode* node, Context* context) {
 						}
 						if (arguments[i] != nullptr)
 							delete arguments[i];
+						if (argument_value != nullptr && argument_value->ref_count > 0)
+							argument_value->ref_count++;
 						arguments[i] = argument_value;
 					}
 					else {
@@ -351,8 +361,15 @@ Value* Interpreter::VisitCallNode(CallNode* node, Context* context) {
 
 			ReleaseMemory(Visit(method_value->body, new_context));
 			Value* return_value = new_context->return_value_;
+
 			delete new_context;
-			delete[] arguments;
+			for (size_t i = 0; i < parameter_count; i++)
+			{
+				if (arguments[i] != nullptr) {
+					arguments[i]->ref_count--;
+					ReleaseMemory(arguments[i]);
+				}
+			}
 			return return_value;
 		}
 	}

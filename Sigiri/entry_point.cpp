@@ -67,17 +67,13 @@ int main() {
             }
 
             Value* value = interpreter.Visit(node, &context);
-            if (!interpreter.HasError()) {
-                if (value != nullptr)
-                    delete value;
-            }
-            else {
+            if (interpreter.HasError()) {
                 interpreter.PrintError();
                 interpreter.ClearError();
             }
 
             delete tokens;
-            //delete node;
+            delete node;
 
             if (!memory_check) {
                 printf("\nPress any key to continue...");
