@@ -25,6 +25,8 @@ bool    StringCompare(const unsigned char* s1, const unsigned char* s2);
 bool    StringCompare(String* s1, String* s2);
 int  StringToInt(String* str);
 long double StringToFloat(String* str);
+String* IntToString(long int value);
+String* FloatToString(long double value);
 
 #endif
 

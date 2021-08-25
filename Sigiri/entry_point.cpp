@@ -29,6 +29,10 @@ char* read_file(const char* file_name);
 
 int main() {
 
+    String* str = FloatToString(123.5);
+    printf("%s\n", str->ptr_);
+    return 0;
+
     bool read_from_file = true;
 
     if (read_from_file) {

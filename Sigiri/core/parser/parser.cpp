@@ -148,12 +148,20 @@ Node* Parser::ParseCompare() {
 }
 
 Node* Parser::ParseCast() {
-	if (current_token_->type == Token::Type::kKwFloat) {
+	if (current_token_->type == Token::Type::kKwFloat || current_token_->type == Token::Type::kKwInt ||
+		current_token_->type == Token::Type::kKwString) {
+		UnaryNode::UnaryOperatorType operator_type;
+		if (current_token_->type == Token::Type::kKwFloat)
+			operator_type = UnaryNode::UnaryOperatorType::kFloat;
+		else if (current_token_->type == Token::Type::kKwInt)
+			operator_type = UnaryNode::UnaryOperatorType::kInt;
+		else if (current_token_->type == Token::Type::kKwString)
+			operator_type = UnaryNode::UnaryOperatorType::kString;
 		Advance();
 		Node* expression = ParseExpression();
 		if (ERROR)
 			return nullptr;
-		return new UnaryNode(expression, UnaryNode::UnaryOperatorType::kFloat, expression->line, expression->column_start, expression->column_end);
+		return new UnaryNode(expression, operator_type, expression->line, expression->column_start, expression->column_end);
 	}
 	return ParseBitwiseOr();
 }

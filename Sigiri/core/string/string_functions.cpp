@@ -81,3 +81,39 @@ long double StringToFloat(String* str) {
 	}
 	return value + decimal;
 }
+
+String* IntToString(long int value) {
+	String* string = new String(13);
+	if (value == 0)
+	{
+		string->Append('0');
+		return string;
+	}
+
+	if (value < 0) {
+		string->Append('-');
+		value *= -1;
+	}
+
+	char digits[10] = {};
+	int i = 0;
+	while (value > 0)
+	{
+		int digit = value - ((value / 10) * 10);
+		digits[i++] = (char)(digit + '0');
+		value /= 10;
+	}
+
+	for (i = 9; i >= 0; i--)
+	{
+		if (digits[i] != '\0')
+			string->Append(digits[i]);
+	}
+
+	return string;
+}
+
+String* FloatToString(long double value) {
+	String* string = new String(UTF_8 "need to implement");
+	return string;
+}

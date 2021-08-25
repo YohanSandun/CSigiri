@@ -15,6 +15,7 @@
 //--------------------------------------------------------------------------
 
 #include "integer_value.h"
+#include "float_value.h"
 
 IntegerValue::IntegerValue(int value, U_INT32 line, U_INT32 column_start, U_INT32 column_end, bool is_boolean) : Value(Value::Type::kInteger, line, column_start, column_end) {
 	this->value = value;
@@ -23,6 +24,20 @@ IntegerValue::IntegerValue(int value, U_INT32 line, U_INT32 column_start, U_INT3
 
 IntegerValue::~IntegerValue() {
 
+}
+
+Value* IntegerValue::CastFrom(Value* value) {
+	if (value->type == Value::Type::kInteger)
+		return value;
+	else if (value->type == Value::Type::kFloat) {
+		int integer_value = (static_cast<FloatValue*>(value))->value;
+		U_INT32 line = value->line;
+		U_INT32 column_start = value->line;
+		U_INT32 column_end = value->line;
+		delete value;
+		return new IntegerValue(integer_value, line, column_start, column_end);
+	}
+	return nullptr;
 }
 
 void IntegerValue::Print() {

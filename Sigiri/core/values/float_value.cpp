@@ -22,8 +22,11 @@ Value* FloatValue::CastFrom(Value* value) {
 		return value;
 	else if (value->type == Value::Type::kInteger) {
 		long double double_value = (static_cast<IntegerValue*>(value))->value;
+		U_INT32 line = value->line;
+		U_INT32 column_start = value->line;
+		U_INT32 column_end = value->line;
 		delete value;
-		return new FloatValue(double_value, value->line, value->column_start, value->column_end);
+		return new FloatValue(double_value, line, column_start, column_end);
 	}
 	return nullptr;
 }

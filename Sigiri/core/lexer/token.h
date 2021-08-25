@@ -87,6 +87,8 @@ static const char* token_names[] = {
 		"return",
 		"while",
 		"float",
+		"int",
+		"string",
 
 		"EOF",
 };
@@ -161,6 +163,8 @@ struct Token {
 		kKwReturn,				// return
 		kKwWhile,				// while
 		kKwFloat,				// float
+		kKwInt,					// int
+		kKwString,				// string
 
 		kEof,
 	} type;

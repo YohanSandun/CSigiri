@@ -376,5 +376,13 @@ Token* Lexer::CreateIdentifier() {
 		delete id;
 		return new Token(Token::Type::kKwWhile, current_line_, start_column, current_column_);
 	}
+	else if (id->Compare(UTF_8 "int")) {
+		delete id;
+		return new Token(Token::Type::kKwInt, current_line_, start_column, current_column_);
+	}
+	else if (id->Compare(UTF_8 "string")) {
+		delete id;
+		return new Token(Token::Type::kKwString, current_line_, start_column, current_column_);
+	}
 	return new Token(id, Token::Type::kIdentifier, current_line_, start_column, current_column_);
 }

@@ -24,6 +24,7 @@ struct StringValue : public Value {
 	String* value;
 	StringValue(String* value, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
 	~StringValue();
+	static Value* CastFrom(Value* value);
 	void Print();
 	bool GetAsBoolean();
 };

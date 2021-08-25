@@ -123,6 +123,8 @@ struct UnaryNode : public Node
 		kBooleanNot,
 		kBitwiseComplement,
 		kFloat,
+		kInt,
+		kString,
 	} operator_type;
 
 	Node* node;

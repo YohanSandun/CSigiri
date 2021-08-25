@@ -172,9 +172,27 @@ Value* Interpreter::VisitUnaryNode(UnaryNode* node, Context* context) {
 		return value->BooleanNot();
 	else if (node->operator_type == UnaryNode::UnaryOperatorType::kFloat) {
 		Value* cast_result = FloatValue::CastFrom(value);
-		if (cast_result == nullptr) {
-			delete value;
+		if (cast_result == nullptr) {	
 			SetError("Can't cast to float", value->line, value->column_start, value->column_end);
+			delete value;
+			return nullptr;
+		}
+		return cast_result;
+	}
+	else if (node->operator_type == UnaryNode::UnaryOperatorType::kInt) {
+		Value* cast_result = IntegerValue::CastFrom(value);
+		if (cast_result == nullptr) {
+			SetError("Can't cast to integer", value->line, value->column_start, value->column_end);
+			delete value;
+			return nullptr;
+		}
+		return cast_result;
+	}
+	else if (node->operator_type == UnaryNode::UnaryOperatorType::kString) {
+		Value* cast_result = StringValue::CastFrom(value);
+		if (cast_result == nullptr) {
+			SetError("Can't convert to string", value->line, value->column_start, value->column_end);
+			delete value;
 			return nullptr;
 		}
 		return cast_result;
