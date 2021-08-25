@@ -115,7 +115,7 @@ Node* Parser::ParseCompare() {
 	}
 	U_INT32 start_line = current_token_->line;
 	U_INT32 start_column = current_token_->start_column;
-	Node* left = ParseBitwiseOr();
+	Node* left = ParseCast();
 	if (ERROR)
 		return nullptr;
 	while (current_token_->type == Token::Type::kEqualsEquals || current_token_->type == Token::Type::kNotEquals 
@@ -137,7 +137,7 @@ Node* Parser::ParseCompare() {
 		else if (current_token_->type == Token::Type::kGreaterEquals)
 			operator_type = BinaryNode::OperatorType::kGreaterEquals;
 		Advance();
-		Node* right = ParseBitwiseOr();
+		Node* right = ParseCast();
 		if (ERROR) {
 			delete left;
 			return nullptr;
@@ -147,6 +147,16 @@ Node* Parser::ParseCompare() {
 	return left;
 }
 
+Node* Parser::ParseCast() {
+	if (current_token_->type == Token::Type::kKwFloat) {
+		Advance();
+		Node* expression = ParseExpression();
+		if (ERROR)
+			return nullptr;
+		return new UnaryNode(expression, UnaryNode::UnaryOperatorType::kFloat, expression->line, expression->column_start, expression->column_end);
+	}
+	return ParseBitwiseOr();
+}
 
 Node* Parser::ParseBitwiseOr() {
 	U_INT32 start_line = current_token_->line;
@@ -405,31 +415,31 @@ Node* Parser::ParseAtom() {
 		return expression;
 	}
 	else if (token->type == Token::Type::kIdentifier) {
-		if (Peek()->type == Token::Type::kColon) {
-			if (Peek(2)->type == Token::Type::kKwVar) {
-				Advance(3);
-				if (current_token_->type != Token::Type::kEquals)
-				{
-					SetError("Expect '='");
-					return nullptr;
-				}
-				Advance();
-				Node* expression = ParseExpression();
-				return new AssignNode(token->value->Clone(), expression, token->line, token->start_column, expression->column_end);
-			}
-			SetError("Expect var or data type!");
-			return nullptr;
-			// else other data types such as long, complex, big
-		}
-		else {
+		//if (Peek()->type == Token::Type::kColon) {
+		//	if (Peek(2)->type == Token::Type::kKwVar) {
+		//		Advance(3);
+		//		if (current_token_->type != Token::Type::kEquals)
+		//		{
+		//			SetError("Expect '='");
+		//			return nullptr;
+		//		}
+		//		Advance();
+		//		Node* expression = ParseExpression();
+		//		return new AssignNode(token->value->Clone(), expression, token->line, token->start_column, expression->column_end);
+		//	}
+		//	SetError("Expect var or data type!");
+		//	return nullptr;
+		//	// else other data types such as long, complex, big
+		//}
+		//else {
+		Advance();
+		if (current_token_->type == Token::Type::kEquals) {
 			Advance();
-			if (current_token_->type == Token::Type::kEquals) {
-				Advance();
-				Node* expression = ParseExpression();
-				return new AssignNode(token->value->Clone(), expression, token->line, token->start_column, expression->column_end);
-			}
-			return new VarAccessNode(token->value->Clone(), token->line, token->start_column, current_token_->start_column);
+			Node* expression = ParseExpression();
+			return new AssignNode(token->value->Clone(), expression, token->line, token->start_column, expression->column_end);
 		}
+		return new VarAccessNode(token->value->Clone(), token->line, token->start_column, current_token_->start_column);
+		//}
 	}
 	else if (token->type == Token::Type::kKwIf)
 		return ParseIfStatement();

@@ -65,7 +65,7 @@ struct LiteralNode : public Node
 	union Value
 	{
 		int int_value;
-		double float_value;
+		long double float_value;
 		String* string_value;
 	} value;
 
@@ -76,7 +76,7 @@ struct LiteralNode : public Node
 	} literal_type;
 
 	LiteralNode(int value, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
-	LiteralNode(double value, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
+	LiteralNode(long double value, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
 	LiteralNode(String* value, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
 	~LiteralNode();
 };
@@ -122,6 +122,7 @@ struct UnaryNode : public Node
 		kMinus,
 		kBooleanNot,
 		kBitwiseComplement,
+		kFloat,
 	} operator_type;
 
 	Node* node;

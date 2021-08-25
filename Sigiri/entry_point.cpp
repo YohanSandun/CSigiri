@@ -46,6 +46,12 @@ int main() {
             Lexer lexer(&code);
             List<Token*>* tokens = lexer.GenerateTokens();
 
+            //for (size_t i = 0; i < tokens->count(); i++)
+            //{
+            //    printf("%s\n", tokens->Get(i)->name());
+            //}
+            //return 0;
+
             Parser parser(tokens);
             Node* node = parser.Parse();
 

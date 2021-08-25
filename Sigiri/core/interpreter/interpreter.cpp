@@ -93,6 +93,8 @@ Value* Interpreter::VisitBlockNode(BlockNode* node, Context* context) {
 Value* Interpreter::VisitLiteralNode(LiteralNode* node, Context* context) {
 	if (node->literal_type == LiteralNode::LiteralType::kInteger)
 		return new IntegerValue(node->value.int_value, node->line, node->column_start, node->column_end);
+	else if (node->literal_type == LiteralNode::LiteralType::kFloat)
+		return new FloatValue(node->value.float_value, node->line, node->column_start, node->column_end);
 }
 
 Value* Interpreter::VisitBinaryNode(BinaryNode* node, Context* context) {
@@ -162,6 +164,15 @@ Value* Interpreter::VisitUnaryNode(UnaryNode* node, Context* context) {
 		return value->BitwiseComplement();
 	else if (node->operator_type == UnaryNode::UnaryOperatorType::kBooleanNot)
 		return value->BooleanNot();
+	else if (node->operator_type == UnaryNode::UnaryOperatorType::kFloat) {
+		Value* cast_result = FloatValue::CastFrom(value);
+		if (cast_result == nullptr) {
+			delete value;
+			SetError("Can't cast to float", value->line, value->column_start, value->column_end);
+			return nullptr;
+		}
+		return cast_result;
+	}
 }
 
 Value* Interpreter::VisitAssignNode(AssignNode* node, Context* context) {

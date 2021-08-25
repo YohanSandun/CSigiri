@@ -37,7 +37,7 @@ Value* IntegerValue::Clone() {
 }
 
 bool IntegerValue::GetAsBoolean() {
-	return value == 0 ? false : true;
+	return value != 0;
 }
 
 Value* IntegerValue::Add(Value* other) {

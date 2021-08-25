@@ -185,6 +185,16 @@ List<Token*>* Lexer::GenerateTokens() {
 				Advance();
 			}
 		}
+		else if (current_char_ == '^') {
+			if (Peek() == '=') {
+				tokens->Add(new Token(Token::Type::kBitwiseXorEquals, current_line_, current_column_));
+				Advance(2);
+			}
+			else {
+				tokens->Add(new Token(Token::Type::kBitwiseXor, current_line_, current_column_));
+				Advance();
+			}
+		}
 		else if (current_char_ == '<') {
 			if (Peek() == '=') {
 				tokens->Add(new Token(Token::Type::kLessEquals, current_line_, current_column_));
@@ -294,9 +304,9 @@ Token* Lexer::CreateIdentifier() {
 		id->Append(current_char_);
 		Advance();
 	}
-	if (id->Compare(UTF_8 "var")) {
+	if (id->Compare(UTF_8 "float")) {
 		delete id;
-		return new Token(Token::Type::kKwVar, current_line_, start_column, current_column_);
+		return new Token(Token::Type::kKwFloat, current_line_, start_column, current_column_);
 	}
 	else if (id->Compare(UTF_8 "if")) {
 		delete id;

@@ -57,8 +57,8 @@ int StringToInt(String* str) {
 	return value;
 }
 
-double StringToFloat(String* str) {
-	double value = 0;
+long double StringToFloat(String* str) {
+	long double value = 0;
 	int dotIndex = str->IndexOf('.');
 	dotIndex = dotIndex >= 0 ? dotIndex : str->length_;
 
@@ -70,14 +70,14 @@ double StringToFloat(String* str) {
 		value += digit;
 	}
 
-	double decimal = 0;
+	long double decimal = 0;
 	for (size_t i = dotIndex + 1; i < str->length_; i++)
 	{
 		int digit = str->ptr_[i] - '0';
 		U_INT32 divide = 1;
 		for (size_t j = 0; j < i - dotIndex; j++)
 			divide *= 10;
-		decimal += (digit / (double)divide);
+		decimal += (digit / (long double)divide);
 	}
 	return value + decimal;
 }

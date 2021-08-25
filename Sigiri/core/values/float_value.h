@@ -14,17 +14,14 @@
 // limitations under the License.
 //--------------------------------------------------------------------------
 
-#ifndef STRING_FUNCTIONS_H
-#define STRING_FUNCTIONS_H
+#include "value.h"
 
-#include "core/declarations.h"
-#include "sigiri_string.h"
-
-U_INT32  StringLength(const unsigned char* ptr);
-bool    StringCompare(const unsigned char* s1, const unsigned char* s2);
-bool    StringCompare(String* s1, String* s2);
-int  StringToInt(String* str);
-long double StringToFloat(String* str);
-
-#endif
-
+struct FloatValue : public Value {
+	long double value;
+	static Value* CastFrom(Value* value);
+	FloatValue(long double value, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
+	~FloatValue();
+	void Print();
+	Value* Clone();
+	bool GetAsBoolean();
+};

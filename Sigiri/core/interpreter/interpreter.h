@@ -21,6 +21,7 @@
 #include "core/values/value.h"
 #include "core/values/integer_value.h"
 #include "core/values/method_value.h"
+#include "core/values/float_value.h"
 
 #include "context.h"
 

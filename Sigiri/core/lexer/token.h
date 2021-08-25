@@ -77,7 +77,6 @@ static const char* token_names[] = {
 		":",
 		"Newline",
 
-		"var",
 		"if",
 		"else",
 		"elif",
@@ -87,6 +86,7 @@ static const char* token_names[] = {
 		"method",
 		"return",
 		"while",
+		"float",
 
 		"EOF",
 };
@@ -151,7 +151,6 @@ struct Token {
 		kColon,					// :
 		kNewline,				// \n and ;(Semi-colon)
 
-		kKwVar,					// var
 		kKwIf,					// if
 		kKwElse,				// else
 		kKwElif,				// elif
@@ -161,6 +160,7 @@ struct Token {
 		kKwMethod,				// method
 		kKwReturn,				// return
 		kKwWhile,				// while
+		kKwFloat,				// float
 
 		kEof,
 	} type;

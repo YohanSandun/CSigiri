@@ -43,6 +43,7 @@ private:
 	Node* ParseBlock(Token::Type end_token_type);
 	Node* ParseExpression();
 	Node* ParseCompare();
+	Node* ParseCast();
 	Node* ParseBitwiseOr();
 	Node* ParseBitwiseXor();
 	Node* ParseBitwiseAnd();

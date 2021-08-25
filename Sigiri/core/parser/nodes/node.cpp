@@ -32,7 +32,7 @@ LiteralNode::LiteralNode(int value, U_INT32 line, U_INT32 column_start, U_INT32 
 	this->literal_type = LiteralType::kInteger;
 }
 
-LiteralNode::LiteralNode(double value, U_INT32 line, U_INT32 column_start, U_INT32 column_end) : Node(Node::Type::kLiteral, line, column_start, column_end) {
+LiteralNode::LiteralNode(long double value, U_INT32 line, U_INT32 column_start, U_INT32 column_end) : Node(Node::Type::kLiteral, line, column_start, column_end) {
 	this->value.float_value = value;
 	this->literal_type = LiteralType::kFloat;
 }
