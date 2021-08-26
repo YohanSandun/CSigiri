@@ -15,6 +15,7 @@
 //--------------------------------------------------------------------------
 
 #include "interpreter.h"
+#include "core/values/error_value.h"
 
 #define ERROR error_ != nullptr
 
@@ -112,52 +113,74 @@ Value* Interpreter::VisitBinaryNode(BinaryNode* node, Context* context) {
 	if (ERROR)
 		return nullptr;
 
+	Value* result = nullptr;
 	switch (node->operator_type)
 	{
 	case BinaryNode::OperatorType::kAddition:
-		return left->Add(right);
+		result = left->Add(right);
+		break;
 	case BinaryNode::OperatorType::kSubtraction:
-		return left->Subtract(right);
+		result = left->Subtract(right);
+		break;
 	case BinaryNode::OperatorType::kMultiplication:
-		return left->Multiply(right);
+		result = left->Multiply(right);
+		break;
 	case BinaryNode::OperatorType::kDivision:
-		return left->Divide(right);
+		result = left->Divide(right);
+		break;
 	case BinaryNode::OperatorType::kModulus:
-		return left->Mod(right);
+		result = left->Mod(right);
+		break;
 	case BinaryNode::OperatorType::kPower:
-		return left->Power(right);
-
+		result = left->Power(right);
+		break;
 	case BinaryNode::OperatorType::kEqualsEquals:
-		return left->Equals(right);
+		result = left->Equals(right);
+		break;
 	case BinaryNode::OperatorType::kNotEquals:
-		return left->NotEquals(right);
+		result = left->NotEquals(right);
+		break;
 	case BinaryNode::OperatorType::kLess:
-		return left->LessThan(right);
+		result = left->LessThan(right);
+		break;
 	case BinaryNode::OperatorType::kLessEquals:
-		return left->LessThanOrEqual(right);
+		result = left->LessThanOrEqual(right);
+		break;
 	case BinaryNode::OperatorType::kGreater:
-		return left->GreaterThan(right);
+		result = left->GreaterThan(right);
+		break;
 	case BinaryNode::OperatorType::kGreaterEquals:
-		return left->GreaterThanOrEqual(right);
-
+		result = left->GreaterThanOrEqual(right);
+		break;
 	case BinaryNode::OperatorType::kBitwiseAnd:
-		return left->BitwiseAnd(right);
+		result = left->BitwiseAnd(right);
+		break;
 	case BinaryNode::OperatorType::kBitwiseOr:
-		return left->BitwiseOr(right);
+		result = left->BitwiseOr(right);
+		break;
 	case BinaryNode::OperatorType::kBitwiseXor:
-		return left->BitwiseXor(right);
+		result = left->BitwiseXor(right);
+		break;
 	case BinaryNode::OperatorType::kBitwiseShiftLeft:
-		return left->BitwiseLeftShift(right);
+		result = left->BitwiseLeftShift(right);
+		break;
 	case BinaryNode::OperatorType::kBitwiseShiftRight:
-		return left->BitwiseRightShift(right);
-
+		result = left->BitwiseRightShift(right);
+		break;
 	case BinaryNode::OperatorType::kBooleanAnd:
-		return left->BooleanAnd(right);
+		result = left->BooleanAnd(right);
+		break;
 	case BinaryNode::OperatorType::kBooleanOr:
-		return left->BooleanOr(right);
-	default:
+		result = left->BooleanOr(right);
 		break;
 	}
+	if (result != nullptr && result->type == Value::Type::kError) {
+		ErrorValue* error = static_cast<ErrorValue*>(result);
+		SetError((const char*)error->error->ptr_, error->line, error->column_start, error->column_end);
+		delete result;
+		return nullptr;
+	}
+	return result;
 }
 
 Value* Interpreter::VisitUnaryNode(UnaryNode* node, Context* context) {

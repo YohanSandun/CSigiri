@@ -15,6 +15,7 @@
 //--------------------------------------------------------------------------
 
 #include "value.h"
+#include "error_value.h"
 
 Value::Value(Type type, U_INT32 line, U_INT32 column_start, U_INT32 column_end) {
 	this->type = type;
@@ -34,6 +35,12 @@ void Value::Print() {
 
 Value::~Value() {
 
+}
+
+Value* Value::CreateBinaryError(const char* op, const char* name, int line, int col_start, int col_end) {
+	char buffer[100] = {};
+	sprintf(buffer, "unsupported operand type %s for 'int' and '%s'", op, name);
+	return new ErrorValue(buffer, line, col_start, col_end);
 }
 
 Value* Value::Clone() {

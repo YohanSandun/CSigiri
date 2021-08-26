@@ -18,12 +18,20 @@
 #define VALUE_H
 
 #include <cstdio>
-
 #include "core/declarations.h"
+
+static const char* value_names[] = {
+	"error",
+	"int",
+	"float",
+	"string",
+	"method",
+};
 
 struct Value
 {
 	enum class Type {
+		kError,
 		kInteger,
 		kFloat,
 		kString,
@@ -34,6 +42,12 @@ struct Value
 	U_INT32 line, column_start, column_end;
 	Value(Type type, U_INT32 line, U_INT32 column_start, U_INT32 column_end);
 	Value* IncrementRefCount(int amount = 1);
+	inline const char* name() {
+		return value_names[(int)type];
+	}
+
+	static Value* CreateBinaryError(const char* op, const char* name, int line, int col_start, int col_end);
+
 	virtual ~Value();
 	virtual void Print();
 	virtual Value* Clone();
