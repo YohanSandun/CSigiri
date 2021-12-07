@@ -46,6 +46,7 @@ int main() {
             Lexer lexer(&code);
             List<Token*>* tokens = lexer.GenerateTokens();
 
+            //Printing tokens -> debug purpose only
             //for (size_t i = 0; i < tokens->count(); i++)
             //{
             //    printf("%s\n", tokens->Get(i)->name());

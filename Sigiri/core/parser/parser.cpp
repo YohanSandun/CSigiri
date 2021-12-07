@@ -427,6 +427,7 @@ Node* Parser::ParseAtom() {
 		return expression;
 	}
 	else if (token->type == Token::Type::kIdentifier) {
+		// Data type -> need a refactor
 		//if (Peek()->type == Token::Type::kColon) {
 		//	if (Peek(2)->type == Token::Type::kKwVar) {
 		//		Advance(3);
@@ -463,7 +464,7 @@ Node* Parser::ParseAtom() {
 		return ParseReturn();
 	else if (token->type == Token::Type::kKwWhile)
 		return ParseWhile();
-	SetError("Expect something!");
+	SetError("Expect something!"); // Need to make more descriptive error messages
 	return nullptr;
 }
 
